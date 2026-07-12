@@ -1,0 +1,398 @@
+{% load static %}
+<style>
+    .select-store-dropdown .dropdown-menu .dropdown-item {
+        white-space: nowrap;
+    }
+</style>
+{% load translate %}
+<div class="header">
+    <div class="main-header">
+        <!-- Logo -->
+        <div class="header-left active">
+            <a href="{{ dashboard_url }}" class="logo logo-normal">
+                <img src="{% static 'dashboard/images/logo.svg' %}" alt="Img">
+            </a>
+            <a href="{{ dashboard_url }}" class="logo logo-white">
+                <img src="{% static 'dashboard/images/logo-white.svg' %}" alt="Img">
+            </a>
+            <a href="{{ dashboard_url }}" class="logo-small">
+                <img src="{% static 'dashboard/images/logo-small.png' %}" alt="Img">
+            </a>
+            <a href="{{ dashboard_url }}" class="logo-small-white">
+                <img src="{% static 'dashboard/images/logo-small-white.png' %}" alt="Img">
+            </a>
+        </div>
+        <!-- /Logo -->
+        <a id="mobile_btn" class="mobile_btn" href="#sidebar">
+            <span class="bar-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </a>
+
+        <!-- Header Menu -->
+        <ul class="nav user-menu">
+
+            <!-- Search -->
+            <li class="nav-item nav-searchinputs">
+                <div class="top-nav-search">
+                    <a href="javascript:void(0);" class="responsive-search">
+                        <i class="fa fa-search"></i>
+                    </a>
+                    <form action="#" class="dropdown">
+                        <div class="searchinputs input-group dropdown-toggle" id="dropdownMenuClickable"
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                            <input type="text" placeholder="{% translate 'search' request.session.language %}">
+                            <div class="search-addon">
+                                <span><i class="ti ti-search"></i></span>
+                            </div>
+                            <span class="input-group-text">
+                                <kbd class="d-flex align-items-center"><img
+                                        src="{% static 'dashboard/images/command.svg' %}" alt="img" class="me-1">K</kbd>
+                            </span>
+                        </div>
+                        <div class="dropdown-menu search-dropdown" aria-labelledby="dropdownMenuClickable">
+                            <div class="search-info">
+                                <h6><span><i data-feather="search" class="feather-16"></i></span>Recent Searches
+                                </h6>
+                                <ul class="search-tags">
+                                    <li><a href="javascript:void(0);">Products</a></li>
+                                    <li><a href="javascript:void(0);">Sales</a></li>
+                                    <li><a href="javascript:void(0);">Applications</a></li>
+                                </ul>
+                            </div>
+                            <div class="search-info">
+                                <h6><span><i data-feather="help-circle" class="feather-16"></i></span>Help</h6>
+                                <p>How to Change Product Volume from 0 to 200 on Inventory management</p>
+                                <p>Change Product Name</p>
+                            </div>
+                            <div class="search-info">
+                                <h6><span><i data-feather="user" class="feather-16"></i></span>Customers</h6>
+                                <ul class="customers">
+                                    <li><a href="javascript:void(0);">Aron Varu<img
+                                                src="{% static 'dashboard/images/no-image.png' %}" alt="Img"
+                                                class="img-fluid"></a>
+                                    </li>
+                                    <li><a href="javascript:void(0);">Jonita<img
+                                                src="{% static 'dashboard/images/no-image.png' %}" alt="Img"
+                                                class="img-fluid"></a></li>
+                                    <li><a href="javascript:void(0);">Aaron<img
+                                                src="{% static 'dashboard/images/no-image.png' %}" alt="Img"
+                                                class="img-fluid"></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </li>
+            <!-- /Search -->
+
+            <!-- Select Store -->
+            <li class="nav-item dropdown has-arrow main-drop select-store-dropdown">
+                <a href="javascript:void(0);" class="dropdown-toggle nav-link select-store" data-bs-toggle="dropdown">
+                    {% if current_store %}
+                    <span class="user-info">
+                        <span class="user-letter">
+                            <img src="{{ current_store.logo.url }}" alt="{% translate current_store.translation_key request.session.language %}" class="img-fluid">
+                        </span>
+                        <span class="user-detail">
+                            <span class="user-name">{% translate current_store.translation_key request.session.language %}</span>
+                        </span>
+                    </span>
+                    {% else %}
+                    <span class="user-info">
+                        <span class="user-letter">
+                            <img src="{% static 'dashboard/images/store.png' %}" alt="Store Logo" class="img-fluid">
+                        </span>
+                        <span class="user-detail">
+                            <span class="user-name">{% translate 'all_stores' request.session.language %}</span>
+                        </span>
+                    </span>
+                    {% endif %}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="#" class="dropdown-item">
+                        <img src="{% static 'dashboard/images/store.png' %}" alt="All Store" class="img-fluid">{% translate 'all_stores' request.session.language %}
+                    </a>
+                    {% for store in all_stores %}
+                    <a href="#" class="dropdown-item">
+                        <img src="{{ store.logo.url }}" alt="{{store.name}}" class="img-fluid">{% translate store.translation_key request.session.language %}
+                    </a>
+                    {% endfor %}
+                </div>
+            </li>
+            <!-- /Select Store -->
+
+            <li class="nav-item dropdown link-nav">
+                <a href="javascript:void(0);" class="btn btn-primary btn-md d-inline-flex align-items-center"
+                    data-bs-toggle="dropdown">
+                    <i class="ti ti-circle-plus me-1"></i>{% translate 'add_new' request.session.language %}
+                </a>
+                <div class="dropdown-menu dropdown-xl dropdown-menu-center">
+                    <div class="row g-2">
+                        <div class="col-md-2">
+                            <a href="{{category_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-brand-codepen"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'category' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{product_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-square-plus"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'product' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{purchase_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-shopping-bag"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'purchase' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{sale_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-shopping-cart"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'sale' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{expense_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-file-text"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'expense' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{income_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-file-analytics"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'income' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{sales_return_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-copy"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'return' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{employee_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-user"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'employee' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{customer_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-users"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'customer' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{quotation_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-device-floppy"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'quotation' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{supplier_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-user-check"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'supplier' request.session.language %}</p>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{stock_transfer_list_url}}" class="link-item">
+                                <span class="link-icon">
+                                    <i class="ti ti-truck"></i>
+                                </span>
+                                <p class="text-nowrap">{% translate 'transfer' request.session.language %}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+
+            <!-- Flag -->
+            <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
+                    {% if current_language %}
+                    <img src="{{ current_language.flag.url }}" alt="{{ current_language.name }}" class="img-fluid">
+                    {% else %}
+                    <img src="{% static 'dashboard/images/globe.png' %}" alt="Language"
+                        style="width: 30px;height: 30px;object-fit: contain;" class="img-fluid">
+                    {% endif %}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    {% for language in languages %}
+                    <a href="{% url 'set_language' %}?language={{language.code}}" class="dropdown-item">
+                        <img src="{{language.flag.url}}" alt="{% translate language.translation_key request.session.language %}" height="16">{% translate language.translation_key request.session.language %}
+                    </a>
+                    {% endfor %}
+                </div>
+            </li>
+            <!-- /Flag -->
+
+            <li class="nav-item nav-item-box">
+                <a href="javascript:void(0);" id="btnFullscreen">
+                    <i class="ti ti-maximize"></i>
+                </a>
+            </li>
+            <!-- Notifications -->
+            <li class="nav-item dropdown nav-item-box">
+                <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                    <i class="ti ti-bell"></i>
+                    <span class="badge rounded-pill">1</span>
+                </a>
+                <div class="dropdown-menu notifications">
+                    <div class="topnav-dropdown-header">
+                        <h5 class="notification-title">Notifications</h5>
+                        <a href="javascript:void(0)" class="clear-noti">Mark all as read</a>
+                    </div>
+                    <div class="noti-content">
+                        <ul class="notification-list">
+                            <li class="notification-message">
+                                <a href="activities.html">
+                                    <div class="media d-flex">
+                                        <span class="flex-shrink-0 avatar">
+                                            <img alt="Img" src="{% static 'dashboard/images/no-profile.png' %}">
+                                        </span>
+                                        <div class="flex-grow-1">
+                                            <p class="noti-details"><span class="noti-title">James Kirwin</span>
+                                                confirmed his order. Order No: #78901.Estimated delivery: 2 days</p>
+                                            <p class="noti-time">4 mins ago</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="notification-message">
+                                <a href="activities.html">
+                                    <div class="media d-flex">
+                                        <span class="flex-shrink-0 avatar">
+                                            <img alt="Img" src="{% static 'dashboard/images/no-profile.png' %}">
+                                        </span>
+                                        <div class="flex-grow-1">
+                                            <p class="noti-details"><span class="noti-title">Leo Kelly</span> cancelled
+                                                his order scheduled for 17 Jan 2025</p>
+                                            <p class="noti-time">10 mins ago</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="notification-message">
+                                <a href="activities.html" class="recent-msg">
+                                    <div class="media d-flex">
+                                        <span class="flex-shrink-0 avatar">
+                                            <img alt="Img" src="{% static 'dashboard/images/no-profile.png' %}">
+                                        </span>
+                                        <div class="flex-grow-1">
+                                            <p class="noti-details">Payment of $50 received for Order #67890 from <span
+                                                    class="noti-title">Antonio Engle</span></p>
+                                            <p class="noti-time">05 mins ago</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="notification-message">
+                                <a href="activities.html" class="recent-msg">
+                                    <div class="media d-flex">
+                                        <span class="flex-shrink-0 avatar">
+                                            <img alt="Img" src="{% static 'dashboard/images/no-profile.png' %}">
+                                        </span>
+                                        <div class="flex-grow-1">
+                                            <p class="noti-details"><span class="noti-title">Andrea</span> confirmed his
+                                                order. Order No: #73401.Estimated delivery: 3 days</p>
+                                            <p class="noti-time">4 mins ago</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="gap-3 topnav-dropdown-footer d-flex align-items-center">
+                        <a href="#" class="btn btn-secondary btn-md w-100">Cancel</a>
+                        <a href="activities.html" class="btn btn-primary btn-md w-100">View all</a>
+                    </div>
+                </div>
+            </li>
+            <!-- /Notifications -->
+
+            <li class="nav-item nav-item-box">
+                <a href="{{ site_settings_url }}"><i class="ti ti-settings"></i></a>
+            </li>
+            <li class="nav-item nav-item-box">
+                <a href="{{ locked_url }}"><i class="ti ti-lock"></i></a>
+            </li>
+            <li class="nav-item dropdown has-arrow main-drop profile-nav">
+                <a href="javascript:void(0);" class="nav-link userset" data-bs-toggle="dropdown">
+                    <span class="p-0 user-info">
+                        <span class="user-letter">
+                            <img src="{% if request.user.profile %}{{ request.user.profile.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                                alt="Img" class="img-fluid">
+                        </span>
+                    </span>
+                </a>
+                <div class="dropdown-menu menu-drop-user">
+                    <div class="profileset d-flex align-items-center">
+                        <span class="user-img me-2">
+                            <img src="{% if request.user.profile %}{{ request.user.profile.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                                alt="Img">
+                        </span>
+                        <div>
+                            <h6 class="fw-medium">{% translate request.user.translation_key request.session.language %}</h6>
+                            <p>{{ request.user.role.name }}</p>
+                        </div>
+                    </div>
+                    <a class="dropdown-item" href="{{ dashboard_profile_url }}"><i class="ti ti-user-circle me-2"></i>
+                        {% translate 'my_profile' request.session.language %}
+                    </a>
+                    <a class="dropdown-item" href="{{ site_settings_url }}"><i class="ti ti-settings-2 me-2"></i>
+                        {% translate 'settings' request.session.language %}
+                    </a>
+                    <hr class="my-2">
+                    <a class="dropdown-item logout" href="{{dashboard_logout_url}}"><i class="ti ti-logout me-2"></i>
+                        {% translate 'logout' request.session.language %}
+                    </a>
+                </div>
+            </li>
+        </ul>
+        <!-- /Header Menu -->
+
+        <!-- Mobile Menu -->
+        <div class="dropdown mobile-user-menu">
+            <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="{{dashboard_profile_url}}">
+                    {% translate 'my_profile' request.session.language %}
+                </a>
+                <a class="dropdown-item" href="{{ site_settings_url }}">
+                    {% translate 'settings' request.session.language %}
+                </a>
+                <a class="dropdown-item" href="{{dashboard_logout_url}}">
+                    {% translate 'logout' request.session.language %}
+                </a>
+            </div>
+        </div>
+        <!-- /Mobile Menu -->
+    </div>
+</div>

@@ -1,0 +1,106 @@
+{% extends 'dashboard/components/base.html' %}
+{% load translate %}
+{% block title %}{% translate 'dashboard_login' request.session.language %}{% endblock %}
+{% load static %}
+{% block auth %}
+<div class="account-content">
+    <div class="login-wrapper login-new">
+        <div class="row w-100">
+            <div class="col-lg-5 mx-auto">
+                <div class="login-content user-login">
+                    <div class="login-logo">
+                        <img src="{% static 'dashboard/images/logo.svg' %}" alt="img">
+                        <a href="{{ dashboard_url }}" class="login-logo logo-white">
+                            <img src="{% static 'dashboard/images/logo-white.svg' %}" alt="Img">
+                        </a>
+                    </div>
+                    <form action="{{ dashboard_login_url }}" method="POST">
+                        {% csrf_token %}
+                        <div class="card">
+                            <div class="card-body p-5">
+                                <div class="login-userheading">
+                                    <h3>{% translate 'sign_in' request.session.language %}</h3>
+                                    <h4>{% translate 'enter_your_credentials_to_access_the_site_panel' request.session.language %}</h4>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{% translate 'email' request.session.language %} <span
+                                            class="text-danger"> *</span></label>
+                                    <div class="input-group">
+                                        <input required name="email" type="email" class="form-control border-end-0">
+                                        <span class="input-group-text border-start-0">
+                                            <i class="ti ti-mail"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{% translate 'password' request.session.language %} <span
+                                            class="text-danger">
+                                            *</span></label>
+                                    <div class="pass-group">
+                                        <input type="password" name="password" required class="pass-input form-control">
+                                        <span class="ti toggle-password ti-eye-off text-gray-9"></span>
+                                    </div>
+                                </div>
+                                <!-- <div class="form-login authentication-check">
+                                    <div class="row">
+                                        <div class="col-12 d-flex align-items-center justify-content-between">
+                                            <div class="custom-control custom-checkbox">
+                                                <label class="checkboxs ps-4 mb-0 pb-0 line-height-1 fs-16 text-gray-6">
+                                                    <input type="checkbox" class="form-control">
+                                                    <span class="checkmarks"></span>Remember me
+                                                </label>
+                                            </div>
+                                            <div class="text-end">
+                                                <a class="text-orange fs-16 fw-medium"
+                                                    href="forgot-password-3.html">Forgot Password?</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="form-login">
+                                    <button type="submit" class="btn btn-primary w-100">{% translate 'sign_in' request.session.language %}</button>
+                                </div>
+                                <!-- <div class="signinform">
+                                    <h4>New on our platform?<a href="register-3.html" class="hover-a"> Create an
+                                            account</a></h4>
+                                </div>
+                                <div class="form-setlogin or-text">
+                                    <h4>OR</h4>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="d-flex align-items-center justify-content-center flex-wrap">
+                                        <div class="text-center me-2 flex-fill">
+                                            <a href="javascript:void(0);"
+                                                class="br-10 p-2 btn btn-info d-flex align-items-center justify-content-center">
+                                                <img class="img-fluid m-1" src="{% static 'dashboard/images/facebook-logo.svg' %}"
+                                                    alt="Facebook">
+                                            </a>
+                                        </div>
+                                        <div class="text-center me-2 flex-fill">
+                                            <a href="{comment provider_login_url 'google' comment}"
+                                                class="btn btn-white br-10 p-2  border d-flex align-items-center justify-content-center">
+                                                <img class="img-fluid m-1" src="{% static 'dashboard/images/google-logo.svg' %}"
+                                                    alt="Facebook">
+                                            </a>
+                                        </div>
+                                        <div class="text-center flex-fill">
+                                            <a href="javascript:void(0);"
+                                                class="bg-dark br-10 p-2 btn btn-dark d-flex align-items-center justify-content-center">
+                                                <img class="img-fluid m-1" src="{% static 'dashboard/images/apple-logo.svg' %}"
+                                                    alt="Apple">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="my-4 d-flex justify-content-center align-items-center copyright-text">
+                    <p>Copyright &copy; 2026 {% translate site.translation_key request.session.language %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

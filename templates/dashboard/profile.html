@@ -1,0 +1,81 @@
+{% extends 'dashboard/components/base.html' %}
+{% load translate %}
+{% block title %}{% translate 'profile' request.session.language %}{% endblock %}
+{% load static %}
+{% block body %}
+{% load humanize %}
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>{% translate 'profile' request.session.language %}</h4>
+        <h6>{% translate 'user_profile' request.session.language %}</h6>
+      </div>
+    </div>
+    <!-- /product list -->
+    <div class="card">
+      <div class="card-header">
+        <h4>{% translate 'profile' request.session.language %}</h4>
+      </div>
+      <form method="POST" action="{{dashboard_profile_url}}" enctype="multipart/form-data" class="card-body profile-body">
+        {% csrf_token %}
+        <h5 class="mb-2"><i class="ti ti-user text-primary me-1"></i>{% translate 'basic_information' request.session.language %}</h5>
+        <div class="profile-pic-upload image-field">
+          <div class="profile-pic p-2">
+            <img
+              src="{% if request.user.profile %}{{ request.user.profile.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+              class="object-fit-cover h-100 rounded-1" alt="{{ request.user.username }}">
+            <button type="button" class="close rounded-1">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="mb-3">
+            <div class="image-upload mb-0 d-inline-flex">
+              <input type="file" accept=".jpg, .jpeg, .png" name="profile">
+              <div class="btn btn-primary fs-13">{% translate 'change_image' request.session.language %}</div>
+            </div>
+            <p class="mt-2">Upload an image below 2 MB, Accepted File format JPG, PNG</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-sm-12">
+            <div class="mb-3">
+              <label class="form-label">{% translate 'name' request.session.language %}<span
+                  class="text-danger ms-1">*</span></label>
+              <input type="text" name="username" class="form-control" value="{{request.user.username}}">
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="mb-3">
+              <label>{% translate 'email' request.session.language %}<span class="text-danger ms-1">*</span></label>
+              <input type="email" name="email" class="form-control" value="{{request.user.email}}">
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="mb-3">
+              <label class="form-label">{% translate 'phone' request.session.language %}<span
+                  class="text-danger ms-1">*</span></label>
+              <input type="text" name="phone" value="{{request.user.phone|default:''}}" class="form-control">
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="mb-3">
+              <label class="form-label">{% translate 'password' request.session.language %}<span
+                  class="text-danger ms-1">*</span></label>
+              <div class="pass-group">
+                <input type="password" name="password" class="pass-input form-control">
+                <i class="ti ti-eye-off toggle-password"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary shadow-none">{% translate 'save' request.session.language %}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- /product list -->
+  </div>
+</div>
+
+{% endblock %}

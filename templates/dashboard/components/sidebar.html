@@ -1,0 +1,84 @@
+{% load static %}
+{% load translate %}
+{% load permissions %}
+<style>
+    #sidebar {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .sidebar-inner {
+        flex: 1;
+        overflow-y: auto;
+    }
+</style>
+<div class="sidebar {% if request.path == pos_url %}d-none{% endif %}" id="sidebar">
+    <!-- Logo -->
+    <div class="sidebar-logo active">
+        <a href="{{ dashboard_url }}" class="logo logo-normal">
+            <img src="{% static 'dashboard/images/logo.svg' %}" alt="Img">
+        </a>
+        <a href="{{ dashboard_url }}" class="logo logo-white">
+            <img src="{% static 'dashboard/images/logo-white.svg' %}" alt="Img">
+        </a>
+        <a href="{{ dashboard_url }}" class="logo-small">
+            <img src="{% static 'dashboard/images/logo-small.png' %}" alt="Img">
+        </a>
+        <a href="{{ dashboard_url }}" class="logo-small-white">
+            <img src="{% static 'dashboard/images/logo-small-white.png' %}" alt="Img">
+        </a>
+        <a id="toggle_btn" href="javascript:void(0);">
+            <i data-feather="chevrons-left" class="feather-16"></i>
+        </a>
+    </div>
+    <!-- /Logo -->
+    <div class="sidebar-inner">
+        <div id="sidebar-menu" class="sidebar-menu" hx-boost="true" hx-target="#main-body-wrapper" hx-swap="innerHTML transition:true">
+            <ul>
+                {% for section in SIDEBAR_MENU %}
+                {% if request.user|can_any:section.permissions %}
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">{% translate section.title request.session.language %}</h6>
+                    <ul>
+                        {% for item in section.items %}
+                        {% if not item.permission or request.user|can:item.permission %}
+                        {% if not item.visibility or request.user|can:item.visibility %}
+                        <li class="{% if request.resolver_match.url_name == item.url_name %}active{% endif %}">
+                            <a href="{% url item.url_name %}">
+                                <i class="{{ item.icon }} fs-16 me-2"></i>
+                                <span>
+                                    {% translate item.label request.session.language %}
+                                </span>
+                            </a>
+                        </li>
+
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.querySelector(".sidebar-inner");
+
+        if (!sidebar) return;
+
+        const savedScroll = localStorage.getItem("sidebarScroll");
+
+        if (savedScroll) {
+            setTimeout(() => {
+                sidebar.scrollTop = parseInt(savedScroll);
+            }, 200);
+        }
+        sidebar.addEventListener("scroll", function () {
+            localStorage.setItem("sidebarScroll", sidebar.scrollTop);
+        });
+    });
+</script>

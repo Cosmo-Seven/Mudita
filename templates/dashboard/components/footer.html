@@ -1,0 +1,11 @@
+{% load translate %}
+<div class="copyright-footer d-flex align-items-center justify-content-between border-top bg-white gap-3 flex-wrap">
+    <p class="fs-13 text-gray-9 mb-0"> 2022 -
+        <span id="founding">
+            <script>
+                document.getElementById("founding").appendChild(document.createTextNode(new Date().getFullYear()));
+            </script>
+        </span> &copy; {% translate site.translation_key request.session.language %}. All Right Reserved
+    </p>
+    <p>Developed By <a href="https://pagemyanmar.com" target="_blank" class="link-primary">PageMyanmar</a></p>
+</div>

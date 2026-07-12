@@ -1,0 +1,9 @@
+{% load static %}
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" sizes="180x180"
+    href="{% if site.favicon %}{{site.favicon.url}}{% else %}{% static 'dashboard/images/no-image.png' %}{% endif %}">
+
+<!-- Favicon -->
+<link rel="shortcut icon"
+    href="{% if site.favicon %}{{site.favicon.url}}{% else %}{% static 'dashboard/images/no-image.png' %}{% endif %}"
+    type="image/x-icon">

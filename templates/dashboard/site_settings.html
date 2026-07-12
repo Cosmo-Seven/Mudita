@@ -1,0 +1,182 @@
+{% extends 'dashboard/components/base.html' %}
+{% load translate %}
+{% block title %}{% translate 'site_settings' request.session.language %}{% endblock %}
+{% block body %}
+{% load static %}
+
+<div class="page-wrapper">
+    <div class="content settings-content">
+        <div class="page-header settings-pg-header">
+            <div class="add-item d-flex">
+                <div class="page-title">
+                    <h4>{% translate 'settings' request.session.language %}</h4>
+                    <h6>{% translate 'manage_your_company_settings' request.session.language %}</h6>
+                </div>
+            </div>
+            <ul class="table-top-head">
+                <li>
+                    <a data-bs-toggle="tooltip" href="{{site_settings_url}}" data-bs-placement="top" title="{% translate 'refresh' request.session.language %}"><i
+                            class="ti ti-refresh"></i></a>
+                </li>
+                <li>
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="{% translate 'collapse' request.session.language %}" id="collapse-header"><i
+                            class="ti ti-chevron-up"></i></a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="settings-wrapper d-flex">
+                    <div class="card flex-fill mb-0">
+                        <div class="card-header">
+                            <h4 class="fs-18 fw-bold">{% translate 'company_settings' request.session.language %}</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{site_settings_url}}" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="border-bottom mb-3">
+                                    <div class="card-title-head">
+                                        <h6 class="fs-16 fw-bold mb-2">
+                                            <span class="fs-16 me-2"><i class="ti ti-building"></i></span>
+                                            {% translate 'company_information' request.session.language %}
+                                        </h6>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-6 col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">
+                                                    {% translate 'company_name' request.session.language %} <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" name="name" required value="{{site.name}}"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-6 col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">
+                                                    {% translate 'company_email_address' request.session.language %}
+                                                </label>
+                                                <input type="email" name="email" value="{{site.email|default:''}}"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">
+                                                    {% translate 'company_phone_number' request.session.language %}
+                                                </label>
+                                                <input type="text" name="phone" value="{{site.phone|default:''}}"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-bottom mb-3 pb-3">
+                                    <div class="card-title-head">
+                                        <h6 class="fs-16 fw-bold mb-2">
+                                            <span class="fs-16 me-2"><i class="ti ti-photo"></i></span>
+                                            {% translate 'company_images' request.session.language %}
+                                        </h6>
+                                    </div>
+                                    <div class="row align-items-center gy-3">
+                                        <div class="col-xl-9">
+                                            <div class="row gy-3 align-items-center">
+                                                <div class="col-lg-4">
+                                                    <div class="logo-info">
+                                                        <h6 class="fw-medium">{% translate 'favicon' request.session.language %}</h6>
+                                                        <p>{% translate 'upload_favicon_of_your_company' request.session.language %}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <div class="profile-pic-upload mb-0 justify-content-lg-end">
+                                                        <div class="new-employee-field">
+                                                            <div class="mb-0">
+                                                                <div class="image-upload mb-0">
+                                                                    <input type="file" name="favicon" accept=".jpg, .jpeg, .png">
+                                                                    <div class="image-uploads">
+                                                                        <h4><i class="ti ti-upload me-1"></i>{% translate 'upload_image' request.session.language %}</h4>
+                                                                    </div>
+                                                                </div>
+                                                                <span class="mt-1">{% translate 'recommended_size_is_450px_x_450px_max_size_5mb' request.session.language %}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-3">
+                                            <div class="new-logo ms-xl-auto">
+                                                <a href="#">
+                                                    <img src="{% if site.favicon %}{{site.favicon.url}}{% else %}{% static 'dashboard/images/no-image.png' %}{% endif %}"
+                                                        alt="{{site.name|default:''}}">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-9">
+                                            <div class="row gy-3 align-items-center">
+                                                <div class="col-lg-4">
+                                                    <div class="logo-info">
+                                                        <h6 class="fw-medium">{% translate 'company_logo' request.session.language %}</h6>
+                                                        <p>{% translate 'upload_logo_of_your_company' request.session.language %}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <div class="profile-pic-upload mb-0 justify-content-lg-end">
+                                                        <div class="new-employee-field">
+                                                            <div class="mb-0">
+                                                                <div class="image-upload mb-0">
+                                                                    <input type="file" accept=".jpg, .jpeg, .png" name="logo">
+                                                                    <div class="image-uploads">
+                                                                        <h4><i class="ti ti-upload me-1"></i>{% translate 'upload_image' request.session.language %}</h4>
+                                                                    </div>
+                                                                </div>
+                                                                <span class="mt-1">{% translate 'recommended_size_is_450px_x_450px_max_size_5mb' request.session.language %}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-xl-3">
+                                            <div class="new-logo ms-xl-auto">
+                                                <a href="#">
+                                                    <img src="{% if site.logo %}{{site.logo.url}}{% else %}{% static 'dashboard/images/no-image.png' %}{% endif %}"
+                                                        alt="{{site.name|default:''}}">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="company-address">
+                                    <div class="card-title-head">
+                                        <h6 class="fs-16 fw-bold mb-2">
+                                            <span class="fs-16 me-2"><i class="ti ti-map-pin"></i></span>
+                                            {% translate 'address_information' request.session.language %}
+                                        </h6>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <label class="form-label">
+                                                    {% translate 'address' request.session.language %}
+                                                </label>
+                                                <input type="text" name="address" value="{{site.address}}"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-end settings-bottom-btn mt-0">
+                                    <button type="submit" class="btn btn-primary">{% translate 'save' request.session.language %}</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'dashboard/components/footer.html' %}
+</div>
+{% endblock %}

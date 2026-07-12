@@ -1,0 +1,68 @@
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-4" style="z-index: 9999;">
+    {% for message in messages %}
+    <div class="toast custom-toast mb-2 px-4 py-2" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="toast-icon me-2">
+                {% if message.tags == "success" %}
+                <i class="ti ti-circle-check-filled text-success"></i>
+                {% elif "error" in message.tags %}
+                <i class="ti ti-circle-x-filled text-danger"></i>
+                {% elif "warning" in message.tags %}
+                <i class="ti ti-exclamation-circle-filled text-warning"></i>
+                {% else %}
+                <i class="ti ti-info-circle-filled text-info"></i>
+                {% endif %}
+            </div>
+
+            <div class="toast-body fw-bold">
+                {{ message }}
+            </div>
+
+            <button type="button" class="btn-close ms-3" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<style>
+    .custom-toast {
+        backdrop-filter: blur(1.2rem);
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        animation: slideIn 0.4s ease;
+    }
+
+    .toast-icon i {
+        font-size: 1.4rem;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .btn-close {
+        filter: brightness(0);
+    }
+</style>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toastElList = document.querySelectorAll('.toast');
+        toastElList.forEach((toastEl) => {
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        });
+    });
+</script>

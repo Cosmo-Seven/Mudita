@@ -1,0 +1,48 @@
+{% load translate %}
+<div class="col-12 col-md-6 col-xl-3">
+    <form method="GET" class="gap-2 d-flex align-items-end mb-3">
+        <input type="hidden" name="search" value="{{search}}">
+        <input type="hidden" name="page" value="{{page}}">
+        <input type="hidden" name="entries" value="{{entries}}">
+        <div>
+            <label for="flatpickr-date" class="form-label">{% translate 'date_picker' request.session.language %}</label>
+            <input type="text" name="date" value="{{ date }}" class="form-control flatpickr-input"
+                placeholder="YYYY-MM-DD" id="flatpickr-date">
+        </div>
+        <input type="hidden" name="date_range" value="{{date_range}}">
+        <div>
+            <button type="submit" class="btn btn-primary text-nowrap">{% translate 'filter' request.session.language %}</button>
+        </div>
+    </form>
+</div>
+<div class="col-12 col-md-6 col-xl-3">
+    <form method="GET" class="gap-2 d-flex align-items-end mb-3">
+        <input type="hidden" name="search" value="{{search}}">
+        <input type="hidden" name="page" value="{{page}}">
+        <input type="hidden" name="entries" value="{{entries}}">
+        <input type="hidden" name="date" value="{{date}}">
+        <div>
+            <label for="flatpickr-range" class="form-label">{% translate 'range_picker' request.session.language %}</label>
+            <input type="text" name="date_range" value="{{ date_range }}"
+                class="form-control flatpickr-input" placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary text-nowrap">{% translate 'filter' request.session.language %}</button>
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        flatpickr("#flatpickr-date", {
+            dateFormat: "Y-m-d",
+            allowInput: true,
+        });
+
+        flatpickr("#flatpickr-range", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            allowInput: true,
+        });
+    });
+</script>

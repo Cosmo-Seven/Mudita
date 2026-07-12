@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load pwa %}
+{% load translate %}
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% translate site.translation_key request.session.language %} | {% block title %}{% endblock %}</title>
+    <meta name="author" content="Page Myanmar">
+    <meta name="robots" content="index, follow">
+    {% progressive_web_app_meta %}
+    <script src="{% static 'dashboard/js/htmx.min.js' %}"></script>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    {% include 'dashboard/components/favicon.html' %}
+
+    {% include 'dashboard/components/css.html' %}
+
+</head>
+
+<body
+    class="{% if not request.user.is_authenticated %}account-page bg-white{% endif %}  {% if request.path == pos_url %}pos-page{% endif %}">
+
+    <!-- {% include 'dashboard/components/loader.html' %} -->
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper {% if request.path == pos_url %}pos-five{% endif %}">
+        {% include 'dashboard/components/toast.html' %}
+        {% if request.user.is_authenticated %}
+        <!-- Header -->
+        {% include 'dashboard/components/header.html' %}
+        <!-- /Header -->
+
+        <!-- Sidebar -->
+        {% include 'dashboard/components/sidebar.html' %}
+        <!-- /Sidebar -->
+
+        <!-- Page Wrapper -->
+
+        <div id="main-body-wrapper">
+            {% block body %}{% endblock %}
+        </div>
+
+        <!-- /Page Wrapper -->
+        {% else %}
+
+        {% block auth %}{% endblock %}
+
+        {% endif %}
+
+    </div>
+    <!-- /Main Wrapper -->
+    {% include 'dashboard/components/modal.html' %}
+
+    {% include 'dashboard/components/js.html' %}
+
+    <!-- <script>
+        window.addEventListener("offline", () => {
+            window.location.href = "/static/offline.html";
+        });
+    </script> -->
+
+</body>
+
+</html>

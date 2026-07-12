@@ -1,0 +1,25 @@
+{% load translate %}
+{% load myanmar_number %}
+<div class="col-12 col-md-6 col-xl-3">
+    <form method="GET" class="gap-2 d-flex align-items-end mb-3">
+        <input type="hidden" name="search" value="{{search}}">
+        <input type="hidden" name="page" value="{{page}}">
+        <div>
+            <label class="form-label">{% translate 'entries' request.session.language %}</label>
+            <select name="entries" onchange="this.form.submit()" class="select">
+                {% for option in entries_options %}
+                <option value="{{ option }}" {% if option == entries %}selected{% endif %}>
+                    {% translate 'show' request.session.language %}
+                    {% if request.session.language == 'my' %}
+                    {{ option|mm_number }}
+                    {% else %}
+                    {{ option }}
+                    {% endif %}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <input type="hidden" name="date" value="{{date}}">
+        <input type="hidden" name="date_range" value="{{date_range}}">
+    </form>
+</div>

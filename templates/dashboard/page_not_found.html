@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load pwa %}
+{% load static %}
+{% load translate %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% translate site.translation_key request.session.language %} | {% translate 'page_not_found' request.session.language %}</title>
+    <meta name="author" content="Page Myanmar">
+    <meta name="robots" content="index, follow">
+    {% progressive_web_app_meta %}
+    {% include 'dashboard/components/favicon.html' %}
+
+    {% include 'dashboard/components/css.html' %}
+
+</head>
+
+<body class="error-page">
+    {% include 'dashboard/components/loader.html' %}
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <div class="error-box">
+            <div class="error-img">
+                <img src="{% static 'dashboard/images/error-404.png' %}" class="img-fluid" alt="Page Not Found">
+            </div>
+            <h3 class="h2 mb-3">{% translate 'oops_something_went_wrong' request.session.language %}</h3>
+            <p>{% translate 'error_404_page_not_found_sorry_the_page_you_are_looking_for_does_not_exist_or_has_been_moved' request.session.language %}</p>
+            <a href="{{ dashboard_url }}" class="btn btn-primary">{% translate 'back_to_dashboard' request.session.language %}</a>
+        </div>
+    </div>
+    <!-- /Main Wrapper -->
+
+
+    {% include 'dashboard/components/js.html' %}
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load pwa %}
+{% load static %}
+{% load translate %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% translate site.translation_key request.session.language %} | {% translate 'lock_screen' request.session.language %}</title>
+    <meta name="author" content="Page Myanmar">
+    <meta name="robots" content="index, follow">
+    {% progressive_web_app_meta %}
+    {% include 'dashboard/components/favicon.html' %}
+
+    {% include 'dashboard/components/css.html' %}
+
+</head>
+
+<body class="error-page">
+    {% include 'dashboard/components/toast.html' %}
+    {% include 'dashboard/components/loader.html' %}
+    <img src="{% static 'dashboard/images/bg.png' %}" alt="bg"
+        class="lock-screen-bg position-absolute img-fluid d-sm-none d-md-none d-lg-flex">
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper login-body">
+        <div class="login-wrapper position-relative">
+            <div class="container">
+                <img class="img-fluid logo-dark mb-5" src="{% static 'dashboard/images/logo.svg' %}" alt="Logo">
+                <div class="loginbox">
+                    <div class="login-right">
+                        <div class="login-right-wrap">
+                            <div class="login-info">
+                                <p class="account-subtitle">{% translate 'welcome_back' request.session.language %}</p>
+                                <img src="{% if request.user.profile %}{{request.user.profile.url}}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                                    class="img-fluid" alt="{{request.user.username}}"
+                                    style="width:200px;height: 200px;border-radius: 50%;object-fit: cover;">
+                                <h5>{% translate request.user.translation_key request.session.language %}</h5>
+                            </div>
+
+                            <form action="{{unlock_url}}" method="POST">
+                                {% csrf_token %}
+                                <div class="input-blocks">
+                                    <div class="pass-group">
+                                        <input type="password" name="password" class="form-control pass-input"
+                                            placeholder="{% translate 'enter_your_password' request.session.language %}">
+                                        <span class="fas toggle-password fa-eye-slash"></span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-lg btn-block btn-primary" type="submit">{% translate 'login' request.session.language %}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Main Wrapper -->
+    <script>
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
+    </script>
+
+    {% include 'dashboard/components/js.html' %}
+</body>
+
+</html>
