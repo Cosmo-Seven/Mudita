@@ -1,4 +1,4 @@
-{% extends 'dashboard/components/base.html' %}
+{% extends 'dashboard/layouts/base.html' %}
 {% load translate %}
 {% block title %}{{ employer.name_en }}{% endblock %}
 {% block body %}
@@ -108,7 +108,7 @@
             </div>
         </div>
     </div>
-    {% include 'dashboard/components/footer.html' %}
+    {% include 'dashboard/layouts/footer.html' %}
 </div>
 
 <!-- Add Address Modal -->

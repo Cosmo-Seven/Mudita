@@ -1,4 +1,4 @@
-{% extends 'dashboard/components/base.html' %}
+{% extends 'dashboard/layouts/base.html' %}
 {% load translate %}
 {% load static %}
 {% block title %}{% translate 'add_new_employees' request.session.language %}{% endblock %}
@@ -417,7 +417,7 @@
             </div>
         </form>
     </div>
-    {% include 'dashboard/components/footer.html' %}
+    {% include 'dashboard/layouts/footer.html' %}
 </div>
 
 <script>

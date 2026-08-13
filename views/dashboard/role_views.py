@@ -61,8 +61,12 @@ def role_list(request):
 
     grouped_permissions = sorted(modules.items(), key=lambda x: x[0].lower())
 
+    roles = filters["page_obj"]
+    for role in roles:
+        role.update_scope = f"update-{role.id}"   # template ထဲ clean သုံးလို့ရအောင်
+
     context = {
-        "roles": filters["page_obj"],
+        "roles": roles,
         "grouped_permissions": grouped_permissions,
         **filters,
     }

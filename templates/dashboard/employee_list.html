@@ -1,4 +1,4 @@
-{% extends 'dashboard/components/base.html' %}
+{% extends 'dashboard/layouts/base.html' %}
 {% load translate %}
 {% load static %}
 {% block title %}{% translate 'employees' request.session.language %}{% endblock %}
@@ -107,7 +107,7 @@
             {% include 'dashboard/components/pagination.html' %}
         </div>
     </div>
-    {% include 'dashboard/components/footer.html' %}
+    {% include 'dashboard/layouts/footer.html' %}
 </div>
 
 <!-- Delete Modal -->

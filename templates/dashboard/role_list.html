@@ -1,8 +1,23 @@
-{% extends 'dashboard/components/base.html' %}
+{% extends 'dashboard/layouts/base.html' %}
 {% load translate %}
 {% block title %}{% translate 'roles' request.session.language %}{% endblock %}
 {% load static %}
 {% block body %}
+<style>
+    .table-permission th {
+        vertical-align: top;
+        line-height: 1.3;
+    }
+    .table-permission th small {
+        font-size: 10px;
+        max-width: 90px;
+        margin: 2px auto 0;
+        white-space: normal;
+    }
+    .table-permission th i {
+        font-size: 16px;
+    }
+</style>
 <div class="page-wrapper">
   <div class="content">
     <div class="page-header">
@@ -79,7 +94,7 @@
       {% include 'dashboard/components/pagination.html' %}
     </div>
   </div>
-  {% include 'dashboard/components/footer.html' %}
+  {% include 'dashboard/layouts/footer.html' %}
 </div>
 
 <!-- Create Modal -->
@@ -96,7 +111,7 @@
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <form action="{{role_create_url}}" method="POST">
+          <form action="{{ role_create_url }}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
               <div class="row">
@@ -107,75 +122,12 @@
                   </div>
                 </div>
                 <div class="col-12">
-                  <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                      <thead>
-                        <tr>
-                          <th>{% translate 'module' request.session.language %}</th>
-                          <th>
-                            <div class="form-check">
-                              <input id="global-all-create" type="checkbox" class="form-check-input">
-                              <label for="global-all-create">{% translate 'all' request.session.language %}</label>
-                            </div>
-                          </th>
-                          <th>{% translate 'view' request.session.language %}</th>
-                          <th>{% translate 'add' request.session.language %}</th>
-                          <th>{% translate 'edit' request.session.language %}</th>
-                          <th>{% translate 'delete' request.session.language %}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for module_name, perms in grouped_permissions %}
-                        <tr>
-                          <td>{{ module_name }}</td>
-                          <td>
-                            <div class="form-check form-check-md">
-                              <input class="form-check-input module-all" type="checkbox" data-module="{{ module_name }}"
-                                data-scope="create">
-                            </div>
-                          </td>
-                          <td>
-                            {% if perms.view %}
-                            <div class="form-check form-check-md">
-                              <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
-                                value="{{ perms.view.id }}" data-module="{{ module_name }}" data-scope="create">
-                            </div>
-                            {% endif %}
-                          </td>
-                          <td>
-                            {% if perms.add %}
-                            <div class="form-check form-check-md">
-                              <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
-                                value="{{ perms.add.id }}" data-module="{{ module_name }}" data-scope="create">
-                            </div>
-                            {% endif %}
-                          </td>
-                          <td>
-                            {% if perms.change %}
-                            <div class="form-check form-check-md">
-                              <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
-                                value="{{ perms.change.id }}" data-module="{{ module_name }}" data-scope="create">
-                            </div>
-                            {% endif %}
-                          </td>
-                          <td>
-                            {% if perms.delete %}
-                            <div class="form-check form-check-md">
-                              <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
-                                value="{{ perms.delete.id }}" data-module="{{ module_name }}" data-scope="create">
-                            </div>
-                            {% endif %}
-                          </td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
+                  {% include 'dashboard/components/permission_table.html' with scope=role.update_scope role=role %}
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">{% translate 'close' request.session.language %}</button>
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">{% translate 'close' request.session.language %}</button>
               <button type="submit" class="btn btn-primary">{% translate 'save' request.session.language %}</button>
             </div>
           </form>
@@ -187,7 +139,7 @@
 
 <!-- Update Modal -->
 {% for role in roles %}
-<div class="modal fade" id="updateModal_{{role.id}}">
+<div class="modal fade" id="updateModal_{{ role.id }}">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="page-wrapper-new p-0">
@@ -207,58 +159,16 @@
                 <div class="col-12">
                   <div class="mb-3">
                     <label class="form-label">{% translate 'name' request.session.language %}<span class="text-danger ms-1">*</span></label>
-                    <input type="text" name="name" value="{{role.name}}" required class="form-control">
+                    <input type="text" name="name" value="{{ role.name }}" required class="form-control">
                   </div>
                 </div>
                 <div class="col-12">
-                  <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                      <thead>
-                        <tr>
-                          <th>{% translate 'module' request.session.language %}</th>
-                          <th>
-                            <div class="form-check">
-                              <input id="global-all-update-{{ role.id }}" type="checkbox"
-                                class="form-check-input global-all-update" data-role="{{ role.id }}">
-                              <label for="global-all-update-{{ role.id }}">{% translate 'all' request.session.language %}</label>
-                            </div>
-                          </th>
-                          <th>{% translate 'view' request.session.language %}</th>
-                          <th>{% translate 'add' request.session.language %}</th>
-                          <th>{% translate 'edit' request.session.language %}</th>
-                          <th>{% translate 'delete' request.session.language %}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for module_name, perms in grouped_permissions %}
-                        <tr>
-                          <td>{{ module_name }}</td>
-                          <td>
-                            <div class="form-check form-check-md">
-                              <input class="form-check-input module-all" type="checkbox" data-module="{{ module_name }}"
-                                data-scope="update-{{ role.id }}">
-                            </div>
-                          </td>
-                          {% for p in perms.values %}
-                          <td>
-                            {% if p %}
-                            <div class="form-check form-check-md">
-                              <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
-                                value="{{ p.id }}" data-module="{{ module_name }}" data-scope="update-{{ role.id }}" {% if p in role.permissions.all %}checked{% endif %}>
-                            </div>
-                            {% endif %}
-                          </td>
-                          {% endfor %}
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
+                  {% include 'dashboard/components/permission_table.html' with scope=role.id|stringformat:"s"|add:"__update" role=role %}
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">{% translate 'close' request.session.language %}</button>
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">{% translate 'close' request.session.language %}</button>
               <button type="submit" class="btn btn-primary">{% translate 'save' request.session.language %}</button>
             </div>
           </form>
@@ -303,8 +213,10 @@
       rowAlls.forEach(allCheckbox => {
         allCheckbox.addEventListener("change", function () {
           const module = this.dataset.module;
-          const boxes = document.querySelectorAll(`.perm-checkbox[data-module="${module}"][data-scope="${scope}"]`);
-          boxes.forEach(cb => cb.checked = this.checked);
+          document
+            .querySelectorAll(`.perm-checkbox[data-module="${module}"][data-scope="${scope}"]`)
+            .forEach(cb => (cb.checked = this.checked));
+          syncGlobalAll(scope);
         });
       });
 
@@ -313,32 +225,30 @@
           const module = this.dataset.module;
           const allBox = document.querySelector(`.module-all[data-module="${module}"][data-scope="${scope}"]`);
           const allPerms = document.querySelectorAll(`.perm-checkbox[data-module="${module}"][data-scope="${scope}"]`);
-          const allChecked = Array.from(allPerms).every(x => x.checked);
-          allBox.checked = allChecked;
+          allBox.checked = Array.from(allPerms).every(x => x.checked);
+          syncGlobalAll(scope);
         });
       });
     }
 
-    setupCheckboxSync("create");
-
-    document.querySelectorAll(".global-all-update").forEach(global => {
-      const roleId = global.dataset.role;
-      setupCheckboxSync(`update-${roleId}`);
-
-      global.addEventListener("change", function () {
-        const checkboxes = document.querySelectorAll(`.perm-checkbox[data-scope="update-${roleId}"], .module-all[data-scope="update-${roleId}"]`);
-        checkboxes.forEach(cb => cb.checked = this.checked);
-      });
-    });
-
-    const globalAllCreate = document.getElementById("global-all-create");
-    if (globalAllCreate) {
-      globalAllCreate.addEventListener("change", function () {
-        const boxes = document.querySelectorAll(`.perm-checkbox[data-scope="create"], .module-all[data-scope="create"]`);
-        boxes.forEach(cb => cb.checked = this.checked);
-      });
+    function syncGlobalAll(scope) {
+      const globalBox = document.querySelector(`.global-all[data-scope="${scope}"]`);
+      if (!globalBox) return;
+      const allBoxes = document.querySelectorAll(`.module-all[data-scope="${scope}"]`);
+      globalBox.checked = Array.from(allBoxes).every(x => x.checked);
     }
 
+    // header "All" checkbox — scope တစ်ခုချင်းစီအတွက် တစ်ခုတည်းသော logic
+    document.querySelectorAll(".global-all").forEach(globalBox => {
+      const scope = globalBox.dataset.scope;
+      setupCheckboxSync(scope);
+
+      globalBox.addEventListener("change", function () {
+        document
+          .querySelectorAll(`.perm-checkbox[data-scope="${scope}"], .module-all[data-scope="${scope}"]`)
+          .forEach(cb => (cb.checked = this.checked));
+      });
+    });
   });
 </script>
 

@@ -1,0 +1,62 @@
+{% load myanmar_number %}
+{% load translate %}
+<div class="table-responsive">
+    <table class="table table-sm align-middle table-permission">
+        <thead>
+            <tr>
+                <th>{% translate 'module' request.session.language %}</th>
+                <th class="text-center">
+                    <div class="form-check justify-content-center d-flex mb-1">
+                        <input type="checkbox" class="form-check-input global-all" data-scope="{{ scope }}">
+                    </div>
+                    <span class="d-block">{% translate 'all' request.session.language %}</span>
+                </th>
+                <th class="text-center" title="{% translate 'view_permission_hint' request.session.language %}">
+                    <i class="ti ti-eye text-info"></i>
+                    <span class="d-block">{% translate 'view' request.session.language %}</span>
+                    <small class="d-block text-muted fw-normal">{% translate 'can_see_the_list_and_details' request.session.language %}</small>
+                </th>
+                <th class="text-center" title="{% translate 'add_permission_hint' request.session.language %}">
+                    <i class="ti ti-circle-plus text-success"></i>
+                    <span class="d-block">{% translate 'add' request.session.language %}</span>
+                    <small class="d-block text-muted fw-normal">{% translate 'can_create_new_records' request.session.language %}</small>
+                </th>
+                <th class="text-center" title="{% translate 'edit_permission_hint' request.session.language %}">
+                    <i class="ti ti-edit text-warning"></i>
+                    <span class="d-block">{% translate 'edit' request.session.language %}</span>
+                    <small class="d-block text-muted fw-normal">{% translate 'can_update_existing_records' request.session.language %}</small>
+                </th>
+                <th class="text-center" title="{% translate 'delete_permission_hint' request.session.language %}">
+                    <i class="ti ti-trash text-danger"></i>
+                    <span class="d-block">{% translate 'delete' request.session.language %}</span>
+                    <small class="d-block text-muted fw-normal">{% translate 'can_permanently_remove_records' request.session.language %}</small>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for module_name, perms in grouped_permissions %}
+            <tr>
+                <td class="fw-medium">{{ module_name }}</td>
+                <td class="text-center">
+                    <div class="form-check form-check-md justify-content-center d-flex">
+                        <input class="form-check-input module-all" type="checkbox"
+                            data-module="{{ module_name }}" data-scope="{{ scope }}">
+                    </div>
+                </td>
+                {% for scope_name, p in perms.items %}
+                <td class="text-center">
+                    {% if p %}
+                    <div class="form-check form-check-md justify-content-center d-flex">
+                        <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
+                            value="{{ p.id }}" data-module="{{ module_name }}" data-scope="{{ scope }}"
+                            title="{{ scope_name|capfirst }} {{ module_name }}"
+                            {% if role and p in role.permissions.all %}checked{% endif %}>
+                    </div>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

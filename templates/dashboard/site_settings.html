@@ -1,4 +1,4 @@
-{% extends 'dashboard/components/base.html' %}
+{% extends 'dashboard/layouts/base.html' %}
 {% load translate %}
 {% block title %}{% translate 'site_settings' request.session.language %}{% endblock %}
 {% block body %}
@@ -177,6 +177,6 @@
             </div>
         </div>
     </div>
-    {% include 'dashboard/components/footer.html' %}
+    {% include 'dashboard/layouts/footer.html' %}
 </div>
 {% endblock %}

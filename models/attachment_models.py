@@ -20,7 +20,7 @@ class DocumentTypeModel(BaseModel):
     class Meta:
         app_label = "core"
         db_table = "document_types"
-
+        verbose_name = "Document Type"
 
 class AddressModel(BaseModel):
     ADDRESS_TYPES = (("registered", "Registered"), ("workplace", "Workplace"), ("home", "Home"))
@@ -39,6 +39,7 @@ class AddressModel(BaseModel):
     class Meta:
         app_label = "core"
         db_table = "addresses"
+        verbose_name = "Address"
 
 
 class DocumentModel(BaseModel):
@@ -55,4 +56,4 @@ class DocumentModel(BaseModel):
     class Meta:
         app_label = "core"
         db_table = "documents"
-
+        verbose_name = "Document"
