@@ -1,0 +1,46 @@
+{% load translate %}
+{% comment %}
+Usage:
+{% include 'dashboard/components/file_camera_field.html' with
+    field_name="company_registration_certificate"
+    label="1. Company registration certificate / National ID card"
+    show_expiry=True
+    show_description=False
+%}
+{% endcomment %}
+<div class="mb-3">
+    <label class="form-label">{{ label }}</label>
+    <div class="d-flex gap-2">
+        <input type="file" class="form-control" name="{{ field_name }}_file"
+               id="{{ field_name }}_file" accept="image/*,.pdf">
+        <button type="button" class="btn btn-outline-secondary flex-shrink-0"
+                onclick="document.getElementById('{{ field_name }}_camera').click()">
+            <i class="ti ti-camera"></i>
+        </button>
+        <input type="file" class="d-none" name="{{ field_name }}_camera"
+               id="{{ field_name }}_camera" accept="image/*" capture="environment"
+               onchange="previewCapture_{{ field_name }}(this)">
+    </div>
+    <small class="text-muted d-none" id="{{ field_name }}_preview_name"></small>
+
+    {% if show_description %}
+    <input type="text" name="{{ field_name }}_description" class="form-control mt-2"
+           placeholder="{% translate 'please_provide_a_description_of_the_document' request.session.language %}">
+    {% endif %}
+</div>
+{% if show_expiry %}
+<div class="mb-3">
+    <label class="form-label text-danger">{% translate 'expiration_date' request.session.language %}</label>
+    <input type="date" name="{{ field_name }}_expiry_date" class="form-control">
+</div>
+{% endif %}
+
+<script>
+function previewCapture_{{ field_name }}(input) {
+    const label = document.getElementById("{{ field_name }}_preview_name");
+    if (input.files && input.files.length > 0) {
+        label.textContent = input.files[0].name;
+        label.classList.remove("d-none");
+    }
+}
+</script>

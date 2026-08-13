@@ -1,0 +1,233 @@
+{% extends 'dashboard/components/base.html' %}
+{% load translate %}
+{% load static %}
+{% block title %}{% translate 'add_new_employer' request.session.language %}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold">{% translate 'add_new_employer' request.session.language %}</h4>
+                <h6>{% translate 'add_employer_information' request.session.language %}</h6>
+            </div>
+        </div>
+
+        <form action="{% url 'employer_create' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'employer_name_th' request.session.language %}</label>
+                                <input type="text" name="name_th" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'add_to_the_name' request.session.language %}</label>
+                                <input type="text" name="name_suffix_en" class="form-control"
+                                    placeholder="{% translate 'text_appended_to_the_employers_name' request.session.language %}">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    {% translate 'employer_name_en' request.session.language %}
+                                    <span class="text-danger ms-1">*</span>
+                                </label>
+                                <input type="text" name="name_en" required class="form-control">
+                            </div>
+                        </div>
+                        <!-- <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'event_owner' request.session.language %}</label>
+                                <select class="select" name="parent_employer">
+                                    <option value="">{% translate 'choose_an_employer' request.session.language %}</option>
+                                    {% for e in employers %}
+                                    <option value="{{ e.id }}">{{ e.name_en }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div> -->
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'event_owner' request.session.language %}</label>
+                                {% include 'dashboard/components/quick_add_select.html' with select_id="event_owner_select" select_name="parent_employer" modal_id="quickAddEventOwner" quick_add_url="employer_quick_add" options=employers placeholder="Choose an employer." %}
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'responsible_person' request.session.language %}</label>
+                                <select class="select" name="responsible_person">
+                                    <option value="">{% translate 'select_responsible_person' request.session.language %}</option>
+                                    {% for person in responsible_persons %}
+                                    <option value="{{ person.id }}">{{ person.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'employer_code' request.session.language %}</label>
+                                <input type="text" class="form-control" disabled
+                                    placeholder="{% translate 'automatically_created_when_saving' request.session.language %}">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'employer_id_number' request.session.language %}</label>
+                                <input type="text" name="employer_id_number" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'select_business_type' request.session.language %}</label>
+                                <select class="select" name="business_type">
+                                    <option value="">{% translate 'select' request.session.language %}...</option>
+                                    {% for bt in business_types %}
+                                    <option value="{{ bt.id }}">{{ bt.name_en }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'select_business_type' request.session.language %}</label>
+                                {% include 'dashboard/components/quick_add_select.html' with select_id="business_type_select" select_name="business_type" modal_id="quickAddBusinessType" quick_add_url="business_type_quick_add" options=business_types placeholder="Select..." %}
+                            </div>
+                        </div> -->
+                        
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'business_type_th' request.session.language %}</label>
+                                <input type="text" name="business_type_th" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'business_type_en' request.session.language %}</label>
+                                <input type="text" name="business_type_en" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'telephone_number' request.session.language %}</label>
+                                <input type="tel" name="phone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'social_security_hospital' request.session.language %}</label>
+                                <input type="text" name="social_security_hospital" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary mt-2 mb-3">{% translate 'system_access_and_outsource' request.session.language %}</h6>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'employers_email' request.session.language %}</label>
+                                <input type="email" name="portal_email" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 're_code' request.session.language %}</label>
+                                <input type="text" name="re_code" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'authorized_signatory_1_th' request.session.language %}</label>
+                                <input type="text" name="authorized_signatory_1_th" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'authorized_signatory_1_en' request.session.language %}</label>
+                                <input type="text" name="authorized_signatory_1_en" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'authorized_signatory_2_th' request.session.language %}</label>
+                                <input type="text" name="authorized_signatory_2_th" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'authorized_signatory_2_en' request.session.language %}</label>
+                                <input type="text" name="authorized_signatory_2_en" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'employer_stamp' request.session.language %}</label>
+                                <input type="file" name="stamp" accept=".png,.jpg,.jpeg" class="form-control">
+                                <small class="text-muted">{% translate 'max_size_2mb_allowed_formats_png_jpg' request.session.language %}</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'registered_capital' request.session.language %}</label>
+                                <input type="number" step="0.01" name="registered_capital" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'registration_date' request.session.language %}</label>
+                                <input type="date" name="registration_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'minimum_wage' request.session.language %}</label>
+                                <input type="number" step="0.01" name="minimum_wage" class="form-control">
+                            </div>
+                        </div>
+                         <div class="card-header"><h5 class="mb-0">{% translate 'employers_attached_documents' request.session.language %}</h5></div>
+                        <div class="col-lg-8">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="company_registration_certificate" label="1. Company registration certificate / National ID card" show_expiry=False %}
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label text-danger">{% translate 'expiration_date' request.session.language %}</label>
+                                <input type="date" name="company_registration_certificate_expiry_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="house_rental_agreement" label="2. House rental agreement / House registration certificate" %}
+                        </div>
+                        <div class="col-lg-6">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="construction_contract_map" label="3. Construction contract / Map" %}
+                        </div>
+                        <div class="col-lg-4">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="employer_other_document_1" label="4. Other documents 1" show_description=True %}
+                        </div>
+                        <div class="col-lg-4">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="employer_other_document_2" label="5. Other documents 2" show_description=True %}
+                        </div>
+                        <div class="col-lg-4">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="employer_other_document_3" label="6. Other documents 3" show_description=True %}
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="card-footer text-end">
+                    <a href="{% url 'employer_list' %}" class="btn btn-secondary me-2">
+                        {% translate 'cancel' request.session.language %}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        {% translate 'record' request.session.language %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% include 'dashboard/components/footer.html' %}
+</div>
+{% endblock %}

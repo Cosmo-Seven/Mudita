@@ -300,10 +300,24 @@ $(document).ready(function () {
   }
 
   // Select 2
-  if ($(".select").length > 0) {
-    $(".select").select2({
-      minimumResultsForSearch: -1,
-      width: "100%",
+  // if ($(".select").length > 0) {
+  //   $(".select").select2({
+  //     minimumResultsForSearch: -1,
+  //     width: "100%",
+  //   });
+  // }
+
+  if ($(".select:not(.searchable-select)").length > 0) {
+    $(".select:not(.searchable-select)").select2({
+        minimumResultsForSearch: -1,
+        width: "100%",
+    });
+  }
+
+  if ($(".searchable-select").length > 0) {
+    $(".searchable-select").select2({
+        minimumResultsForSearch: 0,
+        width: "100%",
     });
   }
 

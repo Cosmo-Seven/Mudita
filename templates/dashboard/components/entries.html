@@ -6,7 +6,7 @@
         <input type="hidden" name="page" value="{{page}}">
         <div>
             <label class="form-label">{% translate 'entries' request.session.language %}</label>
-            <select name="entries" onchange="this.form.submit()" class="select">
+            <select name="entries" onchange="this.form.submit()" class="form-control">
                 {% for option in entries_options %}
                 <option value="{{ option }}" {% if option == entries %}selected{% endif %}>
                     {% translate 'show' request.session.language %}

@@ -1,0 +1,102 @@
+{% load translate %}
+{% comment %}
+Usage:
+{% include 'dashboard/components/quick_add_select.html' with
+    select_id="business_type_select"
+    select_name="business_type"
+    modal_id="quickAddBusinessType"
+    quick_add_url="business_type_quick_add"
+    options=business_types
+    label_field="name_en"
+    placeholder="Select..."
+%}
+{% endcomment %}
+<div class="d-flex gap-2 align-items-end">
+    <div class="flex-grow-1">
+        <select class="select" id="{{ select_id }}" name="{{ select_name }}">
+            <option value="">{{ placeholder }}</option>
+            {% for opt in options %}
+            <option value="{{ opt.id }}">{{ opt.name_en }}{% if opt.employer_code %} ({{ opt.employer_code }}){% endif %}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#{{ modal_id }}">
+        <i class="ti ti-plus"></i>
+    </button>
+</div>
+
+<div class="modal fade" id="{{ modal_id }}">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% translate 'add_new' request.session.language %}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="{{ modal_id }}_error" class="alert alert-danger d-none"></div>
+                <div class="mb-3">
+                    <label class="form-label">{% translate 'name_en' request.session.language %} *</label>
+                    <input type="text" class="form-control" id="{{ modal_id }}_name_en">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{% translate 'name_th' request.session.language %}</label>
+                    <input type="text" class="form-control" id="{{ modal_id }}_name_th">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% translate 'close' request.session.language %}
+                </button>
+                <button type="button" class="btn btn-primary" onclick="quickAddSubmit_{{ modal_id }}()">
+                    {% translate 'save' request.session.language %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function quickAddSubmit_{{ modal_id }}() {
+    const nameEn = document.getElementById("{{ modal_id }}_name_en").value.trim();
+    const nameTh = document.getElementById("{{ modal_id }}_name_th").value.trim();
+    const errorBox = document.getElementById("{{ modal_id }}_error");
+    errorBox.classList.add("d-none");
+
+    fetch("{% url quick_add_url %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `name_en=${encodeURIComponent(nameEn)}&name_th=${encodeURIComponent(nameTh)}`,
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        if (!data.success) {
+            errorBox.textContent = data.error;
+            errorBox.classList.remove("d-none");
+            return;
+        }
+        const select = document.getElementById("{{ select_id }}");
+        const opt = document.createElement("option");
+        opt.value = data.id;
+        opt.textContent = data.text;
+        opt.selected = true;
+        select.appendChild(opt);
+
+        if (window.jQuery && jQuery("#{{ select_id }}").data("select2")) {
+            jQuery("#{{ select_id }}").trigger("change");
+        }
+
+        document.getElementById("{{ modal_id }}_name_en").value = "";
+        document.getElementById("{{ modal_id }}_name_th").value = "";
+
+        const modalEl = document.getElementById("{{ modal_id }}");
+        bootstrap.Modal.getInstance(modalEl).hide();
+    })
+    .catch(() => {
+        errorBox.textContent = "Something went wrong.";
+        errorBox.classList.remove("d-none");
+    });
+}
+</script>

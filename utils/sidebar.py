@@ -13,6 +13,24 @@ def sidebar(request):
                 ],
             },
             {
+                "title": "employer_management",
+                "permissions": ["view_employermodel", "view_employeemodel"],
+                "items": [
+                    {
+                        "label": "employers",
+                        "url_name": "employer_list",
+                        "icon": "ti ti-building-store",
+                        "permission": "view_employermodel",
+                    },
+                    {
+                        "label": "employees",
+                        "url_name": "employee_list",
+                        "icon": "ti ti-users",
+                        "permission": "view_employeemodel",
+                    },
+                ],
+            },
+            {
                 "title": "user_management",
                 "permissions": [
                     "view_usermodel",

@@ -1,0 +1,216 @@
+{% extends 'dashboard/components/base.html' %}
+{% load translate %}
+{% block title %}{{ employer.name_en }}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold">{{ employer.name_en }}</h4>
+                <h6>{{ employer.employer_code|default:"-" }}</h6>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{% translate 'registered_address' request.session.language %} /
+                            {% translate 'workplace_address' request.session.language %}</h5>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#addAddressModal">
+                            {% translate 'add_address' request.session.language %}
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        {% for address in addresses %}
+                        <div class="border-bottom pb-2 mb-2">
+                            <span class="badge bg-info text-capitalize">{{ address.address_type }}</span>
+                            <p class="mb-0">{{ address.address_line }}</p>
+                            <small class="text-muted">
+                                {{ address.sub_district }} {{ address.district }} {{ address.province }}
+                                {{ address.postal_code }}
+                            </small>
+                            <form method="POST" action="{% url 'address_delete' address.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-link text-danger p-0">
+                                    {% translate 'delete' request.session.language %}
+                                </button>
+                            </form>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted mb-0">{% translate 'no_address_yet' request.session.language %}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{% translate 'attached_documents' request.session.language %}</h5>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#uploadDocumentModal">
+                            {% translate 'upload_document' request.session.language %}
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        {% for doc in documents %}
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                            <div>
+                                <a href="{{ doc.file.url }}" target="_blank">{{ doc.doc_type.name }}</a>
+                                {% if doc.expiry_date %}
+                                <small class="text-muted d-block">
+                                    {% translate 'expiration_date' request.session.language %}: {{ doc.expiry_date }}
+                                </small>
+                                {% endif %}
+                            </div>
+                            <form method="POST" action="{% url 'document_delete' doc.id %}">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-link text-danger p-0">
+                                    {% translate 'delete' request.session.language %}
+                                </button>
+                            </form>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted mb-0">{% translate 'no_document_yet' request.session.language %}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">{% translate 'employees' request.session.language %}</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>{% translate 'name' request.session.language %}</th>
+                                <th>{% translate 'job_position' request.session.language %}</th>
+                                <th>{% translate 'status' request.session.language %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in employees %}
+                            <tr>
+                                <td><a href="{% url 'employee_update' e.id %}">{{ e.full_name_en }}</a></td>
+                                <td>{{ e.job_position|default:"-" }}</td>
+                                <td>{{ e.get_status_display }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'dashboard/components/footer.html' %}
+</div>
+
+<!-- Add Address Modal -->
+<div class="modal fade" id="addAddressModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'address_add' 'employer' employer.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">{% translate 'add_address' request.session.language %}</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal"><span>×</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">{% translate 'address_type' request.session.language %}</label>
+                        <select class="select" name="address_type">
+                            <option value="registered">{% translate 'registered' request.session.language %}</option>
+                            <option value="workplace">{% translate 'workplace' request.session.language %}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% translate 'address_line' request.session.language %}</label>
+                        <textarea name="address_line" class="form-control" required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{% translate 'province' request.session.language %}</label>
+                            <input type="text" name="province" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{% translate 'district' request.session.language %}</label>
+                            <input type="text" name="district" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{% translate 'sub_district' request.session.language %}</label>
+                            <input type="text" name="sub_district" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% translate 'postal_code' request.session.language %}</label>
+                        <input type="text" name="postal_code" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {% translate 'close' request.session.language %}
+                    </button>
+                    <button type="submit" class="btn btn-primary">{% translate 'save' request.session.language %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Document Modal -->
+<div class="modal fade" id="uploadDocumentModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'document_upload' 'employer' employer.id %}"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">{% translate 'upload_document' request.session.language %}</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal"><span>×</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">{% translate 'document_type' request.session.language %}</label>
+                        <select class="select" name="doc_type" required>
+                            {% for dt in doc_types %}
+                            <option value="{{ dt.id }}">{{ dt.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% translate 'choose_files' request.session.language %}</label>
+                        <input type="file" name="file" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% translate 'description' request.session.language %}</label>
+                        <input type="text" name="description" class="form-control"
+                            placeholder="{% translate 'please_provide_a_description_of_the_document' request.session.language %}">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% translate 'issue_date' request.session.language %}</label>
+                            <input type="date" name="issue_date" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-danger">{% translate 'expiration_date' request.session.language %}</label>
+                            <input type="date" name="expiry_date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {% translate 'close' request.session.language %}
+                    </button>
+                    <button type="submit" class="btn btn-primary">{% translate 'save' request.session.language %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

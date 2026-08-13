@@ -37,7 +37,7 @@
                     <div class="col-12 col-md-6 col-xl-3">
                         <form method="GET">
                             <label class="form-label">{% translate 'filter' request.session.language %}</label>
-                            <select name="missing_lang" onchange="this.form.submit()" class="form-select">
+                            <select name="missing_lang" onchange="this.form.submit()" class="form-control">
                                 <option value="">{% translate 'all' request.session.language %}</option>
                                 {% for language in languages %}
                                 <option value="{{ language.code }}"
