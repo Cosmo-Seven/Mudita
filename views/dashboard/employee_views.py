@@ -10,6 +10,7 @@ from helpers.phone import format_mm_phone
 from constants.message import CREATE, UPDATE, DELETE
 from core.models import EmployeeModel, EmployerModel, NationalityModel, AddressModel, DocumentTypeModel
 from django.core.paginator import Paginator
+from django.core.cache import cache
 
 @custom_login_required("dashboard_login")
 @role_permission_required("view_employeemodel")
@@ -117,26 +118,46 @@ def employee_list(request):
         "employees": page_obj,
         "page_obj": page_obj,
         "total_count": paginator.count,
-        "nationalities": NationalityModel.objects.all().order_by("name"),
-        "work_permit_types": EmployeeModel.objects.exclude(work_permit_type="").values_list(
-            "work_permit_type", flat=True
-        ).distinct(),
-        "insurance_types": EmployeeModel.objects.exclude(insurance_type="").values_list(
-            "insurance_type", flat=True
-        ).distinct(),
+        "nationalities": cache.get_or_set(
+            "filter_opts:nationalities",
+            lambda: list(NationalityModel.objects.all().order_by("name")),
+            300,
+        ),
+        "work_permit_types": cache.get_or_set(
+            "filter_opts:work_permit_types",
+            lambda: list(EmployeeModel.objects.exclude(work_permit_type="")
+                         .values_list("work_permit_type", flat=True).distinct()),
+            300,
+        ),
+        "insurance_types": cache.get_or_set(
+            "filter_opts:insurance_types",
+            lambda: list(EmployeeModel.objects.exclude(insurance_type="")
+                         .values_list("insurance_type", flat=True).distinct()),
+            300,
+        ),
         "view_mode": view_mode,
         "per_page": per_page,
         "search": search,
         "querystring": request.GET.urlencode(),
     }
 
-    context["provinces"] = (AddressModel.objects.filter(address_type="home")
-    .exclude(province="").values_list("province", flat=True).distinct().order_by("province")
+    context["provinces"] = cache.get_or_set(
+        "filter_opts:provinces",
+        lambda: list(AddressModel.objects.filter(address_type="home").exclude(province="")
+                     .values_list("province", flat=True).distinct().order_by("province")),
+        300,
     )
-    context["districts"] = (AddressModel.objects.filter(address_type="home").exclude(district="").values_list("district", flat=True).distinct().order_by("district")
+    context["districts"] = cache.get_or_set(
+        "filter_opts:districts",
+        lambda: list(AddressModel.objects.filter(address_type="home").exclude(district="")
+                     .values_list("district", flat=True).distinct().order_by("district")),
+        300,
     )
-    context["sub_districts"] = (AddressModel.objects.filter(address_type="home")
-    .exclude(sub_district="").values_list("sub_district", flat=True).distinct().order_by("sub_district")
+    context["sub_districts"] = cache.get_or_set(
+        "filter_opts:sub_districts",
+        lambda: list(AddressModel.objects.filter(address_type="home").exclude(sub_district="")
+                     .values_list("sub_district", flat=True).distinct().order_by("sub_district")),
+        300,
     )
 
     return render(request, "dashboard/employee_list.html", context)

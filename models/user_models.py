@@ -50,9 +50,14 @@ class UserModel(AbstractBaseUser, PermissionsMixin, BaseModel):
     def has_permission(self, perm_codename):
         if self.is_superuser:
             return True
-        return (
-            self.role and self.role.permissions.filter(codename=perm_codename).exists()
-        )
+        if not self.role:
+            return False
+
+        if not hasattr(self, "_permission_codenames_cache"):
+            self._permission_codenames_cache = set(
+                self.role.permissions.values_list("codename", flat=True)   # ← query 1 ခုတည်း
+            )
+        return perm_codename in self._permission_codenames_cache
 
     def has_module_perms(self, app_label):
         return (

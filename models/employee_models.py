@@ -53,9 +53,7 @@ class EmployeeModel(BaseModel):
 
     # --- Contact & Nationality ---
     phone = models.CharField(max_length=50, null=True, blank=True)
-    nationality = models.ForeignKey(
-        NationalityModel, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    nationality = models.ForeignKey(NationalityModel, on_delete=models.SET_NULL, null=True, blank=True)
 
     # --- Passport & Visa ---
     passport_number = models.CharField(max_length=50, null=True, blank=True)
