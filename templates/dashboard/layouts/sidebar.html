@@ -34,7 +34,7 @@
     </div>
     <!-- /Logo -->
     <div class="sidebar-inner">
-        <div id="sidebar-menu" class="sidebar-menu" hx-boost="true" hx-target="#main-body-wrapper" hx-swap="innerHTML transition:true">
+        <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 {% for section in SIDEBAR_MENU %}
                 {% if request.user|can_any:section.permissions %}

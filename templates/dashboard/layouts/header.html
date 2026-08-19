@@ -369,7 +369,8 @@
                         {% translate 'settings' request.session.language %}
                     </a>
                     <hr class="my-2">
-                    <a class="dropdown-item logout" href="{{dashboard_logout_url}}"><i class="ti ti-logout me-2"></i>
+                    <a class="dropdown-item logout" href="{{dashboard_logout_url}}" hx-boost="false">
+                        <i class="ti ti-logout me-2"></i>
                         {% translate 'logout' request.session.language %}
                     </a>
                 </div>
@@ -388,7 +389,7 @@
                 <a class="dropdown-item" href="{{ site_settings_url }}">
                     {% translate 'settings' request.session.language %}
                 </a>
-                <a class="dropdown-item" href="{{dashboard_logout_url}}">
+                <a class="dropdown-item" href="{{dashboard_logout_url}}" hx-boost="false">
                     {% translate 'logout' request.session.language %}
                 </a>
             </div>

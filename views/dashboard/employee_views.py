@@ -139,16 +139,7 @@ def employee_list(request):
     .exclude(sub_district="").values_list("sub_district", flat=True).distinct().order_by("sub_district")
     )
 
-    if request.headers.get("HX-Request"):
-        return render(request, "dashboard/employee_list.html", context)
-
-    template = (
-        "dashboard/components/employee_list_content.html"
-        if request.headers.get("HX-Request")
-        else "dashboard/employee_list.html"
-    )
-
-    return render(request, template, context)
+    return render(request, "dashboard/employee_list.html", context)
 
 # ========================
 # Employee Create
