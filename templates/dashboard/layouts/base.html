@@ -15,52 +15,34 @@
     <meta name="csrf-token" content="{{ csrf_token }}">
 
     {% include 'dashboard/components/favicon.html' %}
-
     {% include 'dashboard/components/css.html' %}
-
 </head>
 
 <body
     class="{% if not request.user.is_authenticated %}account-page bg-white{% endif %}  {% if request.path == pos_url %}pos-page{% endif %}">
 
-    <!-- {% include 'dashboard/components/loader.html' %} -->
-
-    <!-- Main Wrapper -->
-    <div class="main-wrapper {% if request.path == pos_url %}pos-five{% endif %}">
+    <div class="main-wrapper {% if request.path == pos_url %}pos-five{% endif %}"
+         hx-boost="true"
+         hx-target="#main-body-wrapper"
+         hx-select="#main-body-wrapper"
+         hx-swap="innerHTML transition:true"
+         hx-push-url="true">
         {% include 'dashboard/components/toast.html' %}
         {% if request.user.is_authenticated %}
-        <!-- Header -->
         {% include 'dashboard/layouts/header.html' %}
-        <!-- /Header -->
-
-        <!-- Sidebar -->
         {% include 'dashboard/layouts/sidebar.html' %}
-        <!-- /Sidebar -->
-
-        <!-- Page Wrapper -->
 
         <div id="main-body-wrapper">
             {% block body %}{% endblock %}
         </div>
-
-        <!-- /Page Wrapper -->
         {% else %}
-
         {% block auth %}{% endblock %}
-
         {% endif %}
-
     </div>
-    <!-- /Main Wrapper -->
-    {% include 'dashboard/components/modal.html' %}
 
+    {% include 'dashboard/components/modal.html' %}
     {% include 'dashboard/components/js.html' %}
 
-    <!-- <script>
-        window.addEventListener("offline", () => {
-            window.location.href = "/static/offline.html";
-        });
-    </script> -->
     <script>
         document.body.addEventListener('htmx:afterSwap', function (event) {
             if (window.jQuery && jQuery(".select").length > 0) {
@@ -69,11 +51,9 @@
                     width: "100%",
                 });
             }
-
             if (window.feather) {
                 feather.replace();
             }
-
             document.querySelectorAll('.bulk-action-bar').forEach(bar => (bar.style.display = 'none'));
         });
 
@@ -84,7 +64,5 @@
             document.body.classList.remove('htmx-loading');
         });
     </script>
-
 </body>
-
 </html>
