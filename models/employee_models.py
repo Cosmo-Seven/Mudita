@@ -127,3 +127,39 @@ class EmployeeModel(BaseModel):
         return today.year - self.date_of_birth.year - (
             (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
         )
+
+    def _expiry_status(self, expiry_date, warn_days=90):
+        if not expiry_date:
+            return "unknown"
+        days_left = (expiry_date - date.today()).days
+        if days_left < 0:
+            return "expired"
+        if days_left <= warn_days:
+            return "expiring_soon"
+        return "valid"
+
+    @property
+    def passport_status(self):
+        return self._expiry_status(self.passport_expiry_date)
+
+    @property
+    def visa_status(self):
+        return self._expiry_status(self.visa_expiry_date)
+
+    @property
+    def work_permit_status(self):
+        return self._expiry_status(self.work_permit_expiry_date)
+
+    @property
+    def has_bank_account(self):
+        return bool(self.bank_name and self.bank_account_number)
+
+    @property
+    def has_pink_card(self):
+        return bool(self.pink_card_number)
+
+    @property
+    def days_until_90day_report(self):
+        if not self.report_90day_date:
+            return None
+        return (self.report_90day_date - date.today()).days

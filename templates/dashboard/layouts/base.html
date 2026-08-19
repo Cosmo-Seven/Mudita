@@ -3,6 +3,7 @@
 {% load pwa %}
 {% load translate %}
 {% load static %}
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,6 +61,29 @@
             window.location.href = "/static/offline.html";
         });
     </script> -->
+    <script>
+        document.body.addEventListener('htmx:afterSwap', function (event) {
+            if (window.jQuery && jQuery(".select").length > 0) {
+                jQuery(".select").select2({
+                    minimumResultsForSearch: -1,
+                    width: "100%",
+                });
+            }
+
+            if (window.feather) {
+                feather.replace();
+            }
+
+            document.querySelectorAll('.bulk-action-bar').forEach(bar => (bar.style.display = 'none'));
+        });
+
+        document.body.addEventListener('htmx:beforeRequest', function () {
+            document.body.classList.add('htmx-loading');
+        });
+        document.body.addEventListener('htmx:afterRequest', function () {
+            document.body.classList.remove('htmx-loading');
+        });
+    </script>
 
 </body>
 

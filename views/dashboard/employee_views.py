@@ -1,15 +1,31 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from datetime import datetime
-
+from datetime import date, timedelta
+from django.db import models
 from utils.decorators import custom_login_required
 from decorators.role_decorator import role_permission_required
 from helpers.filters import filter_querysets
 from helpers.exports import export_to_pdf, export_to_excel, filter_queryset_for_export
 from helpers.phone import format_mm_phone
 from constants.message import CREATE, UPDATE, DELETE
-from core.models import EmployeeModel, EmployerModel, NationalityModel
+from core.models import EmployeeModel, EmployerModel, NationalityModel, AddressModel, DocumentTypeModel
+from django.core.paginator import Paginator
 
+@custom_login_required("dashboard_login")
+@role_permission_required("view_employeemodel")
+def employee_preview(request, pk):
+    employee = get_object_or_404(EmployeeModel, id=pk)
+    doc_types = DocumentTypeModel.objects.filter(applies_to__in=["employee", "both"]).order_by("created_at")
+
+    # doc_type.code -> uploaded DocumentModel (upload ရှိရင်ပဲ dict ထဲ ပါမယ်)
+    documents = {d.doc_type.code: d for d in employee.documents.select_related("doc_type")}
+
+    context = {
+        "employee": employee,
+        "doc_types": doc_types,
+        "documents": documents,
+    }
+    return render(request, "dashboard/components/employee_preview_modal_content.html", context)
 
 # ========================
 # Employee List
@@ -17,34 +33,122 @@ from core.models import EmployeeModel, EmployerModel, NationalityModel
 @custom_login_required("dashboard_login")
 @role_permission_required("view_employeemodel")
 def employee_list(request):
-    employees = EmployeeModel.objects.select_related("employer", "nationality").order_by(
-        "-created_at"
-    )
+    employees = EmployeeModel.objects.select_related("employer", "nationality").prefetch_related("addresses")
 
-    filters = filter_querysets(
-        request,
-        employees,
-        search_fields=[
-            "full_name_en",
-            "name_th",
-            "passport_number",
-            "work_permit_number",
-            "employer__name_en",
-        ],
-        date_field="created_at",
-        order="-created_at",
-    )
+    search = request.GET.get("search", "")
+    nationality_id = request.GET.get("nationality", "")
+    work_permit_type = request.GET.get("work_permit_type", "")
+    insurance_type = request.GET.get("insurance_type", "")
+    pink_card = request.GET.get("pink_card", "")          # "yes" / "no"
+    passport_status = request.GET.get("passport_status", "")   # valid/expiring_soon/expired
+    visa_status = request.GET.get("visa_status", "")
+    bank_status = request.GET.get("bank_status", "")       # "yes" / "no"
+    province = request.GET.get("province", "")
+    district = request.GET.get("district", "")
+    sub_district = request.GET.get("sub_district", "")
+    view_mode = request.GET.get("view", "card")
+    per_page = int(request.GET.get("per_page", 25))
+
+    if search:
+        employees = employees.filter(
+            models.Q(full_name_en__icontains=search)
+            | models.Q(name_th__icontains=search)
+            | models.Q(passport_number__icontains=search)
+            | models.Q(work_permit_number__icontains=search)
+            | models.Q(employer__name_en__icontains=search)
+        )
+
+    if nationality_id:
+        employees = employees.filter(nationality_id=nationality_id)
+
+    if work_permit_type:
+        employees = employees.filter(work_permit_type=work_permit_type)
+
+    if insurance_type:
+        employees = employees.filter(insurance_type=insurance_type)
+
+    if pink_card == "yes":
+        employees = employees.exclude(pink_card_number__isnull=True).exclude(pink_card_number="")
+    elif pink_card == "no":
+        employees = employees.filter(models.Q(pink_card_number__isnull=True) | models.Q(pink_card_number=""))
+
+    if bank_status == "yes":
+        employees = employees.exclude(bank_account_number__isnull=True).exclude(bank_account_number="")
+    elif bank_status == "no":
+        employees = employees.filter(models.Q(bank_account_number__isnull=True) | models.Q(bank_account_number=""))
+
+    if passport_status:
+        today = date.today()
+        if passport_status == "expired":
+            employees = employees.filter(passport_expiry_date__lt=today)
+        elif passport_status == "expiring_soon":
+            employees = employees.filter(
+                passport_expiry_date__gte=today,
+                passport_expiry_date__lte=today + timedelta(days=90),
+            )
+        elif passport_status == "valid":
+            employees = employees.filter(passport_expiry_date__gt=today + timedelta(days=90))
+
+    if visa_status:
+        today = date.today()
+        if visa_status == "expired":
+            employees = employees.filter(visa_expiry_date__lt=today)
+        elif visa_status == "expiring_soon":
+            employees = employees.filter(
+                visa_expiry_date__gte=today,
+                visa_expiry_date__lte=today + timedelta(days=90),
+            )
+        elif visa_status == "valid":
+            employees = employees.filter(visa_expiry_date__gt=today + timedelta(days=90))
+
+    if province:
+        employees = employees.filter(addresses__address_type="home", addresses__province=province)
+    if district:
+        employees = employees.filter(addresses__address_type="home", addresses__district=district)
+    if sub_district:
+        employees = employees.filter(addresses__address_type="home", addresses__sub_district=sub_district)
+
+    employees = employees.distinct().order_by("-created_at")
+
+    paginator = Paginator(employees, per_page)
+    page_obj = paginator.get_page(request.GET.get("page", 1))
 
     context = {
-        "employees": filters["page_obj"],
-        **filters,
+        "employees": page_obj,
+        "page_obj": page_obj,
+        "total_count": paginator.count,
+        "nationalities": NationalityModel.objects.all().order_by("name"),
+        "work_permit_types": EmployeeModel.objects.exclude(work_permit_type="").values_list(
+            "work_permit_type", flat=True
+        ).distinct(),
+        "insurance_types": EmployeeModel.objects.exclude(insurance_type="").values_list(
+            "insurance_type", flat=True
+        ).distinct(),
+        "view_mode": view_mode,
+        "per_page": per_page,
+        "search": search,
+        "querystring": request.GET.urlencode(),
     }
+
+    context["provinces"] = (AddressModel.objects.filter(address_type="home")
+    .exclude(province="").values_list("province", flat=True).distinct().order_by("province")
+    )
+    context["districts"] = (AddressModel.objects.filter(address_type="home").exclude(district="").values_list("district", flat=True).distinct().order_by("district")
+    )
+    context["sub_districts"] = (AddressModel.objects.filter(address_type="home")
+    .exclude(sub_district="").values_list("sub_district", flat=True).distinct().order_by("sub_district")
+    )
 
     if request.headers.get("HX-Request"):
         return render(request, "dashboard/employee_list.html", context)
 
-    return render(request, "dashboard/employee_list.html", context)
+    template = (
+        "dashboard/components/employee_list_content.html"
+        if request.headers.get("HX-Request")
+        else "dashboard/employee_list.html"
+    )
 
+    return render(request, template, context)
 
 # ========================
 # Employee Create

@@ -10,7 +10,8 @@ from views.dashboard import (
     text_key_views,
     employer_views,
     employee_views,
-    attachment_views, 
+    attachment_views,
+    bulk_views,
 )
 from views.dashboard import page_views as dashboard_page_views
 
@@ -22,6 +23,9 @@ urlpatterns = (
         # DASHBOARD URL
         # ================================================================================================
         path("", dashboard_page_views.dashboard, name="dashboard"),
+        path("dashboard/bulk/delete/<str:model_name>/", bulk_views.bulk_delete, name="bulk_delete"),
+        path("dashboard/bulk/export/<str:model_name>/<str:file_format>/", bulk_views.bulk_export, name="bulk_export"),
+        
         path(
             "under-maintenance/",
             dashboard_page_views.under_maintenance,
@@ -37,6 +41,7 @@ urlpatterns = (
             auth_views.dashboard_logout,
             name="dashboard_logout",
         ),
+        path("dashboard/welcome/", auth_views.dashboard_welcome, name="dashboard_welcome"),
         path("dashboard/profile/", auth_views.profile, name="dashboard_profile"),
         path(
             "dashboard/site-settings/",
@@ -233,6 +238,7 @@ urlpatterns = (
             employee_views.employee_employment_history,
             name="employee_employment_history",
         ),  # sidebar ရဲ့ "Employment history"
+        path("dashboard/employee/preview/<uuid:pk>/", employee_views.employee_preview, name="employee_preview"),
         # ========================
         # Attachments (Address / Document) — Employer & Employee နှစ်ခုလုံးအတွက် generic
         # <str:model_name> = "employer" | "employee" (helpers/allowed_models.py ထဲက model_name)

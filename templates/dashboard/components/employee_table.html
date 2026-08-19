@@ -1,0 +1,105 @@
+{% load translate %}
+{% load static %}
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>
+                            <input type="checkbox" class="form-check-input"
+                                onclick="bulkToggleAllVisible_employeemodel(this.checked)">
+                        </th>
+                        <th>{% translate 'photo' request.session.language %}</th>
+                        <th>{% translate 'name' request.session.language %}</th>
+                        <th>{% translate 'employer' request.session.language %}</th>
+                        <th>{% translate 'nationality' request.session.language %}</th>
+                        <th>{% translate 'passport' request.session.language %}</th>
+                        <th>{% translate 'visa_expiry_date' request.session.language %}</th>
+                        <th>{% translate 'job_position' request.session.language %}</th>
+                        <th>{% translate 'status' request.session.language %}</th>
+                        <th class="text-center">{% translate 'action' request.session.language %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="form-check-input bulk-row-checkbox"
+                                data-model="employeemodel" value="{{ employee.id }}">
+                        </td>
+                        <td>
+                            <a href="javascript:void(0);" class="avatar avatar-md">
+                                <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                                    alt="{{ employee.full_name_en }}">
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'employee_update' employee.id %}">
+                                {% translate employee.translation_key request.session.language %}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'employer_detail' employee.employer.id %}">{{ employee.employer.name_en }}</a>
+                        </td>
+                        <td>{{ employee.nationality.name|default:"-" }}</td>
+                        <td>
+                            {{ employee.passport_number|default:"-" }}
+                            {% if employee.passport_expiry_date %}
+                            <br>
+                            <small class="{% if employee.passport_status == 'expired' %}text-danger
+                                {% elif employee.passport_status == 'expiring_soon' %}text-warning
+                                {% else %}text-success{% endif %}">
+                                {% translate 'expires' request.session.language %}: {{ employee.passport_expiry_date }}
+                            </small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if employee.visa_expiry_date %}
+                            <span class="{% if employee.visa_status == 'expired' %}text-danger
+                                {% elif employee.visa_status == 'expiring_soon' %}text-warning
+                                {% else %}text-success{% endif %}">
+                                {{ employee.visa_expiry_date }}
+                            </span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ employee.job_position|default:"-" }}</td>
+                        <td>
+                            <span class="d-inline-flex align-items-center p-1 pe-2 rounded-1 text-white
+                                bg-{% if employee.status == 'active' %}success
+                                {% elif employee.status == 'renewal_pending' %}warning
+                                {% elif employee.status == 'terminated' %}danger
+                                {% else %}info{% endif %} fs-10">
+                                <i class="ti ti-point-filled me-1 fs-11"></i>
+                                {{ employee.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="action-table-data">
+                            <div class="edit-delete-action">
+                                <a class="me-2 p-2 mb-0" href="{% url 'employee_update' employee.id %}">
+                                    <i data-feather="edit" class="feather-edit"></i>
+                                </a>
+                                <a class="me-2 p-2 mb-0" href="javascript:void(0);" onclick="openEmployeePreview('{{ employee.id }}')">
+                                    <i data-feather="eye" class="feather-eye"></i>
+                                </a>
+                                <a data-bs-toggle="modal" data-bs-target="#deleteModal_{{ employee.id }}"
+                                    class="p-2 mb-0" href="javascript:void(0);">
+                                    <i data-feather="trash-2" class="feather-trash-2"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center py-4">
+                            {% translate 'no_data_found' request.session.language %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

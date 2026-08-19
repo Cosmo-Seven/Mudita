@@ -1,0 +1,171 @@
+{% load translate %}
+<style>
+    .bulk-action-bar {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1050;
+        background: #ffffff;
+        border-radius: 999px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.15);
+        padding: 8px 16px;
+    }
+    .bulk-action-inner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .bulk-count {
+        font-weight: 600;
+        color: #33384a;
+        padding-right: 6px;
+        border-right: 1px solid #e2e6ef;
+        margin-right: 4px;
+    }
+</style>
+<div class="bulk-action-bar" id="bulkActionBar_{{ model_name }}" style="display:none;">
+    <div class="bulk-action-inner">
+        <span class="bulk-count">
+            <span id="bulkSelectedCount_{{ model_name }}">0</span>
+            {% translate 'selected' request.session.language %}
+        </span>
+
+        <button type="button" class="btn btn-sm btn-outline-secondary"
+            onclick="bulkSelectAll_{{ model_name }}({{ total_count }})">
+            {% translate 'select_all' request.session.language %} ({{ total_count }})
+        </button>
+
+        <div class="dropdown">
+            <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                {% translate 'actions' request.session.language %}
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" href="javascript:void(0);"
+                        onclick="bulkExport_{{ model_name }}('excel')">
+                        <i class="ti ti-file-spreadsheet me-1"></i>{% translate 'export_excel' request.session.language %}
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="javascript:void(0);"
+                        onclick="bulkExport_{{ model_name }}('pdf')">
+                        <i class="ti ti-file-type-pdf me-1"></i>{% translate 'export_pdf' request.session.language %}
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger" href="javascript:void(0);"
+                        data-bs-toggle="modal" data-bs-target="#bulkDeleteModal_{{ model_name }}">
+                        <i class="ti ti-trash me-1"></i>{% translate 'delete_selected' request.session.language %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <button type="button" class="btn btn-sm btn-outline-danger"
+            onclick="bulkClearSelection_{{ model_name }}()">
+            {% translate 'clear_selection' request.session.language %}
+        </button>
+    </div>
+</div>
+
+<!-- Bulk delete confirm modal -->
+<div class="modal fade" id="bulkDeleteModal_{{ model_name }}">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="content p-5 px-3 text-center">
+                <span class="rounded-circle d-inline-flex p-2 bg-danger-transparent mb-2">
+                    <i class="ti ti-trash fs-24 text-danger"></i>
+                </span>
+                <h4 class="fs-20 fw-bold mb-2 mt-1">{% translate 'delete' request.session.language %}!</h4>
+                <p class="mb-0 fs-16" id="bulkDeleteConfirmText_{{ model_name }}"></p>
+                <form method="POST" action="{% url 'bulk_delete' model_name %}" id="bulkDeleteForm_{{ model_name }}"
+                    class="modal-footer-btn mt-3 d-flex justify-content-center">
+                    {% csrf_token %}
+                    <div id="bulkDeleteHiddenInputs_{{ model_name }}"></div>
+                    <button type="button" class="btn me-2 btn-secondary fs-13 fw-medium p-2 px-3"
+                        data-bs-dismiss="modal">{% translate 'no' request.session.language %}</button>
+                    <button type="submit" class="btn btn-primary fs-13 fw-medium p-2 px-3">{% translate 'yes' request.session.language %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden export forms (POST — selected id count များနိုင်လို့ GET မသုံး) -->
+<form method="POST" action="{% url 'bulk_export' model_name 'excel' %}" id="bulkExportExcelForm_{{ model_name }}" target="_blank">
+    {% csrf_token %}
+    <div id="bulkExportExcelHidden_{{ model_name }}"></div>
+</form>
+<form method="POST" action="{% url 'bulk_export' model_name 'pdf' %}" id="bulkExportPdfForm_{{ model_name }}" target="_blank">
+    {% csrf_token %}
+    <div id="bulkExportPdfHidden_{{ model_name }}"></div>
+</form>
+
+<script>
+    (function () {
+        const modelName = "{{ model_name }}";
+        const checkboxSelector = `.bulk-row-checkbox[data-model="${modelName}"]`;
+
+        function getSelectedIds() {
+            return Array.from(document.querySelectorAll(`${checkboxSelector}:checked`)).map(cb => cb.value);
+        }
+
+        function refreshBar() {
+            const selected = getSelectedIds();
+            const bar = document.getElementById(`bulkActionBar_${modelName}`);
+            document.getElementById(`bulkSelectedCount_${modelName}`).textContent = selected.length;
+            bar.style.display = selected.length > 0 ? "flex" : "none";
+        }
+
+        // ↓↓↓ အသစ်ထည့်: header checkbox / row checkbox ဘယ်ကနေမဆို ခေါ်လို့ရအောင် global expose ↓↓↓
+        window[`bulkRefreshBar_${modelName}`] = refreshBar;
+
+        // ↓↓↓ အသစ်ထည့်: header "select all (visible rows)" checkbox အတွက် dedicated function ↓↓↓
+        window[`bulkToggleAllVisible_${modelName}`] = function (checked) {
+            document.querySelectorAll(checkboxSelector).forEach(cb => (cb.checked = checked));
+            refreshBar();   // ← ဒီနေရာက အဓိက fix — event dispatch မလိုဘဲ တိုက်ရိုက်ခေါ်
+        };
+
+        document.addEventListener("change", function (e) {
+            if (e.target.matches(checkboxSelector)) refreshBar();
+        });
+
+        window[`bulkClearSelection_${modelName}`] = function () {
+            document.querySelectorAll(`${checkboxSelector}:checked`).forEach(cb => (cb.checked = false));
+            refreshBar();
+        };
+
+        window[`bulkSelectAll_${modelName}`] = function (totalCount) {
+            document.querySelectorAll(checkboxSelector).forEach(cb => (cb.checked = true));
+            refreshBar();
+        };
+
+        function buildHiddenInputs(container) {
+            container.innerHTML = "";
+            getSelectedIds().forEach(id => {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "selected_ids";
+                input.value = id;
+                container.appendChild(input);
+            });
+        }
+
+        window[`bulkExport_${modelName}`] = function (format) {
+            const containerId = format === "excel"
+                ? `bulkExportExcelHidden_${modelName}`
+                : `bulkExportPdfHidden_${modelName}`;
+            buildHiddenInputs(document.getElementById(containerId));
+            document.getElementById(`bulkExport${format === "excel" ? "Excel" : "Pdf"}Form_${modelName}`).submit();
+        };
+
+        document.getElementById(`bulkDeleteModal_${modelName}`)?.addEventListener("show.bs.modal", function () {
+            const selected = getSelectedIds();
+            buildHiddenInputs(document.getElementById(`bulkDeleteHiddenInputs_${modelName}`));
+            document.getElementById(`bulkDeleteConfirmText_${modelName}`).textContent =
+                `${selected.length} record(s) will be deleted. Are you sure?`;
+        });
+    })();
+</script>

@@ -11,7 +11,7 @@ from utils.decorators import custom_login_required
 # ========================
 def dashboard_login(request):
     if request.user.is_authenticated:
-        return redirect("dashboard")
+        return redirect("dashboard_welcome")
 
     if request.method == "POST":
         email = request.POST.get("email")
@@ -22,7 +22,7 @@ def dashboard_login(request):
             if check_password(password, user.password):
                 login(request, user)
                 messages.success(request, f"Welcome {user.username}")
-                return redirect("dashboard")
+                return redirect("dashboard_welcome")
             else:
                 messages.error(request, "Email or Password is incorrect!")
                 return redirect("dashboard_login")
@@ -40,6 +40,14 @@ def dashboard_logout(request):
     logout(request)
     messages.success(request, "Logged out successfully.")
     return redirect("dashboard_login")
+
+
+# ========================
+# Dashboard Welcome
+# ========================
+@custom_login_required("dashboard_login")
+def dashboard_welcome(request):
+    return render(request, "dashboard/dashboard_welcome.html")
 
 
 # ========================

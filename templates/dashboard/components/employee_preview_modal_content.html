@@ -1,0 +1,157 @@
+{% load translate %}
+{% load static %}
+{% load dict_extras %}
+<div class="preview-section">
+    <div class="d-flex gap-3">
+        <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+            alt="{{ employee.full_name_en }}" class="preview-photo">
+        <div>
+            <h6 class="preview-header">{% translate 'personal_information' request.session.language %}</h6>
+            <div class="text-muted small">{% translate 'affiliated_with_an_employer' request.session.language %}</div>
+            <div class="fw-bold">
+                <a href="{% url 'employer_detail' employee.employer.id %}">{{ employee.employer.name_en }}</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-grid mt-3">
+        <div><label>{% translate 'name_en' request.session.language %}</label><span class="fw-bold">{{ employee.prefix_en }} {{ employee.full_name_en }}</span></div>
+        <div><label>{% translate 'name_th' request.session.language %}</label><span class="fw-bold">{{ employee.title_th }} {{ employee.name_th|default:"-" }}</span></div>
+    </div>
+    <div class="preview-grid mt-3 preview-grid-6">
+        <div><label>{% translate 'date_of_birth' request.session.language %}</label><span class="fw-bold">{{ employee.date_of_birth|default:"-" }}</span></div>
+        <div><label>{% translate 'age' request.session.language %}</label><span class="fw-bold">{{ employee.age|default:"-" }}</span></div>
+        <div><label>{% translate 'sex' request.session.language %}</label><span class="fw-bold">{{ employee.get_gender_display|default:"-" }}</span></div>
+        <div><label>{% translate 'nationality' request.session.language %}</label><span class="fw-bold">{{ employee.nationality.name|default:"-" }}</span></div>
+        <div><label>{% translate 'height' request.session.language %}</label><span class="fw-bold">{{ employee.height_cm|default:"-" }}</span></div>
+        <div><label>{% translate 'weight' request.session.language %}</label><span class="fw-bold">{{ employee.weight_kg|default:"-" }}</span></div>
+    </div>
+    <div class="preview-grid mt-3">
+        <div><label>{% translate 'fathers_name' request.session.language %}</label><span>{{ employee.father_name|default:"-" }}</span></div>
+        <div><label>{% translate 'mothers_name' request.session.language %}</label><span>{{ employee.mother_name|default:"-" }}</span></div>
+    </div>
+    <div class="preview-grid mt-3 preview-grid-4">
+        <div><label>{% translate 'passport_number' request.session.language %}</label><span class="fw-bold">{{ employee.passport_number|default:"-" }}</span></div>
+        <div><label>{% translate 'passport_issue_place' request.session.language %}</label><span class="fw-bold">{{ employee.passport_issue_place|default:"-" }}</span></div>
+        <div><label>{% translate 'passport_issuance_date' request.session.language %}</label><span class="fw-bold">{{ employee.passport_issue_date|default:"-" }}</span></div>
+        <div><label>{% translate 'passport_types' request.session.language %}</label><span class="fw-bold">-</span></div>
+    </div>
+    <div class="preview-grid mt-2">
+        <div><label>{% translate 'passport_expiry_date' request.session.language %}</label>
+            <span class="fw-bold {% if employee.passport_status == 'expired' %}text-danger{% elif employee.passport_status == 'expiring_soon' %}text-warning{% endif %}">
+                {{ employee.passport_expiry_date|default:"-" }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="preview-section">
+    <h6 class="preview-header">{% translate 'work_permits_and_visas' request.session.language %}</h6>
+    <div class="preview-grid preview-grid-4">
+        <div><label>{% translate 'work_permit_number' request.session.language %}</label><span class="fw-bold">{{ employee.work_permit_number|default:"-" }}</span></div>
+        <div><label>{% translate 'date_the_work_permit_was_issued' request.session.language %}</label><span class="fw-bold">{{ employee.work_permit_issue_date|default:"-" }}</span></div>
+        <div><label>{% translate 'work_permit_expiration_date' request.session.language %}</label>
+            <span class="fw-bold {% if employee.work_permit_status == 'expired' %}text-danger{% elif employee.work_permit_status == 'expiring_soon' %}text-warning{% endif %}">
+                {{ employee.work_permit_expiry_date|default:"-" }}
+            </span>
+        </div>
+        <div><label>{% translate 'license_type_resolution_group' request.session.language %}</label><span class="fw-bold">{{ employee.work_permit_type|default:"-" }}</span></div>
+    </div>
+    <div class="preview-grid preview-grid-4 mt-2">
+        <div><label>{% translate 'visa_types' request.session.language %}</label><span>{{ employee.visa_type|default:"-" }}</span></div>
+        <div><label>{% translate 'visa_issuance_location' request.session.language %}</label><span>{{ employee.visa_issue_place|default:"-" }}</span></div>
+        <div><label>{% translate 'visa_stamp_date' request.session.language %}</label><span>{{ employee.visa_stamp_date|default:"-" }}</span></div>
+        <div><label>{% translate 'visa_number' request.session.language %}</label><span>{{ employee.visa_number|default:"-" }}</span></div>
+    </div>
+    <div class="preview-grid mt-2">
+        <div><label>{% translate 'visa_expiry_date' request.session.language %}</label>
+            <span class="{% if employee.visa_status == 'expired' %}text-danger{% elif employee.visa_status == 'expiring_soon' %}text-warning{% endif %}">
+                {{ employee.visa_expiry_date|default:"-" }}
+            </span>
+        </div>
+        <div><label>{% translate '90_day_reporting_day' request.session.language %}</label><span>{{ employee.report_90day_date|default:"-" }}</span></div>
+    </div>
+</div>
+
+<hr>
+
+<div class="preview-section">
+    <h6 class="preview-header">{% translate 'employment_and_contact' request.session.language %}</h6>
+    <div class="preview-grid preview-grid-3">
+        <div><label>{% translate 'position' request.session.language %}</label><span class="fw-bold">{{ employee.job_position|default:"-" }}</span></div>
+        <div><label>{% translate 'nature_of_work' request.session.language %}</label><span class="fw-bold">{{ employee.job_description|default:"-" }}</span></div>
+        <div><label>{% translate 'start_day' request.session.language %}</label><span>{{ employee.start_date|default:"-" }}</span></div>
+    </div>
+    <div class="preview-grid preview-grid-4 mt-2">
+        <div><label>{% translate 'work_age' request.session.language %}</label><span>{{ employee.years_of_service|default:"-" }}</span></div>
+        <div><label>{% translate 'phone_number' request.session.language %}</label><span>{{ employee.phone|default:"-" }}</span></div>
+        <div><label>{% translate 'email' request.session.language %}</label><span>{{ employee.login_email|default:"-" }}</span></div>
+        <div><label>{% translate 'email_code' request.session.language %}</label><span>-</span></div>
+    </div>
+    <div class="preview-grid mt-2">
+        <div><label>{% translate 'outsource_code' request.session.language %}</label><span>-</span></div>
+    </div>
+</div>
+
+<hr>
+
+<div class="preview-section">
+    <h6 class="preview-header">{% translate 'official_documents' request.session.language %}</h6>
+    <div class="preview-grid preview-grid-4">
+        <div><label>{% translate 'ra_number_outsource' request.session.language %}</label><span class="fw-bold">{{ employee.ra_number|default:"-" }}</span></div>
+        <div><label>{% translate 'application_number' request.session.language %}</label><span>{{ employee.application_number|default:"-" }}</span></div>
+        <div><label>{% translate 'worker_reference_number' request.session.language %}</label><span>{{ employee.worker_reference_number|default:"-" }}</span></div>
+        <div><label>{% translate 'identification_number' request.session.language %}</label><span class="fw-bold">{{ employee.identification_number|default:"-" }}</span></div>
+    </div>
+    <div class="preview-grid preview-grid-4 mt-2">
+        <div><label>{% translate 'worker_code_company' request.session.language %}</label><span>{{ employee.worker_employer_code|default:"-" }}</span></div>
+        <div><label>{% translate 'department' request.session.language %}</label><span>{{ employee.work_department|default:"-" }}</span></div>
+        <div><label>{% translate 'pink_card_number' request.session.language %}</label><span>{{ employee.pink_card_number|default:"-" }}</span></div>
+        <div><label>{% translate 'taxpayer_id_number' request.session.language %}</label><span>{{ employee.tax_id_number|default:"-" }}</span></div>
+    </div>
+    <div class="preview-grid preview-grid-2 mt-2">
+        <div><label>{% translate 'bank_name' request.session.language %}</label><span>{{ employee.bank_name|default:"-" }}</span></div>
+        <div><label>{% translate 'account_number' request.session.language %}</label><span>{{ employee.bank_account_number|default:"-" }}</span></div>
+    </div>
+</div>
+
+<hr>
+
+<div class="preview-section">
+    <h6 class="preview-header">{% translate 'guarantee' request.session.language %}</h6>
+    <div class="preview-grid preview-grid-4">
+        <div><label>{% translate 'types_of_insurance' request.session.language %}</label><span>{{ employee.insurance_type|default:"-" }}</span></div>
+        <div><label>{% translate 'disease_screening_hospital' request.session.language %}</label><span>{{ employee.diagnosed_hospital|default:"-" }}</span></div>
+        <div><label>{% translate 'medical_certificate' request.session.language %}</label><span>-</span></div>
+        <div><label>{% translate 'insurance_attachment' request.session.language %}</label><span>-</span></div>
+    </div>
+</div>
+
+<hr>
+
+<div class="preview-section">
+    <h6 class="preview-header">{% translate 'attachment' request.session.language %}</h6>
+    <div class="preview-grid preview-grid-4">
+        {% for dt in doc_types %}
+        <div>
+            <label>{{ forloop.counter }}. {{ dt.name }}</label>
+            {% with doc=documents|get_item:dt.code %}
+            {% if doc %}
+            <div class="mt-1">
+                <a href="{{ doc.file.url }}" target="_blank" class="btn btn-sm btn-success">
+                    <i class="ti ti-eye me-1"></i>{% translate 'watch' request.session.language %}
+                </a>
+                <a href="{{ doc.file.url }}" download class="btn btn-sm btn-danger">
+                    <i class="ti ti-file-type-pdf me-1"></i>PDF
+                </a>
+            </div>
+            {% else %}
+            <span class="text-muted">{% translate 'no_documents' request.session.language %}</span>
+            {% endif %}
+            {% endwith %}
+        </div>
+        {% endfor %}
+    </div>
+</div>

@@ -1,0 +1,409 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load translate %}
+{% load static %}
+{% block title %}{{ employee.full_name_en }}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold">{{ employee.full_name_en }}</h4>
+                <h6>{{ employee.employer.name_en }}</h6>
+            </div>
+        </div>
+
+        <form action="{% url 'employee_update' employee.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card-body p-0">
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        {% translate 'choose_an_employer' request.session.language %}
+                                        <span class="text-danger ms-1">*</span>
+                                    </label>
+                                    <select class="select searchable-select" name="employer" required>
+                                        <option value="">{% translate 'type_to_search_for_the_employers_name' request.session.language %}</option>
+                                        {% for e in employers %}
+                                        <option value="{{ e.id }}">{{ e.name_en }} ({{ e.employer_code|default:"-" }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'status' request.session.language %}</label>
+                                <select class="select" name="status">
+                                    <option value="registration_pending" {% if employee.status == 'registration_pending' %}selected{% endif %}>
+                                        {% translate 'registration_pending' request.session.language %}
+                                    </option>
+                                    <option value="active" {% if employee.status == 'active' %}selected{% endif %}>
+                                        {% translate 'active_confirmed' request.session.language %}
+                                    </option>
+                                    <option value="renewal_pending" {% if employee.status == 'renewal_pending' %}selected{% endif %}>
+                                        {% translate 'renewal_pending' request.session.language %}
+                                    </option>
+                                    <option value="terminated" {% if employee.status == 'terminated' %}selected{% endif %}>
+                                        {% translate 'terminated_resigned' request.session.language %}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. Personal Information -->
+            <div class="card mb-3">
+                <div class="card-header"><h5 class="mb-0">1. {% translate 'personal_information' request.session.language %}</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'title_th' request.session.language %}</label>
+                                <select class="select" name="title_th">
+                                    {% for t in "Mr.,Mrs.,Ms." %}{% endfor %}
+                                    <option value="Mr." {% if employee.title_th == 'Mr.' %}selected{% endif %}>Mr.</option>
+                                    <option value="Mrs." {% if employee.title_th == 'Mrs.' %}selected{% endif %}>Mrs.</option>
+                                    <option value="Ms." {% if employee.title_th == 'Ms.' %}selected{% endif %}>Ms.</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'name_surname_th' request.session.language %}</label>
+                                <input type="text" name="name_th" value="{{ employee.name_th|default:'' }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'prefix_en' request.session.language %}</label>
+                                <select class="select" name="prefix_en">
+                                    <option value="Mr." {% if employee.prefix_en == 'Mr.' %}selected{% endif %}>Mr.</option>
+                                    <option value="Mrs." {% if employee.prefix_en == 'Mrs.' %}selected{% endif %}>Mrs.</option>
+                                    <option value="Ms." {% if employee.prefix_en == 'Ms.' %}selected{% endif %}>Ms.</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    {% translate 'full_name_en' request.session.language %}
+                                    <span class="text-danger ms-1">*</span>
+                                </label>
+                                <input type="text" name="full_name_en" required value="{{ employee.full_name_en }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'add_to_the_name_en' request.session.language %}</label>
+                                <input type="text" name="name_suffix_en" value="{{ employee.name_suffix_en|default:'' }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'height_cm' request.session.language %}</label>
+                                <input type="number" step="0.1" name="height_cm" value="{{ employee.height_cm|default:'' }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'weight_kg' request.session.language %}</label>
+                                <input type="number" step="0.1" name="weight_kg" value="{{ employee.weight_kg|default:'' }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'fathers_name' request.session.language %}</label>
+                                <input type="text" name="father_name" value="{{ employee.father_name|default:'' }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'mothers_name' request.session.language %}</label>
+                                <input type="text" name="mother_name" value="{{ employee.mother_name|default:'' }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'sex' request.session.language %}</label>
+                                <select class="select" name="gender">
+                                    <option value="male" {% if employee.gender == 'male' %}selected{% endif %}>
+                                        {% translate 'male' request.session.language %}
+                                    </option>
+                                    <option value="female" {% if employee.gender == 'female' %}selected{% endif %}>
+                                        {% translate 'female' request.session.language %}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'date_of_birth' request.session.language %}</label>
+                                <input type="date" name="date_of_birth" value="{{ employee.date_of_birth|date:'Y-m-d' }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'employee_photos' request.session.language %}</label>
+                                {% if employee.photo %}
+                                <div class="mb-2">
+                                    <img src="{{ employee.photo.url }}" alt="{{ employee.full_name_en }}"
+                                        style="width:80px;height:80px;object-fit:cover;border-radius:8px;">
+                                </div>
+                                {% endif %}
+                                <input type="file" name="photo" accept=".jpg,.jpeg,.png" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Contact & Nationality -->
+            <div class="card mb-3">
+                <div class="card-header"><h5 class="mb-0">2. {% translate 'contact_information_and_nationality' request.session.language %}</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'telephone_number' request.session.language %}</label>
+                                <input type="tel" name="phone" value="{{ employee.phone|default:'' }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">{% translate 'nationality' request.session.language %}</label>
+                                <select class="select" name="nationality">
+                                    <option value="">-- {% translate 'select_nationality' request.session.language %} --</option>
+                                    {% for n in nationalities %}
+                                    <option value="{{ n.id }}" {% if employee.nationality_id == n.id %}selected{% endif %}>
+                                        {{ n.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Passport & Visa -->
+            <div class="card mb-3">
+                <div class="card-header"><h5 class="mb-0">3. {% translate 'passport_and_visa_information' request.session.language %}</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label">{% translate 'passport_number' request.session.language %}</label>
+                            <input type="text" name="passport_number" value="{{ employee.passport_number|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label">{% translate 'passport_issuance_location' request.session.language %}</label>
+                            <input type="text" name="passport_issue_place" value="{{ employee.passport_issue_place|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label text-primary">{% translate 'passport_issuance_date' request.session.language %}</label>
+                            <input type="date" name="passport_issue_date" value="{{ employee.passport_issue_date|date:'Y-m-d' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label text-danger">{% translate 'passport_expiry_date' request.session.language %}</label>
+                            <input type="date" name="passport_expiry_date" value="{{ employee.passport_expiry_date|date:'Y-m-d' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label">{% translate 'pink_card_number' request.session.language %}</label>
+                            <input type="text" name="pink_card_number" value="{{ employee.pink_card_number|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label">{% translate 'visa_types' request.session.language %}</label>
+                            <input type="text" name="visa_type" value="{{ employee.visa_type|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label">{% translate 'visa_issuance_location' request.session.language %}</label>
+                            <input type="text" name="visa_issue_place" value="{{ employee.visa_issue_place|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label text-danger">{% translate 'visa_expiry_date' request.session.language %}</label>
+                            <input type="date" name="visa_expiry_date" value="{{ employee.visa_expiry_date|date:'Y-m-d' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label text-primary">{% translate 'visa_stamp_date' request.session.language %}</label>
+                            <input type="date" name="visa_stamp_date" value="{{ employee.visa_stamp_date|date:'Y-m-d' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label text-primary">{% translate 'visa_number' request.session.language %}</label>
+                            <input type="text" name="visa_number" value="{{ employee.visa_number|default:'' }}" class="form-control"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Employment Information -->
+            <div class="card mb-3">
+                <div class="card-header"><h5 class="mb-0">4. {% translate 'employment_information_and_documents' request.session.language %}</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label">{% translate 'job_position' request.session.language %}</label>
+                            <input type="text" name="job_position" value="{{ employee.job_position|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label">{% translate 'job_description' request.session.language %}</label>
+                            <input type="text" name="job_description" value="{{ employee.job_description|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label">{% translate 'start_date' request.session.language %}</label>
+                            <input type="date" name="start_date" value="{{ employee.start_date|date:'Y-m-d' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-3"><div class="mb-3">
+                            <label class="form-label">{% translate 'work_permit_number' request.session.language %}</label>
+                            <input type="text" name="work_permit_number" value="{{ employee.work_permit_number|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label text-primary">{% translate 'date_the_work_permit_was_issued' request.session.language %}</label>
+                            <input type="date" name="work_permit_issue_date" value="{{ employee.work_permit_issue_date|date:'Y-m-d' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label text-danger">{% translate 'work_permit_expiration_date' request.session.language %}</label>
+                            <input type="date" name="work_permit_expiry_date" value="{{ employee.work_permit_expiry_date|date:'Y-m-d' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label text-danger">{% translate '90_day_reporting_day' request.session.language %}</label>
+                            <input type="date" name="report_90day_date" value="{{ employee.report_90day_date|date:'Y-m-d' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'types_of_work_permits' request.session.language %}</label>
+                            <input type="text" name="work_permit_type" value="{{ employee.work_permit_type|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'ra_number_from_the_outsource_system' request.session.language %}</label>
+                            <input type="text" name="ra_number" value="{{ employee.ra_number|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'application_number' request.session.language %}</label>
+                            <input type="text" name="application_number" value="{{ employee.application_number|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'identification_number' request.session.language %}</label>
+                            <input type="text" name="identification_number" value="{{ employee.identification_number|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'taxpayer_identification_number' request.session.language %}</label>
+                            <input type="text" name="tax_id_number" value="{{ employee.tax_id_number|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'worker_code_employers_code' request.session.language %}</label>
+                            <input type="text" name="worker_employer_code" value="{{ employee.worker_employer_code|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'work_department' request.session.language %}</label>
+                            <input type="text" name="work_department" value="{{ employee.work_department|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'worker_reference_number' request.session.language %}</label>
+                            <input type="text" name="worker_reference_number" value="{{ employee.worker_reference_number|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'bank_name' request.session.language %}</label>
+                            <input type="text" name="bank_name" value="{{ employee.bank_name|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-4"><div class="mb-3">
+                            <label class="form-label">{% translate 'bank_account_number' request.session.language %}</label>
+                            <input type="text" name="bank_account_number" value="{{ employee.bank_account_number|default:'' }}" class="form-control"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Health Insurance -->
+            <div class="card mb-3">
+                <div class="card-header"><h5 class="mb-0">5. {% translate 'health_insurance_information' request.session.language %}</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6"><div class="mb-3">
+                            <label class="form-label">{% translate 'types_of_insurance' request.session.language %}</label>
+                            <input type="text" name="insurance_type" value="{{ employee.insurance_type|default:'' }}" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-6"><div class="mb-3">
+                            <label class="form-label">{% translate 'hospital_where_the_disease_was_diagnosed' request.session.language %}</label>
+                            <input type="text" name="diagnosed_hospital" value="{{ employee.diagnosed_hospital|default:'' }}" class="form-control"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Login Information -->
+            <div class="card mb-3">
+                <div class="card-header"><h5 class="mb-0">6. {% translate 'login_information' request.session.language %}</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6"><div class="mb-3">
+                            <label class="form-label">{% translate 'email' request.session.language %}</label>
+                            <input type="email" name="login_email" value="{{ employee.login_email|default:'' }}" class="form-control"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. File Attachments (already-uploaded documents ကို ပြပြီး employee_detail ကနေ manage) -->
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">7. {% translate 'file_attachments' request.session.language %}</h5>
+                    <a href="{% url 'employee_detail' employee.id %}" class="btn btn-sm btn-outline-primary">
+                        {% translate 'manage_documents' request.session.language %}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if employee.documents.exists %}
+                    <div class="row">
+                        {% for doc in employee.documents.all %}
+                        <div class="col-lg-3 mb-2">
+                            <a href="{{ doc.file.url }}" target="_blank" class="d-block border rounded p-2">
+                                <small class="d-block fw-medium">{{ doc.doc_type.name }}</small>
+                                {% if doc.expiry_date %}
+                                <small class="text-danger">{% translate 'expiration_date' request.session.language %}: {{ doc.expiry_date }}</small>
+                                {% endif %}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">{% translate 'no_document_yet' request.session.language %}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body d-flex justify-content-end">
+                    <a href="{% url 'employee_list' %}" class="btn btn-secondary me-2">
+                        {% translate 'cancel' request.session.language %}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        {% translate 'update' request.session.language %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+
+<script>
+    $(document).ready(function () {
+        function formatEmployerResult(option) {
+            if (!option.id) return option.text;
+            const subtitle = $(option.element).data('subtitle') || '';
+            return $(`<div><span class="emp-result-title">${option.text}</span><span class="emp-result-subtitle">${subtitle}</span></div>`);
+        }
+
+        $('#id_employer').select2({
+            minimumResultsForSearch: 0,
+            width: '100%',
+            templateResult: formatEmployerResult,
+            templateSelection: (option) => option.text || option.id,
+            escapeMarkup: (m) => m,
+        });
+    });
+</script>
+{% endblock %}

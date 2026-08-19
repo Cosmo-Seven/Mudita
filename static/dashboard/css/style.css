@@ -20470,10 +20470,16 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu>ul>li.submenu-open ul li a 
 
 .slide-nav .sidebar {
   margin-left: 0;
+  transform: translateX(0);
+}
+
+.sidebar {
+  transition: transform 0.35s ease, margin-left 0.35s ease, width 0.35s ease, left 0.35s ease;
+  will-change: transform, margin-left, width, left;
 }
 
 .sidebar-overlay {
-  display: none;
+  display: block;
   height: 100%;
   width: 100%;
   z-index: 99;
@@ -20481,10 +20487,16 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu>ul>li.submenu-open ul li a 
   position: fixed;
   top: 60px;
   left: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
 .sidebar-overlay.opened {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .nosidebar .sidebar {
@@ -20624,6 +20636,15 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu>ul>li.submenu-open ul li a 
 @media (max-width: 991.96px) {
   .sidebar-logo {
     display: none !important;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    left: 0;
+  }
+
+  .slide-nav .sidebar {
+    transform: translateX(0);
   }
 }
 

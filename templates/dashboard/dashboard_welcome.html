@@ -1,0 +1,33 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load static %}
+{% load translate %}
+{% load permissions %}
+
+{% block title %}{% translate 'dashboard' request.session.language %}{% endblock %}
+
+{% block body %}
+<div class="page-wrapper">
+    <div class="content d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 120px);">
+        <div class="card border-0 shadow-sm" style="width: min(720px, 90vw); background: rgba(255,255,255,0.7); border-radius: 14px;">
+            <div class="card-body text-center py-5 px-4">
+                <h1 style="font-size: clamp(3.2rem, 7vw, 8rem); font-weight: 800; letter-spacing: -0.06em; color: #f57c1f; line-height: 0.95; margin: 0 0 2rem;">WELCOME</h1>
+                <p class="text-muted fs-4 mb-4">Please select a menu from the sidebar to continue.</p>
+
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    {% if request.user.is_authenticated and request.user|can:'view_employeemodel' %}
+                        <a href="{% url 'employee_list' %}" class="btn btn-lg text-white fw-bold px-4 py-3" style="background: #f57c1f; border-color: #f57c1f; border-radius: 10px; min-width: 220px;">
+                            <i class="ti ti-users me-2"></i>Manage Employees
+                        </a>
+                    {% endif %}
+
+                    {% if request.user.is_authenticated and request.user|can:'is_staff' %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-lg btn-outline-primary fw-bold px-4 py-3" style="border-radius: 10px; min-width: 220px; background: rgba(82,141,255,0.09); border-color: #4d8cff; color: #3f7af8;">
+                            <i class="ti ti-chart-bar me-2"></i>Go to Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

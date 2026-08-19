@@ -21,11 +21,28 @@ $(document).ready(function () {
   // Mobile menu sidebar overlay
   $("body").append('<div class="sidebar-overlay"></div>');
 
-  $(document).on("click", "#mobile_btn", function () {
-    $wrapper.toggleClass("slide-nav");
-    $(".sidebar-overlay").toggleClass("opened");
-    $("html").addClass("menu-opened");
-    $("#task_window").removeClass("opened");
+  $(document).on("click", "#mobile_btn, [data-sidebar-toggle]", function (e) {
+    e.preventDefault();
+
+    if ($(window).width() <= 991) {
+      $wrapper.toggleClass("slide-nav");
+      $(".sidebar-overlay").toggleClass("opened");
+      $("html").toggleClass("menu-opened");
+      $("#task_window").removeClass("opened");
+      $(this).attr(
+        "aria-expanded",
+        String($wrapper.hasClass("slide-nav"))
+      );
+      return false;
+    }
+
+    $("body").toggleClass("mini-sidebar");
+    $("#toggle_btn").toggleClass("active", !$("body").hasClass("mini-sidebar"));
+    $(".sidebar-logo").toggleClass("active", !$("body").hasClass("mini-sidebar"));
+    $("#toggle_btn").attr(
+      "aria-expanded",
+      String(!$("body").hasClass("mini-sidebar"))
+    );
     return false;
   });
 
@@ -35,6 +52,7 @@ $(document).ready(function () {
     $wrapper.removeClass("slide-nav");
     $(".sidebar-overlay").removeClass("opened");
     $("#task_window").removeClass("opened");
+    $("#mobile_btn").attr("aria-expanded", "false");
   });
 
   // Logo Hide Btn
