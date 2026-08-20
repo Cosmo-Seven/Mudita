@@ -65,20 +65,41 @@
     </div>
 </div>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const sidebar = document.querySelector(".sidebar-inner");
+    function syncSidebarActiveState() {
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('#sidebar-menu li').forEach(li => li.classList.remove('active'));
 
-        if (!sidebar) return;
-
-        const savedScroll = localStorage.getItem("sidebarScroll");
-
-        if (savedScroll) {
-            setTimeout(() => {
-                sidebar.scrollTop = parseInt(savedScroll);
-            }, 200);
-        }
-        sidebar.addEventListener("scroll", function () {
-            localStorage.setItem("sidebarScroll", sidebar.scrollTop);
+        document.querySelectorAll('#sidebar-menu a[href]').forEach(link => {
+            const linkPath = new URL(link.href, window.location.origin).pathname;
+            if (linkPath === currentPath) {
+                link.closest('li').classList.add('active');
+                const parentSubmenu = link.closest('.submenu-open');
+                if (parentSubmenu) parentSubmenu.classList.add('active');
+            }
         });
+    }
+
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        if (window.jQuery && jQuery(".select").length > 0) {
+            jQuery(".select").select2({
+                minimumResultsForSearch: -1,
+                width: "100%",
+            });
+        }
+        if (window.feather) {
+            feather.replace();
+        }
+        document.querySelectorAll('.bulk-action-bar').forEach(bar => (bar.style.display = 'none'));
+
+        syncSidebarActiveState();
     });
+
+    document.body.addEventListener('htmx:beforeRequest', function () {
+        document.body.classList.add('htmx-loading');
+    });
+    document.body.addEventListener('htmx:afterRequest', function () {
+        document.body.classList.remove('htmx-loading');
+    });
+
+    document.addEventListener('DOMContentLoaded', syncSidebarActiveState);
 </script>

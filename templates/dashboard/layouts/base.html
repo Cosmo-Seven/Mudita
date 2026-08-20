@@ -21,12 +21,9 @@
 <body
     class="{% if not request.user.is_authenticated %}account-page bg-white{% endif %}  {% if request.path == pos_url %}pos-page{% endif %}">
 
-    <div class="main-wrapper {% if request.path == pos_url %}pos-five{% endif %}"
-         hx-boost="true"
-         hx-target="#main-body-wrapper"
-         hx-select="#main-body-wrapper"
-         hx-swap="innerHTML transition:true"
-         hx-push-url="true">
+    <div class="main-wrapper {% if request.path == pos_url %}pos-five{% endif %}" hx-boost="true"
+        hx-target="#main-body-wrapper" hx-select="#main-body-wrapper" hx-swap="innerHTML transition:true"
+        hx-push-url="true">
         {% include 'dashboard/components/toast.html' %}
         {% if request.user.is_authenticated %}
         {% include 'dashboard/layouts/header.html' %}
@@ -36,7 +33,9 @@
             {% block body %}{% endblock %}
         </div>
         {% else %}
-        {% block auth %}{% endblock %}
+        <div hx-boost="false">
+            {% block auth %}{% endblock %}
+        </div>
         {% endif %}
     </div>
 
@@ -65,4 +64,5 @@
         });
     </script>
 </body>
+
 </html>
