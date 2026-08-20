@@ -73,8 +73,6 @@
             const linkPath = new URL(link.href, window.location.origin).pathname;
             if (linkPath === currentPath) {
                 link.closest('li').classList.add('active');
-                const parentSubmenu = link.closest('.submenu-open');
-                if (parentSubmenu) parentSubmenu.classList.add('active');
             }
         });
     }
