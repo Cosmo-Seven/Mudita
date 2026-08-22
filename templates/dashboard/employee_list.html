@@ -120,7 +120,10 @@
                     </div>
 
                     <div class="mt-3 d-flex gap-2">
-                        <button type="submit" id="employeeFilterSpinner" class="htmx-indicator spinner-border spinner-border-sm ms-1">{% translate 'filter' request.session.language %}</button>
+                        <button type="submit" class="btn btn-primary">
+                        {% translate 'filter' request.session.language %}
+                            <span id="employeeFilterSpinner" class="htmx-indicator spinner-border spinner-border-sm ms-1"></span>
+                        </button>
                         <a href="{% url 'employee_list' %}" class="btn btn-secondary">{% translate 'clear' request.session.language %}</a>
                     </div>
 
@@ -186,7 +189,7 @@
                         <div class="mt-2">
                             <span class="processing-badge">
                                 <i class="ti ti-settings me-1"></i>
-                                {% translate 'processing' request.session.language %}: {{ employee.work_permit_type }}
+                                {% translate 'processing' request.session.language %}: {% translate 'notification_of_employment' request.session.language %}
                             </span>
                         </div>
                         {% endif %}
