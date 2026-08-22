@@ -187,10 +187,11 @@
 
                         {% if employee.work_permit_type %}
                         <div class="mt-2">
-                            <span class="processing-badge">
+                            <a href="{% url 'workflow_dashboard' 'employer_entry_change' %}?search={{ employee.full_name_en }}"
+                                class="processing-badge text-decoration-none">
                                 <i class="ti ti-settings me-1"></i>
-                                {% translate 'processing' request.session.language %}: {% translate 'notification_of_employment' request.session.language %}
-                            </span>
+                                {% translate 'processing' request.session.language %}: {{ employee.work_permit_type }}
+                            </a>
                         </div>
                         {% endif %}
 

@@ -12,6 +12,7 @@ from views.dashboard import (
     employee_views,
     attachment_views,
     bulk_views,
+    workflow_views,
 )
 from views.dashboard import page_views as dashboard_page_views
 
@@ -278,6 +279,29 @@ urlpatterns = (
             attachment_views.document_type_create,
             name="document_type_create",
         ),
+
+
+         path(
+            "dashboard/document-type/create/",
+            attachment_views.document_type_create,
+            name="document_type_create",
+        ),
+
+        # ========================
+        # Workflow (Employer Entry/Change, Departure, MOU)
+        # ========================
+        path(
+            "dashboard/workflow/<str:workflow_type_code>/",
+            workflow_views.workflow_dashboard,
+            name="workflow_dashboard",
+        ),
+        path(
+            "dashboard/workflow/<str:workflow_type_code>/employer/<uuid:employer_id>/employees/",
+            workflow_views.workflow_employer_employees,
+            name="workflow_employer_employees",
+        ),
+
+
         # ========================
         # Lock Screen
         # ========================

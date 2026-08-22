@@ -1,0 +1,152 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load translate %}
+{% block title %}{% translate 'workflow' request.session.language %}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <!-- Stat cards -->
+        <div class="row g-2 mb-3">
+            <div class="col"><div class="workflow-stat bg-warning"><h2>{{ stat_cards.total_employees }}</h2><span>{% translate 'total_employees' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-orange"><h2>{{ stat_cards.daily_check }}</h2><span>{% translate 'daily_check' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-danger"><h2>{{ stat_cards.not_started }}</h2><span>{% translate 'not_started' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-dark"><h2>{{ stat_cards.cancelled }}</h2><span>{% translate 'cancelled' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-success"><h2>{{ stat_cards.completed }}</h2><span>{% translate 'completed' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-orange-dark"><h2>{{ stat_cards.active_projects }}</h2><span>{% translate 'active_projects' request.session.language %}</span></div></div>
+        </div>
+
+        <!-- Global stage progress -->
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="ti ti-chart-bar me-1"></i>{% translate 'workflow_progress_global' request.session.language %} - {{ workflow_type.name }}</h6>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary"><i class="ti ti-eye-off me-1"></i>{% translate 'hide_cancelled' request.session.language %}</button>
+                    <button class="btn btn-sm btn-outline-warning"><i class="ti ti-bell me-1"></i>{% translate 'notify_settings' request.session.language %}</button>
+                    <button class="btn btn-sm btn-outline-info"><i class="ti ti-refresh me-1"></i>{% translate 'auto_mou_settings' request.session.language %}</button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="ti ti-settings me-1"></i>{% translate 'steps' request.session.language %}</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="stage-pill-grid">
+                    {% for stage in stages %}
+                    <div class="stage-pill {% if stage.is_terminal %}stage-pill-finish{% elif stage_counts|get_item:stage.id %}stage-pill-active{% endif %}">
+                        <span class="stage-pill-count">{{ stage_counts|get_item:stage.id|default:0 }}</span>
+                        {{ stage.name }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Search + operator + actions -->
+        <form method="GET" class="d-flex gap-2 mb-3">
+            <input type="hidden" name="workflow_type_code" value="{{ workflow_type.code }}">
+            <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="{% translate 'search' request.session.language %}...">
+            <button type="submit" class="btn btn-primary">{% translate 'search' request.session.language %}</button>
+            <div class="ms-auto d-flex gap-2">
+                <select class="select"><option>{% translate 'operator' request.session.language %}</option></select>
+                <button class="btn btn-dark"><i class="ti ti-trash me-1"></i>{% translate 'trash' request.session.language %}</button>
+                <button class="btn btn-warning"><i class="ti ti-plus me-1"></i>{% translate 'add_employee' request.session.language %}</button>
+            </div>
+        </form>
+
+        <!-- Address filter -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="ti ti-map-pin text-warning me-1"></i>
+                    <strong class="me-2">{% translate 'screen_by_address' request.session.language %}</strong>
+                    <span class="badge bg-info-transparent text-info">{% translate 'dynamic_filter' request.session.language %}</span>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4"><label class="form-label">{% translate 'province' request.session.language %}</label><select class="select"><option>{% translate 'all_provinces' request.session.language %}</option></select></div>
+                    <div class="col-lg-4"><label class="form-label">{% translate 'district' request.session.language %}</label><select class="select"><option>{% translate 'all_districts' request.session.language %}</option></select></div>
+                    <div class="col-lg-4"><label class="form-label">{% translate 'sub_district' request.session.language %}</label><select class="select"><option>{% translate 'every_sub_district' request.session.language %}</option></select></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow type tabs -->
+        <div class="d-flex gap-2 mb-3 flex-wrap">
+            {% for wt in workflow_types %}
+            <a href="{% url 'workflow_dashboard' wt.code %}" class="btn {% if wt.code == workflow_type.code %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                {{ wt.name }}
+            </a>
+            {% endfor %}
+        </div>
+
+        <!-- Employer list -->
+        {% for employer in employers %}
+        <div class="card mb-2 employer-workflow-row">
+            <div class="card-body d-flex align-items-center gap-2">
+                <input type="checkbox" class="form-check-input">
+                <i class="ti ti-building"></i>
+                <div class="flex-grow-1">
+                    <a href="{% url 'employer_detail' employer.id %}" class="fw-bold text-warning">{{ employer.name_en }}</a>
+                    <div class="text-muted small">{{ employer.employer_id_number|default:"" }}</div>
+                </div>
+                <span class="badge bg-light text-dark">{{ employer.total_count }} {% translate 'total' request.session.language %}</span>
+                <span class="badge bg-danger-transparent text-danger">{{ employer.pending_count }} {% translate 'pending' request.session.language %}</span>
+                <span class="badge bg-success-transparent text-success">{{ employer.done_count }} {% translate 'done' request.session.language %}</span>
+                <span class="badge bg-secondary-transparent">{{ employer.cancel_count }} {% translate 'cancel' request.session.language %}</span>
+                <button class="btn btn-sm btn-warning">+{% translate 'add' request.session.language %}</button>
+                <button class="btn btn-sm btn-outline-success">{% translate 'import' request.session.language %}</button>
+                <button class="btn btn-sm btn-light workflow-expand-toggle"
+                    onclick="toggleEmployerRow(this, '{{ employer.id }}', '{{ workflow_type.code }}')">
+                    <i class="ti ti-chevron-down"></i>
+                </button>
+            </div>
+            <div class="workflow-employer-employees" id="employer-employees-{{ employer.id }}" style="display:none;"></div>
+        </div>
+        {% empty %}
+        <div class="card"><div class="card-body text-center text-muted py-4">{% translate 'no_data_found' request.session.language %}</div></div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .workflow-stat { border-radius: 8px; padding: 16px; color: #fff; text-align: center; }
+    .workflow-stat h2 { font-size: 32px; font-weight: 800; margin-bottom: 2px; }
+    .workflow-stat span { font-size: 13px; opacity: .9; }
+    .bg-orange { background: #ff8a3d; } .bg-orange-dark { background: #ff7a1a; }
+
+    .stage-pill-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .stage-pill {
+        border: 1px solid #e2e6ef; border-radius: 999px; padding: 8px 16px;
+        font-size: 13px; font-weight: 500; color: #556; display: flex; align-items: center; gap: 6px;
+    }
+    .stage-pill-count {
+        background: #e9ecf3; border-radius: 999px; min-width: 20px; height: 20px;
+        display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;
+    }
+    .stage-pill-active .stage-pill-count { background: #16a34a; color: #fff; }
+    .stage-pill-finish { border-color: #16a34a; color: #16a34a; font-weight: 700; }
+    .stage-pill-finish .stage-pill-count { background: #16a34a; color: #fff; }
+</style>
+
+<script>
+    function toggleEmployerRow(btn, employerId, workflowCode) {
+        const container = document.getElementById(`employer-employees-${employerId}`);
+        const isOpen = container.style.display !== 'none';
+
+        if (isOpen) {
+            container.style.display = 'none';
+            btn.querySelector('i').className = 'ti ti-chevron-down';
+            return;
+        }
+
+        container.style.display = 'block';
+        btn.querySelector('i').className = 'ti ti-chevron-up';
+
+        if (!container.dataset.loaded) {
+            container.innerHTML = '<div class="text-center py-3"><div class="spinner-border spinner-border-sm"></div></div>';
+            fetch(`/dashboard/workflow/${workflowCode}/employer/${employerId}/employees/`)
+                .then(res => res.text())
+                .then(html => {
+                    container.innerHTML = html;
+                    container.dataset.loaded = "true";
+                    if (window.feather) feather.replace();
+                });
+        }
+    }
+</script>
+{% endblock %}

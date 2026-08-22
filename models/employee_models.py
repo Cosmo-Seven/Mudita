@@ -5,6 +5,7 @@ from models.employer_models import EmployerModel
 from models.attachment_models import AddressModel, DocumentModel
 from helpers.translation import register_key
 from django.contrib.contenttypes.fields import GenericRelation
+from datetime import date
 
 class NationalityModel(BaseModel):
     name = models.CharField(max_length=100)
