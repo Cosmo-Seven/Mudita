@@ -43,17 +43,33 @@
     {% include 'dashboard/components/js.html' %}
 
     <script>
-        document.body.addEventListener('htmx:afterSwap', function (event) {
-            if (window.jQuery && jQuery(".select").length > 0) {
-                jQuery(".select").select2({
-                    minimumResultsForSearch: -1,
-                    width: "100%",
-                });
-            }
+        function reinitDashboardWidgets(root) {
+            if (!window.jQuery || !jQuery.fn.select2) return;
+            var $scope = jQuery(root || document);
+            $scope.find("select.select").each(function () {
+                var $el = jQuery(this);
+                if ($el.hasClass("select2-hidden-accessible")) {
+                    $el.select2("destroy");
+                }
+            });
+            $scope.find(".select:not(.searchable-select)").select2({
+                minimumResultsForSearch: -1,
+                width: "100%",
+            });
+            $scope.find(".searchable-select").select2({
+                minimumResultsForSearch: 0,
+                width: "100%",
+            });
             if (window.feather) {
                 feather.replace();
             }
-            document.querySelectorAll('.bulk-action-bar').forEach(bar => (bar.style.display = 'none'));
+            document.querySelectorAll(".bulk-action-bar").forEach(function (bar) {
+                bar.style.display = "none";
+            });
+        }
+
+        document.body.addEventListener("htmx:afterSettle", function (event) {
+            reinitDashboardWidgets(event.detail && event.detail.target);
         });
 
         document.body.addEventListener('htmx:beforeRequest', function () {

@@ -43,14 +43,13 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table entity-list-table">
                         <thead class="thead-light">
                             <tr>
                                 <th>
                                     <input type="checkbox" class="form-check-input"
                                         onclick="bulkToggleAllVisible_employermodel(this.checked)">
                                 </th>
-                                <th>{% translate 'employer_code' request.session.language %}</th>
                                 <th>{% translate 'name' request.session.language %}</th>
                                 <th>{% translate 'business_type' request.session.language %}</th>
                                 <th>{% translate 'phone' request.session.language %}</th>
@@ -66,15 +65,17 @@
                                     <input type="checkbox" class="form-check-input bulk-row-checkbox"
                                         data-model="employermodel" value="{{ employer.id }}">
                                 </td>
-                                <td>{{ employer.employer_code|default:"-" }}</td>
                                 <td>
                                     <a href="{% url 'employer_detail' employer.id %}">
                                         {% translate employer.translation_key request.session.language %}
                                     </a>
+                                    <span class="table-sub">{{ employer.employer_code|default:"-" }}</span>
                                 </td>
                                 <td>{{ employer.business_type_en|default:"-" }}</td>
                                 <td>{{ employer.phone|default:"-" }}</td>
-                                <td>{{ employer.employees.count }}</td>
+                                <td>
+                                    <span class="badge bg-light text-dark">{{ employer.employees.count }}</span>
+                                </td>
                                 <td>
                                     <span
                                         class="d-inline-flex align-items-center p-1 pe-2 rounded-1 text-white bg-{% if employer.status == 'active' %}success{% else %}danger{% endif %} fs-10">
@@ -114,6 +115,8 @@
     {% include 'dashboard/components/bulk_action_bar.html' with model_name='employermodel' total_count=filters.total_count|default:0 %}
     {% include 'dashboard/layouts/footer.html' %}
 </div>
+
+{% include 'dashboard/components/entity_form_styles.html' %}
 
 <!-- Delete Modal -->
 {% for employer in employers %}

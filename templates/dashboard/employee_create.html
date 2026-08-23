@@ -13,7 +13,7 @@
 
         <form action="{% url 'employee_create' %}" method="POST" enctype="multipart/form-data" hx-boost="false">
             {% csrf_token %}
-            <div class="card mb-3">
+            <div class="card mb-3 entity-form-card">
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">
@@ -31,7 +31,7 @@
             </div>
 
             <!-- 1. Personal Information -->
-            <div class="card mb-3">
+            <div class="card mb-3 entity-form-card">
                 <div class="card-header">
                     <h5 class="mb-0">1. {% translate 'personal_information' request.session.language %}</h5>
                 </div>
@@ -83,7 +83,7 @@
                             </div>
                         </div>
                         <div class="col-lg-4">
-                            <div class="mb-3 text-center">
+                            <div class="mb-3 text-center photo-upload-box">
                                 <label class="form-label d-block text-center">{% translate 'employee_photos' request.session.language %}</label>
 
                                 <!-- Image Preview Container -->
@@ -149,7 +149,7 @@
             </div>
 
             <!-- 2. Contact & Nationality -->
-            <div class="card mb-3">
+            <div class="card mb-3 entity-form-card">
                 <div class="card-header">
                     <h5 class="mb-0">2. {% translate 'contact_information_and_nationality' request.session.language %}
                     </h5>
@@ -179,7 +179,7 @@
             </div>
 
             <!-- 3. Passport & Visa -->
-            <div class="card mb-3">
+            <div class="card mb-3 entity-form-card">
                 <div class="card-header">
                     <h5 class="mb-0">3. {% translate 'passport_and_visa_information' request.session.language %}</h5>
                 </div>
@@ -250,7 +250,7 @@
             </div>
 
             <!-- 4. Employment Information -->
-            <div class="card mb-3">
+            <div class="card mb-3 entity-form-card">
                 <div class="card-header">
                     <h5 class="mb-0">4. {% translate 'employment_information_and_documents' request.session.language %}
                     </h5>
@@ -365,7 +365,7 @@
             </div>
 
             <!-- 5. Health Insurance -->
-            <div class="card mb-3">
+            <div class="card mb-3 entity-form-card">
                 <div class="card-header">
                     <h5 class="mb-0">5. {% translate 'health_insurance_information' request.session.language %}</h5>
                 </div>
@@ -389,7 +389,7 @@
             </div>
 
             <!-- 6. Login Information -->
-            <div class="card mb-3">
+            <div class="card mb-3 entity-form-card">
                 <div class="card-header">
                     <h5 class="mb-0">6. {% translate 'login_information' request.session.language %}</h5>
                 </div>
@@ -405,7 +405,7 @@
                 </div>
             </div>
 
-            <div class="card mb-3">
+            <div class="card mb-3 entity-form-card">
                 <div class="card-body d-flex justify-content-end">
                     <a href="{% url 'employee_list' %}" class="btn btn-secondary me-2">
                         {% translate 'cancel' request.session.language %}
@@ -419,6 +419,7 @@
     </div>
     {% include 'dashboard/layouts/footer.html' %}
 </div>
+{% include 'dashboard/components/entity_form_styles.html' %}
 
 <script>
     document.getElementById('photoInput').addEventListener('change', function (event) {

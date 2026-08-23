@@ -190,6 +190,7 @@ def employer_update(request, pk):
 
         employer.updated_by = request.user
         employer.save()
+        _save_employer_attachments(request, employer)
         messages.success(request, UPDATE)
         return redirect("employer_list")
 

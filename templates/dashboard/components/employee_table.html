@@ -3,14 +3,13 @@
 <div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table">
+            <table class="table entity-list-table">
                 <thead class="thead-light">
                     <tr>
                         <th>
                             <input type="checkbox" class="form-check-input"
                                 onclick="bulkToggleAllVisible_employeemodel(this.checked)">
                         </th>
-                        <th>{% translate 'photo' request.session.language %}</th>
                         <th>{% translate 'name' request.session.language %}</th>
                         <th>{% translate 'employer' request.session.language %}</th>
                         <th>{% translate 'nationality' request.session.language %}</th>
@@ -29,15 +28,18 @@
                                 data-model="employeemodel" value="{{ employee.id }}">
                         </td>
                         <td>
-                            <a href="javascript:void(0);" class="avatar avatar-md">
-                                <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
-                                    alt="{{ employee.full_name_en }}">
-                            </a>
-                        </td>
-                        <td>
-                            <a href="{% url 'employee_update' employee.id %}">
-                                {% translate employee.translation_key request.session.language %}
-                            </a>
+                            <div class="d-flex align-items-center">
+                                <a href="javascript:void(0);" class="avatar avatar-md me-2" onclick="openEmployeePreview('{{ employee.id }}')">
+                                    <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                                        alt="{{ employee.full_name_en }}">
+                                </a>
+                                <div>
+                                    <a href="{% url 'employee_update' employee.id %}">
+                                        {% translate employee.translation_key request.session.language %}
+                                    </a>
+                                    <span class="table-sub">{{ employee.title_th }} {{ employee.name_th }}</span>
+                                </div>
+                            </div>
                         </td>
                         <td>
                             <a href="{% url 'employer_detail' employee.employer.id %}">{{ employee.employer.name_en }}</a>
@@ -46,12 +48,11 @@
                         <td>
                             {{ employee.passport_number|default:"-" }}
                             {% if employee.passport_expiry_date %}
-                            <br>
-                            <small class="{% if employee.passport_status == 'expired' %}text-danger
+                            <span class="table-sub {% if employee.passport_status == 'expired' %}text-danger
                                 {% elif employee.passport_status == 'expiring_soon' %}text-warning
                                 {% else %}text-success{% endif %}">
                                 {% translate 'expires' request.session.language %}: {{ employee.passport_expiry_date }}
-                            </small>
+                            </span>
                             {% endif %}
                         </td>
                         <td>
@@ -93,7 +94,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="10" class="text-center py-4">
+                        <td colspan="9" class="text-center py-4">
                             {% translate 'no_data_found' request.session.language %}
                         </td>
                     </tr>

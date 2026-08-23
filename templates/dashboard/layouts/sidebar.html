@@ -77,18 +77,7 @@
         });
     }
 
-    document.body.addEventListener('htmx:afterSwap', function (event) {
-        if (window.jQuery && jQuery(".select").length > 0) {
-            jQuery(".select").select2({
-                minimumResultsForSearch: -1,
-                width: "100%",
-            });
-        }
-        if (window.feather) {
-            feather.replace();
-        }
-        document.querySelectorAll('.bulk-action-bar').forEach(bar => (bar.style.display = 'none'));
-
+    document.body.addEventListener('htmx:afterSettle', function () {
         syncSidebarActiveState();
     });
 

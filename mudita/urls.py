@@ -240,8 +240,7 @@ urlpatterns = (
         ),  # sidebar ရဲ့ "Employment history"
         path("dashboard/employee/preview/<uuid:pk>/", employee_views.employee_preview, name="employee_preview"),
         # ========================
-        # Attachments (Address / Document) — Employer & Employee နှစ်ခုလုံးအတွက် generic
-        # <str:model_name> = "employer" | "employee" (helpers/allowed_models.py ထဲက model_name)
+        # Attachments (Address / Document)
         # ========================
         path(
             "dashboard/address/add/<str:model_name>/<uuid:object_id>/",

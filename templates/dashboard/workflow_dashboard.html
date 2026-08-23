@@ -1,17 +1,18 @@
 {% extends 'dashboard/layouts/base.html' %}
 {% load translate %}
+{% load dict_extras %}
 {% block title %}{% translate 'workflow' request.session.language %}{% endblock %}
 {% block body %}
 <div class="page-wrapper">
     <div class="content">
         <!-- Stat cards -->
         <div class="row g-2 mb-3">
-            <div class="col"><div class="workflow-stat bg-warning"><h2>{{ stat_cards.total_employees }}</h2><span>{% translate 'total_employees' request.session.language %}</span></div></div>
-            <div class="col"><div class="workflow-stat bg-orange"><h2>{{ stat_cards.daily_check }}</h2><span>{% translate 'daily_check' request.session.language %}</span></div></div>
-            <div class="col"><div class="workflow-stat bg-danger"><h2>{{ stat_cards.not_started }}</h2><span>{% translate 'not_started' request.session.language %}</span></div></div>
-            <div class="col"><div class="workflow-stat bg-dark"><h2>{{ stat_cards.cancelled }}</h2><span>{% translate 'cancelled' request.session.language %}</span></div></div>
-            <div class="col"><div class="workflow-stat bg-success"><h2>{{ stat_cards.completed }}</h2><span>{% translate 'completed' request.session.language %}</span></div></div>
-            <div class="col"><div class="workflow-stat bg-orange-dark"><h2>{{ stat_cards.active_projects }}</h2><span>{% translate 'active_projects' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-warning"><h2 class="text-white">{{ stat_cards.total_employees }}</h2><span>{% translate 'total_employees' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-orange"><h2 class="text-white">{{ stat_cards.daily_check }}</h2><span>{% translate 'daily_check' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-danger"><h2 class="text-white">{{ stat_cards.not_started }}</h2><span>{% translate 'not_started' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-dark"><h2 class="text-white">{{ stat_cards.cancelled }}</h2><span>{% translate 'cancelled' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-success"><h2 class="text-white">{{ stat_cards.completed }}</h2><span>{% translate 'completed' request.session.language %}</span></div></div>
+            <div class="col"><div class="workflow-stat bg-orange-dark"><h2 class="text-white">{{ stat_cards.active_projects }}</h2><span>{% translate 'active_projects' request.session.language %}</span></div></div>
         </div>
 
         <!-- Global stage progress -->

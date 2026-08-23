@@ -1,8 +1,10 @@
 {% load translate %}
+{% load static %}
+{% load dict_extras %}
 {% for wf in workflows %}
 <div class="workflow-employee-card">
-    <div class="row">
-        <div class="col-lg-3 d-flex gap-2">
+    <div class="workflow-employee-body">
+        <div class="workflow-employee-identity d-flex gap-2">
             <input type="checkbox" class="form-check-input mt-1">
             <img src="{% if wf.employee.photo %}{{ wf.employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
                 class="rounded" style="width:48px;height:48px;object-fit:cover;">
@@ -18,7 +20,7 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
+        <div class="workflow-employee-note">
             <label class="small text-muted">{% translate 'note' request.session.language %}</label>
             <input type="text" class="form-control form-control-sm mb-2" value="{{ wf.note }}">
             <div class="small text-muted mb-1">{% translate 'appointment' request.session.language %}</div>
@@ -27,9 +29,8 @@
             <div class="small"><i class="ti ti-link"></i> {{ wf.employee.login_email|default:"-" }}</div>
         </div>
 
-        <div class="col-lg-5">
+        <div class="workflow-employee-refs">
             <div class="d-flex gap-2 mb-2 flex-wrap justify-content-end">
-                <!-- ⚠️ Button ၅ ခု — click behavior ကို ရှင်းလင်းချက်ရမှ wire up ဆက်လုပ်ပါမယ် -->
                 <button class="btn btn-sm btn-info" disabled title="{% translate 'coming_soon' request.session.language %}">
                     <i class="ti ti-clock-back me-1"></i>{% translate 'back_to_prep' request.session.language %}
                 </button>
@@ -46,15 +47,19 @@
                     <i class="ti ti-x me-1"></i>{% translate 'cancel' request.session.language %}
                 </button>
             </div>
-
-            <div class="small text-muted mb-1">{% translate 'ra_number_from_the_outsource_system' request.session.language %}</div>
-            <div class="fw-medium mb-2">{{ wf.employee.ra_number|default:"-" }}</div>
-            <div class="small text-muted mb-1">{% translate 'application_number' request.session.language %}</div>
-            <div class="fw-medium">{{ wf.employee.application_number|default:"-" }}</div>
+            <div class="d-flex gap-3 flex-wrap">
+                <div>
+                    <div class="small text-muted mb-1">{% translate 'ra_number_from_the_outsource_system' request.session.language %}</div>
+                    <div class="fw-medium">{{ wf.employee.ra_number|default:"-" }}</div>
+                </div>
+                <div>
+                    <div class="small text-muted mb-1">{% translate 'application_number' request.session.language %}</div>
+                    <div class="fw-medium">{{ wf.employee.application_number|default:"-" }}</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Stage checklist — done/current/pending -->
     <div class="d-flex flex-wrap gap-2 mt-3">
         {% for stage in stages %}
         {% with done=wf.stage_logs.all|stage_done:stage.id %}
@@ -71,8 +76,10 @@
 {% endfor %}
 
 <style>
-    .workflow-employee-card { border: 1px solid #f0e4b8; border-radius: 8px; padding: 14px; margin: 10px; background: #fdfaf0; }
+    .workflow-employee-card { border: 1px solid #f0e4b8; border-radius: 10px; padding: 14px; margin: 10px; background: #fdfaf0; }
+    .workflow-employee-body { display: grid; grid-template-columns: 1.2fr 1fr 1.4fr; gap: 16px; align-items: start; }
     .stage-chip { border-radius: 999px; padding: 5px 12px; font-size: 12px; border: 1px solid #e2e6ef; color: #8a94a6; }
     .stage-chip-done { background: #dcfce7; color: #15803d; border-color: #15803d; }
     .stage-chip-current { background: #fff7e6; color: #b45309; border-color: #f59e0b; font-weight: 700; }
+    @media (max-width: 991px) { .workflow-employee-body { grid-template-columns: 1fr; } }
 </style>
