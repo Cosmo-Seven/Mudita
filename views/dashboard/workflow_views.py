@@ -46,7 +46,7 @@ def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
 
     # ===== Employer-grouped list =====
     employers = (
-        EmployerModel.objects.filter(employees__workflows__workflow_type=workflow_type)
+        EmployerModel.objects.filter(employees__workflows__in=workflows)
         .annotate(
             total_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type), distinct=True),
             pending_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type, employees__workflows__status="in_progress"), distinct=True),

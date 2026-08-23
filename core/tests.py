@@ -8,15 +8,15 @@ from models.role_models import RoleModel
 User = get_user_model()
 
 
-class DashboardWelcomeAccessTests(TestCase):
+class DashboardLoginTests(TestCase):
     def setUp(self):
         self.role = RoleModel.objects.create(name="Employee Manager")
         self.role.permissions.add(
             Permission.objects.get(codename="view_employeemodel")
         )
 
-    def test_login_redirects_to_welcome_page_and_shows_allowed_links(self):
-        user = User.objects.create_user(
+    def test_login_redirects_to_dashboard(self):
+        User.objects.create_user(
             username="manager",
             email="manager@example.com",
             password="StrongPass123!",
@@ -24,15 +24,15 @@ class DashboardWelcomeAccessTests(TestCase):
             is_staff=True,
         )
 
-        self.client.login(email="manager@example.com", password="StrongPass123!")
-        response = self.client.get(reverse("dashboard_welcome"))
+        response = self.client.post(
+            reverse("dashboard_login"),
+            {"email": "manager@example.com", "password": "StrongPass123!"},
+        )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Go to Dashboard")
-        self.assertContains(response, "Manage Employees")
+        self.assertRedirects(response, reverse("dashboard"))
 
-    def test_welcome_page_hides_links_when_user_lacks_permissions(self):
-        user = User.objects.create_user(
+    def test_authenticated_user_visiting_login_is_redirected_to_dashboard(self):
+        User.objects.create_user(
             username="basicuser",
             email="basicuser@example.com",
             password="StrongPass123!",
@@ -41,8 +41,6 @@ class DashboardWelcomeAccessTests(TestCase):
         )
 
         self.client.login(email="basicuser@example.com", password="StrongPass123!")
-        response = self.client.get(reverse("dashboard_welcome"))
+        response = self.client.get(reverse("dashboard_login"))
 
-        self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, "Go to Dashboard")
-        self.assertNotContains(response, "Manage Employees")
+        self.assertRedirects(response, reverse("dashboard"))

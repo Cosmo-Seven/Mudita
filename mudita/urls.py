@@ -42,7 +42,6 @@ urlpatterns = (
             auth_views.dashboard_logout,
             name="dashboard_logout",
         ),
-        path("dashboard/welcome/", auth_views.dashboard_welcome, name="dashboard_welcome"),
         path("dashboard/profile/", auth_views.profile, name="dashboard_profile"),
         path(
             "dashboard/site-settings/",
