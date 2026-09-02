@@ -9,6 +9,10 @@ from core.models import (
     WorkflowStageModel, EmployeeWorkflowModel,
 )
 
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from core.models import WorkflowStageModel
+
 
 @custom_login_required("dashboard_login")
 @role_permission_required("view_employeeworkflowmodel")
@@ -44,7 +48,9 @@ def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
         stage.id: workflows.filter(current_stage=stage).count() for stage in stages
     }
 
-    # ===== Employer-grouped list =====
+    # ===== Employer data for filters and grouped list =====
+    employer_options = EmployerModel.objects.order_by("name_en")
+
     employers = (
         EmployerModel.objects.filter(employees__workflows__in=workflows)
         .annotate(
@@ -63,6 +69,7 @@ def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
         "stages": stages,
         "stat_cards": stat_cards,
         "stage_counts": stage_counts,
+        "employer_options": employer_options,
         "employers": employers,
         "search": search,
     }
@@ -82,3 +89,84 @@ def workflow_employer_employees(request, employer_id, workflow_type_code):
 
     context = {"workflows": workflows, "stages": stages, "employer": employer}
     return render(request, "dashboard/components/workflow_employee_cards.html", context)
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("view_workflowstagemodel")
+def workflow_steps_modal(request, workflow_type_code):
+    workflow_type = get_object_or_404(WorkflowTypeModel, code=workflow_type_code)
+    stages = workflow_type.stages.order_by("order")
+    context = {"workflow_type": workflow_type, "stages": stages}
+    return render(request, "dashboard/components/workflow_steps_modal_content.html", context)
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("add_workflowstagemodel")
+@require_POST
+def workflow_stage_create(request, workflow_type_code):
+    workflow_type = get_object_or_404(WorkflowTypeModel, code=workflow_type_code)
+    name = request.POST.get("name", "").strip()
+
+    if not name:
+        return JsonResponse({"success": False, "error": "Step name is required."})
+
+    last_order = workflow_type.stages.aggregate(models.Max("order"))["order__max"] or 0
+    stage = WorkflowStageModel.objects.create(
+        workflow_type=workflow_type, name=name, order=last_order + 1, created_by=request.user
+    )
+    return JsonResponse({"success": True, "id": str(stage.id), "name": stage.name, "order": stage.order})
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("change_workflowstagemodel")
+@require_POST
+def workflow_stage_update(request, pk):
+    stage = get_object_or_404(WorkflowStageModel, id=pk)
+    name = request.POST.get("name", "").strip()
+
+    if not name:
+        return JsonResponse({"success": False, "error": "Step name is required."})
+
+    stage.name = name
+    stage.updated_by = request.user
+    stage.save()
+    return JsonResponse({"success": True, "name": stage.name})
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("delete_workflowstagemodel")
+@require_POST
+def workflow_stage_delete(request, pk):
+    stage = get_object_or_404(WorkflowStageModel, id=pk)
+
+    if stage.workflow_logs.exists() if hasattr(stage, "workflow_logs") else False:
+        return JsonResponse({"success": False, "error": "This step is already in use and cannot be deleted."})
+
+    stage.delete()
+    return JsonResponse({"success": True})
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("change_workflowstagemodel")
+@require_POST
+def workflow_stage_reorder(request, pk, direction):
+    stage = get_object_or_404(WorkflowStageModel, id=pk)
+
+    if direction == "up":
+        neighbor = (
+            WorkflowStageModel.objects.filter(workflow_type=stage.workflow_type, order__lt=stage.order)
+            .order_by("-order").first()
+        )
+    else:
+        neighbor = (
+            WorkflowStageModel.objects.filter(workflow_type=stage.workflow_type, order__gt=stage.order)
+            .order_by("order").first()
+        )
+
+    if not neighbor:
+        return JsonResponse({"success": False, "error": "Cannot move further."})
+
+    stage.order, neighbor.order = neighbor.order, stage.order
+    stage.save(update_fields=["order"])
+    neighbor.save(update_fields=["order"])
+    return JsonResponse({"success": True})

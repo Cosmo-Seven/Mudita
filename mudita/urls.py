@@ -299,6 +299,12 @@ urlpatterns = (
             name="workflow_employer_employees",
         ),
 
+        path("dashboard/workflow/<str:workflow_type_code>/steps/", workflow_views.workflow_steps_modal, name="workflow_steps_modal"),
+        path("dashboard/workflow/<str:workflow_type_code>/steps/create/", workflow_views.workflow_stage_create, name="workflow_stage_create"),
+        path("dashboard/workflow/step/<uuid:pk>/update/", workflow_views.workflow_stage_update, name="workflow_stage_update"),
+        path("dashboard/workflow/step/<uuid:pk>/delete/", workflow_views.workflow_stage_delete, name="workflow_stage_delete"),
+        path("dashboard/workflow/step/<uuid:pk>/reorder/<str:direction>/", workflow_views.workflow_stage_reorder, name="workflow_stage_reorder"),
+
 
         # ========================
         # Lock Screen

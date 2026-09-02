@@ -23,7 +23,9 @@
                     <button class="btn btn-sm btn-outline-secondary"><i class="ti ti-eye-off me-1"></i>{% translate 'hide_cancelled' request.session.language %}</button>
                     <button class="btn btn-sm btn-outline-warning"><i class="ti ti-bell me-1"></i>{% translate 'notify_settings' request.session.language %}</button>
                     <button class="btn btn-sm btn-outline-info"><i class="ti ti-refresh me-1"></i>{% translate 'auto_mou_settings' request.session.language %}</button>
-                    <button class="btn btn-sm btn-outline-secondary"><i class="ti ti-settings me-1"></i>{% translate 'steps' request.session.language %}</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="openWorkflowStepsModal('{{ workflow_type.code }}')">
+                        <i class="ti ti-settings me-1"></i>{% translate 'steps' request.session.language %}
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -39,14 +41,25 @@
         </div>
 
         <!-- Search + operator + actions -->
-        <form method="GET" class="d-flex gap-2 mb-3">
+        <form method="GET" class="workflow-search-form mb-3">
             <input type="hidden" name="workflow_type_code" value="{{ workflow_type.code }}">
-            <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="{% translate 'search' request.session.language %}...">
-            <button type="submit" class="btn btn-primary">{% translate 'search' request.session.language %}</button>
-            <div class="ms-auto d-flex gap-2">
-                <select class="select"><option>{% translate 'operator' request.session.language %}</option></select>
-                <button class="btn btn-dark"><i class="ti ti-trash me-1"></i>{% translate 'trash' request.session.language %}</button>
-                <button class="btn btn-warning"><i class="ti ti-plus me-1"></i>{% translate 'add_employee' request.session.language %}</button>
+            <div class="workflow-search-box">
+                <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="{% translate 'search' request.session.language %}...">
+            </div>
+            <button type="submit" class="btn btn-primary workflow-search-btn">{% translate 'search' request.session.language %}</button>
+            <div class="workflow-search-actions ms-auto d-flex gap-2">
+                <select class="select" name="employer" onchange="this.form.submit()">
+                    {% if employer_options %}
+                        <option value="">All Employers</option>
+                        {% for employer_option in employer_options %}
+                        <option value="{{ employer_option.id }}" {% if request.GET.employer == employer_option.id|stringformat:"s" %}selected{% endif %}>
+                            {{ employer_option.name_en }}
+                        </option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+                <button type="button" class="btn btn-dark"><i class="ti ti-trash me-1"></i>{% translate 'trash' request.session.language %}</button>
+                <button type="button" class="btn btn-warning"><i class="ti ti-plus me-1"></i>{% translate 'add_employee' request.session.language %}</button>
             </div>
         </form>
 
@@ -102,6 +115,14 @@
         <div class="card"><div class="card-body text-center text-muted py-4">{% translate 'no_data_found' request.session.language %}</div></div>
         {% endfor %}
     </div>
+
+    <div class="modal fade" id="workflowStepsModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" id="workflowStepsModalContent">
+            <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+        </div>
+    </div>
+</div>
 </div>
 
 <style>
@@ -122,6 +143,75 @@
     .stage-pill-active .stage-pill-count { background: #16a34a; color: #fff; }
     .stage-pill-finish { border-color: #16a34a; color: #16a34a; font-weight: 700; }
     .stage-pill-finish .stage-pill-count { background: #16a34a; color: #fff; }
+
+    .workflow-search-form {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        padding: 0.85rem 1rem;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+    }
+    .workflow-search-box {
+        flex: 1 1 320px;
+        min-width: 220px;
+        max-width: 420px;
+    }
+    .workflow-search-box .form-control {
+        width: 100%;
+        min-height: 42px;
+        border: 1px solid #dfe7f4;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+        transition: all 0.2s ease;
+    }
+    .workflow-search-box .form-control:focus {
+        border-color: #ffb15f;
+        box-shadow: 0 0 0 3px rgba(255, 177, 95, 0.18);
+    }
+    .workflow-search-btn {
+        white-space: nowrap;
+        min-height: 42px;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.55rem 1rem;
+    }
+    .workflow-search-actions {
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .workflow-search-actions .select,
+    .workflow-search-actions .btn {
+        min-height: 42px;
+        border-radius: 10px;
+    }
+    .workflow-search-actions .btn {
+        font-weight: 600;
+    }
+
+    @media (max-width: 767.98px) {
+        .workflow-search-form {
+            align-items: stretch;
+            padding: 0.75rem;
+        }
+        .workflow-search-box,
+        .workflow-search-btn,
+        .workflow-search-actions {
+            width: 100%;
+        }
+        .workflow-search-box {
+            max-width: none;
+        }
+        .workflow-search-actions {
+            margin-left: 0 !important;
+            justify-content: flex-start;
+        }
+    }
 </style>
 
 <script>
@@ -149,5 +239,22 @@
                 });
         }
     }
+
+    function openWorkflowStepsModal(workflowCode) {
+    const contentBox = document.getElementById('workflowStepsModalContent');
+    contentBox.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
+    contentBox.dataset.workflowCode = workflowCode;
+
+    const modal = new bootstrap.Modal(document.getElementById('workflowStepsModal'));
+    modal.show();
+
+    fetch(`/dashboard/workflow/${workflowCode}/steps/`)
+        .then(res => res.text())
+        .then(html => {
+            contentBox.innerHTML = html;
+            document.getElementById('stepsModalBody').dataset.workflowCode = workflowCode;
+            if (window.feather) feather.replace();
+        });
+}
 </script>
 {% endblock %}
