@@ -35,7 +35,7 @@ def sidebar(request):
                         "permission": "view_employeeworkflowmodel",
                     },
                     {
-                        "label": "notification_of_employer_entry_change",
+                        "label": "processing",
                         "url_name": "workflow_notification",
                         "icon": "ti ti-chart-bar",
                         "permission": "view_employeeworkflowmodel",

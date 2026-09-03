@@ -1,4 +1,4 @@
-# core/migrations/0004_seed_preparation_workflow.py
+# core/migrations/0005_seed_preparation_workflow.py
 from django.db import migrations
 
 STAGES = [
@@ -35,5 +35,5 @@ def unseed(apps, schema_editor):
     WorkflowTypeModel.objects.filter(code="pre_production_preparation").delete()
 
 class Migration(migrations.Migration):
-    dependencies = [("core", "0003_workflowtypemodel_workflowstagemodel_and_more")]
+    dependencies = [("core", "0001_initial")]
     operations = [migrations.RunPython(seed, unseed)]
