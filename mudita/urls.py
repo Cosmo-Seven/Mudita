@@ -293,6 +293,20 @@ urlpatterns = (
             workflow_views.workflow_dashboard,
             name="workflow_dashboard",
         ),
+
+        path(
+            "dashboard/workflow/notification/",
+            workflow_views.workflow_dashboard,
+            {"workflow_type_code": "employer_entry_change"},
+            name="workflow_notification",
+        ),
+        path(
+            "dashboard/workflow/preparation/",
+            workflow_views.workflow_dashboard,
+            {"workflow_type_code": "pre_production_preparation"},
+            name="workflow_preparation",
+        ),
+
         path(
             "dashboard/workflow/<str:workflow_type_code>/employer/<uuid:employer_id>/employees/",
             workflow_views.workflow_employer_employees,

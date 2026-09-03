@@ -14,7 +14,7 @@ def sidebar(request):
             },
             {
                 "title": "employer_management",
-                "permissions": ["view_employermodel", "view_employeemodel"],
+                "permissions": ["view_employermodel", "view_employeemodel", "view_employeeworkflowmodel"],
                 "items": [
                     {
                         "label": "employers",
@@ -27,6 +27,18 @@ def sidebar(request):
                         "url_name": "employee_list",
                         "icon": "ti ti-users",
                         "permission": "view_employeemodel",
+                    },
+                    {
+                        "label": "preparation",
+                        "url_name": "workflow_preparation",
+                        "icon": "ti ti-hierarchy-2",
+                        "permission": "view_employeeworkflowmodel",
+                    },
+                    {
+                        "label": "notification_of_employer_entry_change",
+                        "url_name": "workflow_notification",
+                        "icon": "ti ti-chart-bar",
+                        "permission": "view_employeeworkflowmodel",
                     },
                 ],
             },
