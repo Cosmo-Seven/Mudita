@@ -6,16 +6,16 @@
     </h5>
     <button type="button" class="close text-white" data-bs-dismiss="modal"><span>&times;</span></button>
 </div>
-<div class="modal-body" id="stepsModalBody">
+<div class="modal-body" id="stepsModalBody" data-workflow-code="{{ workflow_type.code }}">
     <div class="mb-4">
         <label class="form-label fw-bold">{% translate 'add_new_step' request.session.language %}</label>
         <div class="d-flex gap-2">
             <input type="text" id="newStepName" class="form-control" placeholder="{% translate 'step_name' request.session.language %}">
-            <button type="button" class="btn btn-primary flex-shrink-0" onclick="addWorkflowStep('{{ workflow_type.code }}')">
+            <button type="button" class="btn btn-primary flex-shrink-0" data-workflow-step-action="add-step" data-workflow-code="{{ workflow_type.code }}">
                 <i class="ti ti-plus me-1"></i>{% translate 'add' request.session.language %}
             </button>
         </div>
-        <div id="addStepError" class="text-danger small mt-1 d-none"></div>
+        <div id="addStepError" class="text-danger small mt-1 {% if not error_message %}d-none{% endif %}">{% if error_message %}{{ error_message }}{% endif %}</div>
     </div>
 
     <label class="form-label fw-bold">{% translate 'existing_steps' request.session.language %}</label>
@@ -29,19 +29,19 @@
 
             <div class="step-actions">
                 <button type="button" class="btn btn-sm btn-outline-secondary" title="{% translate 'move_up' request.session.language %}"
-                    onclick="reorderStep('{{ stage.id }}', 'up')">
+                    data-workflow-step-action="reorder-step" data-stage-id="{{ stage.id }}" data-direction="up">
                     <i class="ti ti-arrow-up"></i>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" title="{% translate 'move_down' request.session.language %}"
-                    onclick="reorderStep('{{ stage.id }}', 'down')">
+                    data-workflow-step-action="reorder-step" data-stage-id="{{ stage.id }}" data-direction="down">
                     <i class="ti ti-arrow-down"></i>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-primary step-edit-btn" title="{% translate 'edit' request.session.language %}"
-                    onclick="toggleEditStep('{{ stage.id }}')">
+                    data-workflow-step-action="toggle-edit-step" data-stage-id="{{ stage.id }}">
                     <i class="ti ti-edit"></i>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-danger" title="{% translate 'delete' request.session.language %}"
-                    onclick="deleteStep('{{ stage.id }}')">
+                    data-workflow-step-action="delete-step" data-stage-id="{{ stage.id }}">
                     <i class="ti ti-trash"></i>
                 </button>
             </div>
@@ -73,108 +73,3 @@
     .step-name-input { flex-grow: 1; }
     .step-actions { display: flex; gap: 6px; flex-shrink: 0; }
 </style>
-
-<script>
-    function getCsrfToken() {
-        return document.querySelector('meta[name="csrf-token"]').content;
-    }
-
-    function addWorkflowStep(workflowCode) {
-        const input = document.getElementById('newStepName');
-        const errorBox = document.getElementById('addStepError');
-        const name = input.value.trim();
-        errorBox.classList.add('d-none');
-
-        if (!name) {
-            errorBox.textContent = "Step name is required.";
-            errorBox.classList.remove('d-none');
-            return;
-        }
-
-        fetch(`/dashboard/workflow/${workflowCode}/steps/create/`, {
-            method: 'POST',
-            headers: { 'X-CSRFToken': getCsrfToken(), 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `name=${encodeURIComponent(name)}`,
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (!data.success) {
-                errorBox.textContent = data.error;
-                errorBox.classList.remove('d-none');
-                return;
-            }
-            input.value = '';
-            reloadStepsModal(workflowCode);
-        });
-    }
-
-    function toggleEditStep(stageId) {
-        const nameSpan = document.getElementById(`step-name-${stageId}`);
-        const nameInput = document.getElementById(`step-name-input-${stageId}`);
-        const isEditing = !nameInput.classList.contains('d-none');
-
-        if (isEditing) {
-            // Save
-            const newName = nameInput.value.trim();
-            if (!newName) return;
-
-            fetch(`/dashboard/workflow/step/${stageId}/update/`, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': getCsrfToken(), 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `name=${encodeURIComponent(newName)}`,
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    nameSpan.textContent = data.name;
-                    nameSpan.classList.remove('d-none');
-                    nameInput.classList.add('d-none');
-                }
-            });
-        } else {
-            nameSpan.classList.add('d-none');
-            nameInput.classList.remove('d-none');
-            nameInput.focus();
-        }
-    }
-
-    function deleteStep(stageId) {
-        if (!confirm('Delete this step?')) return;
-
-        fetch(`/dashboard/workflow/step/${stageId}/delete/`, {
-            method: 'POST',
-            headers: { 'X-CSRFToken': getCsrfToken() },
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById(`step-row-${stageId}`).remove();
-            } else {
-                alert(data.error);
-            }
-        });
-    }
-
-    function reorderStep(stageId, direction) {
-        fetch(`/dashboard/workflow/step/${stageId}/reorder/${direction}/`, {
-            method: 'POST',
-            headers: { 'X-CSRFToken': getCsrfToken() },
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                const currentWorkflow = document.getElementById('stepsModalBody').dataset.workflowCode;
-                reloadStepsModal(currentWorkflow);
-            }
-        });
-    }
-
-    function reloadStepsModal(workflowCode) {
-        fetch(`/dashboard/workflow/${workflowCode}/steps/`)
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById('workflowStepsModalContent').innerHTML = html;
-                if (window.feather) feather.replace();
-            });
-    }
-</script>

@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.db import models
 from django.db.models import Count, Q
 from datetime import date, timedelta
 
@@ -19,6 +20,8 @@ from core.models import WorkflowStageModel
 def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
     workflow_type = get_object_or_404(WorkflowTypeModel, code=workflow_type_code)
     stages = workflow_type.stages.order_by("order")
+
+    sibling_types = WorkflowTypeModel.objects.filter(group=workflow_type.group).order_by("order")
 
     workflows = EmployeeWorkflowModel.objects.filter(workflow_type=workflow_type).select_related(
         "employee", "employee__employer", "current_stage"
@@ -65,7 +68,8 @@ def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
 
     context = {
         "workflow_type": workflow_type,
-        "workflow_types": WorkflowTypeModel.objects.order_by("order"),
+        "workflow_types": sibling_types,
+        "show_tabs": sibling_types.count() > 1,
         "stages": stages,
         "stat_cards": stat_cards,
         "stage_counts": stage_counts,
@@ -87,8 +91,14 @@ def workflow_employer_employees(request, employer_id, workflow_type_code):
         workflow_type=workflow_type, employee__employer=employer
     ).select_related("employee", "employee__nationality", "current_stage").prefetch_related("stage_logs")
 
+    template_name = (
+        "dashboard/components/workflow_employee_cards_preparation.html"
+        if workflow_type.group == "pre_production"
+        else "dashboard/components/workflow_employee_cards.html"
+    )
+
     context = {"workflows": workflows, "stages": stages, "employer": employer}
-    return render(request, "dashboard/components/workflow_employee_cards.html", context)
+    return render(request, template_name, context)
 
 
 @custom_login_required("dashboard_login")
@@ -100,6 +110,11 @@ def workflow_steps_modal(request, workflow_type_code):
     return render(request, "dashboard/components/workflow_steps_modal_content.html", context)
 
 
+def _render_workflow_steps_modal(request, workflow_type, error_message=None):
+    context = {"workflow_type": workflow_type, "stages": workflow_type.stages.order_by("order"), "error_message": error_message}
+    return render(request, "dashboard/components/workflow_steps_modal_content.html", context)
+
+
 @custom_login_required("dashboard_login")
 @role_permission_required("add_workflowstagemodel")
 @require_POST
@@ -108,12 +123,16 @@ def workflow_stage_create(request, workflow_type_code):
     name = request.POST.get("name", "").strip()
 
     if not name:
+        if request.headers.get("HX-Request"):
+            return _render_workflow_steps_modal(request, workflow_type, "Step name is required.")
         return JsonResponse({"success": False, "error": "Step name is required."})
 
     last_order = workflow_type.stages.aggregate(models.Max("order"))["order__max"] or 0
     stage = WorkflowStageModel.objects.create(
         workflow_type=workflow_type, name=name, order=last_order + 1, created_by=request.user
     )
+    if request.headers.get("HX-Request"):
+        return _render_workflow_steps_modal(request, workflow_type)
     return JsonResponse({"success": True, "id": str(stage.id), "name": stage.name, "order": stage.order})
 
 
@@ -125,11 +144,15 @@ def workflow_stage_update(request, pk):
     name = request.POST.get("name", "").strip()
 
     if not name:
+        if request.headers.get("HX-Request"):
+            return _render_workflow_steps_modal(request, stage.workflow_type, "Step name is required.")
         return JsonResponse({"success": False, "error": "Step name is required."})
 
     stage.name = name
     stage.updated_by = request.user
     stage.save()
+    if request.headers.get("HX-Request"):
+        return _render_workflow_steps_modal(request, stage.workflow_type)
     return JsonResponse({"success": True, "name": stage.name})
 
 
@@ -140,9 +163,14 @@ def workflow_stage_delete(request, pk):
     stage = get_object_or_404(WorkflowStageModel, id=pk)
 
     if stage.workflow_logs.exists() if hasattr(stage, "workflow_logs") else False:
+        if request.headers.get("HX-Request"):
+            return _render_workflow_steps_modal(request, stage.workflow_type, "This step is already in use and cannot be deleted.")
         return JsonResponse({"success": False, "error": "This step is already in use and cannot be deleted."})
 
+    workflow_type = stage.workflow_type
     stage.delete()
+    if request.headers.get("HX-Request"):
+        return _render_workflow_steps_modal(request, workflow_type)
     return JsonResponse({"success": True})
 
 
@@ -164,9 +192,13 @@ def workflow_stage_reorder(request, pk, direction):
         )
 
     if not neighbor:
+        if request.headers.get("HX-Request"):
+            return _render_workflow_steps_modal(request, stage.workflow_type, "Cannot move further.")
         return JsonResponse({"success": False, "error": "Cannot move further."})
 
     stage.order, neighbor.order = neighbor.order, stage.order
     stage.save(update_fields=["order"])
     neighbor.save(update_fields=["order"])
+    if request.headers.get("HX-Request"):
+        return _render_workflow_steps_modal(request, stage.workflow_type)
     return JsonResponse({"success": True})

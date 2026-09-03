@@ -80,6 +80,7 @@
         </div>
 
         <!-- Workflow type tabs -->
+        {% if show_tabs %}
         <div class="d-flex gap-2 mb-3 flex-wrap">
             {% for wt in workflow_types %}
             <a href="{% url 'workflow_dashboard' wt.code %}" class="btn {% if wt.code == workflow_type.code %}btn-primary{% else %}btn-outline-secondary{% endif %}">
@@ -87,6 +88,7 @@
             </a>
             {% endfor %}
         </div>
+        {% endif %}
 
         <!-- Employer list -->
         {% for employer in employers %}
@@ -215,6 +217,109 @@
 </style>
 
 <script>
+    function getCsrfToken() {
+        return document.querySelector('meta[name="csrf-token"]').content;
+    }
+
+    function addWorkflowStep(workflowCode) {
+        const input = document.getElementById('newStepName');
+        const errorBox = document.getElementById('addStepError');
+        if (!input || !errorBox) return;
+
+        const name = input.value.trim();
+        errorBox.classList.add('d-none');
+
+        if (!name) {
+            errorBox.textContent = 'Step name is required.';
+            errorBox.classList.remove('d-none');
+            return;
+        }
+
+        htmx.ajax('POST', `/dashboard/workflow/${workflowCode}/steps/create/`, {
+            target: '#workflowStepsModalContent',
+            swap: 'innerHTML',
+            values: { name: name },
+            headers: { 'X-CSRFToken': getCsrfToken() },
+        });
+    }
+
+    function toggleEditStep(stageId) {
+        const nameSpan = document.getElementById(`step-name-${stageId}`);
+        const nameInput = document.getElementById(`step-name-input-${stageId}`);
+        if (!nameSpan || !nameInput) return;
+
+        const isEditing = !nameInput.classList.contains('d-none');
+
+        if (isEditing) {
+            const newName = nameInput.value.trim();
+            if (!newName) return;
+
+            htmx.ajax('POST', `/dashboard/workflow/step/${stageId}/update/`, {
+                target: '#workflowStepsModalContent',
+                swap: 'innerHTML',
+                values: { name: newName },
+                headers: { 'X-CSRFToken': getCsrfToken() },
+            });
+        } else {
+            nameSpan.classList.add('d-none');
+            nameInput.classList.remove('d-none');
+            nameInput.focus();
+        }
+    }
+
+    function deleteStep(stageId) {
+        if (!confirm('Delete this step?')) return;
+
+        htmx.ajax('POST', `/dashboard/workflow/step/${stageId}/delete/`, {
+            target: '#workflowStepsModalContent',
+            swap: 'innerHTML',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+        });
+    }
+
+    function reorderStep(stageId, direction) {
+        htmx.ajax('POST', `/dashboard/workflow/step/${stageId}/reorder/${direction}/`, {
+            target: '#workflowStepsModalContent',
+            swap: 'innerHTML',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+        });
+    }
+
+    function reloadStepsModal(workflowCode) {
+        htmx.ajax('GET', `/dashboard/workflow/${workflowCode}/steps/`, {
+            target: '#workflowStepsModalContent',
+            swap: 'innerHTML',
+        });
+    }
+
+    document.addEventListener('click', function (event) {
+        const trigger = event.target.closest('[data-workflow-step-action]');
+        if (!trigger) return;
+
+        const action = trigger.dataset.workflowStepAction;
+        const stageId = trigger.dataset.stageId;
+        const workflowCode = trigger.dataset.workflowCode;
+
+        if (action === 'add-step') {
+            addWorkflowStep(workflowCode);
+            return;
+        }
+
+        if (action === 'toggle-edit-step' && stageId) {
+            toggleEditStep(stageId);
+            return;
+        }
+
+        if (action === 'delete-step' && stageId) {
+            deleteStep(stageId);
+            return;
+        }
+
+        if (action === 'reorder-step' && stageId) {
+            reorderStep(stageId, trigger.dataset.direction || 'up');
+        }
+    });
+
     function toggleEmployerRow(btn, employerId, workflowCode) {
         const container = document.getElementById(`employer-employees-${employerId}`);
         const isOpen = container.style.display !== 'none';
@@ -241,20 +346,17 @@
     }
 
     function openWorkflowStepsModal(workflowCode) {
-    const contentBox = document.getElementById('workflowStepsModalContent');
-    contentBox.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
-    contentBox.dataset.workflowCode = workflowCode;
+        const contentBox = document.getElementById('workflowStepsModalContent');
+        contentBox.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
+        contentBox.dataset.workflowCode = workflowCode;
 
-    const modal = new bootstrap.Modal(document.getElementById('workflowStepsModal'));
-    modal.show();
+        const modal = new bootstrap.Modal(document.getElementById('workflowStepsModal'));
+        modal.show();
 
-    fetch(`/dashboard/workflow/${workflowCode}/steps/`)
-        .then(res => res.text())
-        .then(html => {
-            contentBox.innerHTML = html;
-            document.getElementById('stepsModalBody').dataset.workflowCode = workflowCode;
-            if (window.feather) feather.replace();
+        htmx.ajax('GET', `/dashboard/workflow/${workflowCode}/steps/`, {
+            target: '#workflowStepsModalContent',
+            swap: 'innerHTML',
         });
-}
+    }
 </script>
 {% endblock %}

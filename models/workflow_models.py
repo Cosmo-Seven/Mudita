@@ -11,6 +11,10 @@ class WorkflowTypeModel(BaseModel):
     name = models.CharField(max_length=255)
     order = models.PositiveIntegerField(default=0)
 
+    group = models.CharField(max_length=50, default="employer_notification")
+    icon = models.CharField(max_length=50, default="ti ti-chart-bar")
+    subtitle = models.CharField(max_length=255, blank=True)
+
     def __str__(self):
         return self.name
 
