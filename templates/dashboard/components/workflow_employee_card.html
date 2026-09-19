@@ -1,0 +1,93 @@
+{% load translate %}
+{% load static %}
+{% load dict_extras %}
+<div class="workflow-employee-card" data-wf-id="{{ wf.id }}">
+    <div class="workflow-employee-body">
+        <div class="workflow-employee-identity d-flex gap-2">
+            <input type="checkbox" class="form-check-input mt-1">
+            <img src="{% if wf.employee.photo %}{{ wf.employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                class="rounded" style="width:48px;height:48px;object-fit:cover;">
+            <div>
+                <div class="fw-bold">{{ wf.employee.prefix_en }} {{ wf.employee.full_name_en }}</div>
+                <a href="{% url 'employee_detail' wf.employee.id %}" class="text-info small">
+                    <i class="ti ti-search"></i> {{ workflow_type.name|default:"" }}
+                </a>
+                <div class="text-muted small">{{ wf.employee.title_th }} {{ wf.employee.name_th }}</div>
+                <div class="small"><i class="ti ti-building"></i> {{ employer.name_en }}</div>
+                <div class="small text-muted">{{ wf.employee.identification_number|default:"-" }}</div>
+                <div class="small"><i class="ti ti-map-pin"></i> {{ wf.employee.nationality.name|default:"-" }}</div>
+                <span class="wf-status-badge wf-status-{{ wf|progress_label }}">
+                    {% translate wf|progress_label request.session.language %}
+                </span>
+            </div>
+        </div>
+
+        <div class="workflow-employee-note">
+            <label class="small text-muted">{% translate 'note' request.session.language %}</label>
+            <input type="text" class="form-control form-control-sm mb-2" value="{{ wf.note }}">
+            <div class="small text-muted mb-1">{% translate 'appointment' request.session.language %}</div>
+            <input type="date" class="form-control form-control-sm mb-2" value="{{ wf.appointment_date|date:'Y-m-d' }}">
+            <div class="small"><i class="ti ti-mail"></i> {{ wf.contact_email|default:"-" }}</div>
+            <div class="small"><i class="ti ti-link"></i> {{ wf.employee.login_email|default:"-" }}</div>
+        </div>
+
+        <div class="workflow-employee-refs">
+            <div class="d-flex gap-2 mb-2 flex-wrap justify-content-end">
+                <button class="btn btn-sm btn-info" disabled title="{% translate 'coming_soon' request.session.language %}">
+                    <i class="ti ti-clock-back me-1"></i>{% translate 'back_to_prep' request.session.language %}
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" disabled title="{% translate 'coming_soon' request.session.language %}">
+                    <i class="ti ti-users me-1"></i>{% translate 'team' request.session.language %}
+                </button>
+
+                {% if wf.status == 'finished' or wf.status == 'cancelled' %}
+                <button class="btn btn-sm btn-outline-warning"
+                    hx-post="{% url 'employee_workflow_set_status' workflow_type.code wf.employee.id 'in_progress' %}"
+                    hx-target="closest .workflow-employee-card" hx-swap="outerHTML">
+                    <i class="ti ti-refresh me-1"></i>{% translate 'reopen' request.session.language %}
+                </button>
+                {% else %}
+                <button class="btn btn-sm btn-success"
+                    hx-post="{% url 'employee_workflow_set_status' workflow_type.code wf.employee.id 'finished' %}"
+                    hx-target="closest .workflow-employee-card" hx-swap="outerHTML"
+                    hx-confirm="{% translate 'confirm_finish_workflow' request.session.language %}">
+                    <i class="ti ti-check me-1"></i>{% translate 'finish' request.session.language %}
+                </button>
+                <button class="btn btn-sm btn-outline-danger"
+                    hx-post="{% url 'employee_workflow_set_status' workflow_type.code wf.employee.id 'cancelled' %}"
+                    hx-target="closest .workflow-employee-card" hx-swap="outerHTML"
+                    hx-confirm="{% translate 'confirm_cancel_workflow' request.session.language %}">
+                    <i class="ti ti-x me-1"></i>{% translate 'cancel' request.session.language %}
+                </button>
+                {% endif %}
+            </div>
+            <div class="d-flex gap-3 flex-wrap">
+                <div>
+                    <div class="small text-muted mb-1">{% translate 'ra_number_from_the_outsource_system' request.session.language %}</div>
+                    <div class="fw-medium">{{ wf.employee.ra_number|default:"-" }}</div>
+                </div>
+                <div>
+                    <div class="small text-muted mb-1">{% translate 'application_number' request.session.language %}</div>
+                    <div class="fw-medium">{{ wf.employee.application_number|default:"-" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 mt-3">
+        {% for stage in stages %}
+        {% with done=wf.stage_logs.all|stage_done:stage.id %}
+        <button type="button"
+            class="stage-chip {% if done %}stage-chip-done{% elif stage == wf.current_stage %}stage-chip-current{% else %}stage-chip-pending{% endif %}"
+            hx-post="{% url 'employee_workflow_stage_toggle' workflow_type.code wf.employee.id stage.id %}"
+            hx-target="closest .workflow-employee-card"
+            hx-swap="outerHTML"
+            {% if done %}hx-confirm="{% translate 'confirm_undo_stage' request.session.language %}"{% endif %}
+            title="{% translate 'click_to_toggle_stage' request.session.language %}">
+            {{ stage.name }}
+            {% if done %}<i class="ti ti-check ms-1"></i>{% elif stage == wf.current_stage %}<i class="ti ti-clock ms-1"></i>{% endif %}
+        </button>
+        {% endwith %}
+        {% endfor %}
+    </div>
+</div>

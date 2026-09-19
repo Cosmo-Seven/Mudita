@@ -40,6 +40,12 @@ def sidebar(request):
                         "icon": "ti ti-chart-bar",
                         "permission": "view_employeeworkflowmodel",
                     },
+                    {
+                        "label": "employer_transfer",
+                        "url_name": "workflow_transfer",
+                        "icon": "ti ti-arrows-right-left",
+                        "permission": "view_employeeworkflowmodel",
+                    },
                 ],
             },
             {

@@ -306,11 +306,28 @@ urlpatterns = (
             {"workflow_type_code": "pre_production_preparation"},
             name="workflow_preparation",
         ),
+        path(
+            "dashboard/workflow/transfer/",
+            workflow_views.workflow_dashboard,
+            {"workflow_type_code": "employer_transfer_package"},
+            name="workflow_transfer",
+        ),
 
         path(
             "dashboard/workflow/<str:workflow_type_code>/employer/<uuid:employer_id>/employees/",
             workflow_views.workflow_employer_employees,
             name="workflow_employer_employees",
+        ),
+
+        path(
+            "dashboard/workflow/<str:workflow_type_code>/employee/<uuid:employee_id>/stage/<uuid:stage_id>/toggle/",
+            workflow_views.employee_workflow_stage_toggle,
+            name="employee_workflow_stage_toggle",
+        ),
+        path(
+            "dashboard/workflow/<str:workflow_type_code>/employee/<uuid:employee_id>/status/<str:status>/",
+            workflow_views.employee_workflow_set_status,
+            name="employee_workflow_set_status",
         ),
 
         path("dashboard/workflow/<str:workflow_type_code>/steps/", workflow_views.workflow_steps_modal, name="workflow_steps_modal"),

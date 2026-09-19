@@ -73,6 +73,64 @@ class EmployeeWorkflowModel(BaseModel):
         db_table = "employee_workflows"
         verbose_name = "Employee Workflow"
 
+    # ---- Client-facing 3-state progress (Pending / In-Progress / Completed),
+    # derived from status + whether any stage has been logged yet. "cancelled"
+    # is reported separately since the client only asked for these 3 states. ----
+    PROGRESS_PENDING = "pending"
+    PROGRESS_IN_PROGRESS = "in_progress"
+    PROGRESS_COMPLETED = "completed"
+    PROGRESS_CANCELLED = "cancelled"
+
+    @property
+    def progress_label(self):
+        if self.status == "cancelled":
+            return self.PROGRESS_CANCELLED
+        if self.status == "finished":
+            return self.PROGRESS_COMPLETED
+        if self.stage_logs.exists():
+            return self.PROGRESS_IN_PROGRESS
+        return self.PROGRESS_PENDING
+
+    @classmethod
+    def get_or_start(cls, employee, workflow_type, user=None):
+        """Lazily enrolls an employee into a workflow type the first time any
+        of its stages is touched, instead of requiring a separate 'enroll' step."""
+        first_stage = workflow_type.stages.order_by("order").first()
+        obj, created = cls.objects.get_or_create(
+            employee=employee,
+            workflow_type=workflow_type,
+            defaults={"current_stage": first_stage, "status": "in_progress", "created_by": user},
+        )
+        return obj, created
+
+    def toggle_stage(self, stage, user=None):
+        """Click a stage chip: if not done yet, mark it (and every earlier stage)
+        done and move current_stage forward; if already done, undo it (and every
+        later stage) and move current_stage back to it. Keeps `status` in sync
+        (auto-finish on the terminal stage, auto-reopen on undo)."""
+        stages = list(self.workflow_type.stages.order_by("order"))
+        is_done = self.stage_logs.filter(stage=stage).exists()
+
+        if is_done:
+            self.stage_logs.filter(stage__order__gte=stage.order).delete()
+            self.current_stage = stage
+            if self.status == "finished":
+                self.status = "in_progress"
+        else:
+            for s in stages:
+                if s.order <= stage.order:
+                    EmployeeWorkflowStageLogModel.objects.get_or_create(workflow=self, stage=s)
+            next_stage = next((s for s in stages if s.order > stage.order), None)
+            self.current_stage = next_stage or stage
+            if next_stage is None or stage.is_terminal:
+                self.status = "finished"
+            elif self.status == "cancelled":
+                self.status = "in_progress"
+
+        self.updated_by = user
+        self.save(update_fields=["current_stage", "status", "updated_by", "updated_at"])
+        return self
+
 
 class EmployeeWorkflowStageLogModel(BaseModel):
     """Stage တစ်ခုချင်းစီ ဖြတ်သန်းသွားတဲ့ history — checkmark (✓) logic ကို

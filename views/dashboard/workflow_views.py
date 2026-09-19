@@ -7,10 +7,10 @@ from utils.decorators import custom_login_required
 from decorators.role_decorator import role_permission_required
 from core.models import (
     EmployeeModel, EmployerModel, WorkflowTypeModel,
-    WorkflowStageModel, EmployeeWorkflowModel,
+    WorkflowStageModel, EmployeeWorkflowModel, EmployeeWorkflowStageLogModel,
 )
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 from core.models import WorkflowStageModel
 
@@ -97,8 +97,72 @@ def workflow_employer_employees(request, employer_id, workflow_type_code):
         else "dashboard/components/workflow_employee_cards.html"
     )
 
-    context = {"workflows": workflows, "stages": stages, "employer": employer}
+    context = {"workflows": workflows, "stages": stages, "employer": employer, "workflow_type": workflow_type}
     return render(request, template_name, context)
+
+
+def _employee_workflow_card_context(workflow, workflow_type, stages):
+    """Re-fetches the workflow with every relation the card partial needs, so a
+    single HTMX POST can swap just that one card in place (no page reload)."""
+    workflow = (
+        EmployeeWorkflowModel.objects
+        .select_related("employee", "employee__nationality", "employee__employer", "current_stage")
+        .prefetch_related("stage_logs")
+        .get(pk=workflow.pk)
+    )
+    return {
+        "wf": workflow,
+        "stages": stages,
+        "employer": workflow.employee.employer,
+        "workflow_type": workflow_type,
+    }
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("change_employeeworkflowmodel")
+@require_POST
+def employee_workflow_stage_toggle(request, workflow_type_code, employee_id, stage_id):
+    """Click on a stage chip (e.g. 'Pink Card Registration'): marks it done (and
+    everything before it) or, if it's already done, undoes it. Employees are
+    lazily enrolled into the workflow the first time a stage is touched."""
+    workflow_type = get_object_or_404(WorkflowTypeModel, code=workflow_type_code)
+    employee = get_object_or_404(EmployeeModel, id=employee_id)
+    stage = get_object_or_404(WorkflowStageModel, id=stage_id, workflow_type=workflow_type)
+    stages = list(workflow_type.stages.order_by("order"))
+
+    workflow, _ = EmployeeWorkflowModel.get_or_start(employee, workflow_type, user=request.user)
+    workflow.toggle_stage(stage, user=request.user)
+
+    context = _employee_workflow_card_context(workflow, workflow_type, stages)
+    return render(request, "dashboard/components/_workflow_employee_card.html", context)
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("change_employeeworkflowmodel")
+@require_POST
+def employee_workflow_set_status(request, workflow_type_code, employee_id, status):
+    """Finish / Cancel / Reopen buttons — sets the overall status directly,
+    independent of individual stage chips."""
+    valid_statuses = dict(EmployeeWorkflowModel.STATUS_CHOICES)
+    if status not in valid_statuses:
+        return HttpResponseBadRequest("Invalid status.")
+
+    workflow_type = get_object_or_404(WorkflowTypeModel, code=workflow_type_code)
+    employee = get_object_or_404(EmployeeModel, id=employee_id)
+    stages = list(workflow_type.stages.order_by("order"))
+
+    workflow, _ = EmployeeWorkflowModel.get_or_start(employee, workflow_type, user=request.user)
+
+    workflow.status = status
+    workflow.updated_by = request.user
+    if status == "finished" and stages:
+        workflow.current_stage = stages[-1]
+        for s in stages:
+            EmployeeWorkflowStageLogModel.objects.get_or_create(workflow=workflow, stage=s)
+    workflow.save()
+
+    context = _employee_workflow_card_context(workflow, workflow_type, stages)
+    return render(request, "dashboard/components/_workflow_employee_card.html", context)
 
 
 @custom_login_required("dashboard_login")

@@ -9,3 +9,9 @@ def get_item(dictionary, key):
 @register.filter
 def stage_done(stage_logs, stage_id):
     return any(log.stage_id == stage_id for log in stage_logs)
+
+@register.filter
+def progress_label(workflow):
+    """EmployeeWorkflowModel -> 'pending' | 'in_progress' | 'completed' | 'cancelled',
+    used as both the badge CSS class suffix and the translation key."""
+    return workflow.progress_label
