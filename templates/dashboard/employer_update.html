@@ -184,6 +184,38 @@
             </div>
 
             <div class="card mb-3 entity-form-card">
+                <div class="card-header"><h5>4. {% translate 'employers_attached_documents' request.session.language %}</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="company_registration_certificate" label="1. Company registration certificate / National ID card" show_expiry=False %}
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label text-danger">{% translate 'expiration_date' request.session.language %}</label>
+                                <input type="date" name="company_registration_certificate_expiry_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="house_rental_agreement" label="2. House rental agreement / House registration certificate" %}
+                        </div>
+                        <div class="col-lg-6">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="construction_contract_map" label="3. Construction contract / Map" %}
+                        </div>
+                        <div class="col-lg-4">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="employer_other_document_1" label="4. Other documents 1" show_description=True %}
+                        </div>
+                        <div class="col-lg-4">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="employer_other_document_2" label="5. Other documents 2" show_description=True %}
+                        </div>
+                        <div class="col-lg-4">
+                            {% include 'dashboard/components/file_camera_field.html' with field_name="employer_other_document_3" label="6. Other documents 3" show_description=True %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3 entity-form-card">
                 <div class="card-body d-flex justify-content-end">
                     <a href="{% url 'employer_detail' employer.id %}" class="btn btn-secondary me-2">{% translate 'cancel' request.session.language %}</a>
                     <button type="submit" class="btn btn-primary">{% translate 'update' request.session.language %}</button>

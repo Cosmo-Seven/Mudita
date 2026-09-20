@@ -78,6 +78,49 @@
         document.body.addEventListener('htmx:afterRequest', function () {
             document.body.classList.remove('htmx-loading');
         });
+
+        document.body.addEventListener('htmx:beforeSwap', function (event) {
+            if (!event.detail || !event.detail.target || event.detail.target.id !== 'main-body-wrapper') return;
+            document.querySelectorAll('.modal.show').forEach(function (modal) {
+                var modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            });
+        });
+
+        function cleanupModalState() {
+            if (document.querySelector('.modal.show')) return;
+            document.querySelectorAll('.modal-backdrop').forEach(function (backdrop) {
+                backdrop.remove();
+            });
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+        }
+
+        document.body.addEventListener('hidden.bs.modal', cleanupModalState);
+        document.body.addEventListener('htmx:afterSwap', function (event) {
+            if (event.detail && event.detail.target && event.detail.target.id === 'main-body-wrapper') {
+                cleanupModalState();
+                setTimeout(cleanupModalState, 300);
+            }
+        });
+
+        window.switchView = function (mode) {
+            var viewMode = document.getElementById('id_view_mode');
+            var filterForm = document.getElementById('employeeFilterForm');
+            if (!viewMode || !filterForm) return;
+            viewMode.value = mode;
+            htmx.trigger(filterForm, 'submit');
+        };
+
+        window.switchPerPage = function (perPage) {
+            var perPageInput = document.getElementById('id_per_page');
+            var filterForm = document.getElementById('employeeFilterForm');
+            if (!perPageInput || !filterForm) return;
+            perPageInput.value = perPage;
+            htmx.trigger(filterForm, 'submit');
+        };
     </script>
 </body>
 

@@ -484,14 +484,4 @@
     }
 </style>
 
-<script>
-    function switchView(mode) {
-        document.getElementById('id_view_mode').value = mode;
-        htmx.trigger('#employeeFilterForm', 'submit');
-    }
-    function switchPerPage(n) {
-        document.getElementById('id_per_page').value = n;
-        htmx.trigger('#employeeFilterForm', 'submit');
-    }
-</script>
 {% endblock %}
