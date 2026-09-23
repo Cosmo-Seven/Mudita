@@ -59,7 +59,9 @@
                     {% endif %}
                 </select>
                 <button type="button" class="btn btn-dark"><i class="ti ti-trash me-1"></i>{% translate 'trash' request.session.language %}</button>
-                <button type="button" class="btn btn-warning"><i class="ti ti-plus me-1"></i>{% translate 'add_employee' request.session.language %}</button>
+                <button type="button" class="btn btn-warning" onclick="openAddEmployeeModal('{{ workflow_type.code }}')">
+                    <i class="ti ti-plus me-1"></i>{% translate 'add_employee' request.session.language %}
+                </button>
             </div>
         </form>
 
@@ -104,7 +106,9 @@
                 <span class="badge bg-danger-transparent text-danger">{{ employer.pending_count }} {% translate 'pending' request.session.language %}</span>
                 <span class="badge bg-success-transparent text-success">{{ employer.done_count }} {% translate 'done' request.session.language %}</span>
                 <span class="badge bg-secondary-transparent">{{ employer.cancel_count }} {% translate 'cancel' request.session.language %}</span>
-                <button class="btn btn-sm btn-warning">+{% translate 'add' request.session.language %}</button>
+                <button class="btn btn-sm btn-warning" onclick="openAddEmployeeModal('{{ workflow_type.code }}', '{{ employer.id }}')">
+                    +{% translate 'add' request.session.language %}
+                </button>
                 <button class="btn btn-sm btn-outline-success">{% translate 'import' request.session.language %}</button>
                 <button class="btn btn-sm btn-light workflow-expand-toggle"
                     onclick="toggleEmployerRow(this, '{{ employer.id }}', '{{ workflow_type.code }}')">
@@ -121,6 +125,14 @@
     <div class="modal fade" id="workflowStepsModal">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" id="workflowStepsModalContent">
+            <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" id="addEmployeeWorkflowModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" id="addEmployeeModalContent">
             <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
         </div>
     </div>
@@ -220,6 +232,12 @@
     function getCsrfToken() {
         return document.querySelector('meta[name="csrf-token"]').content;
     }
+
+    // Any declarative hx-post/hx-get on this page (including the employee
+    // workflow cards loaded later via HTMX) automatically gets the CSRF token.
+    document.body.addEventListener('htmx:configRequest', function (evt) {
+        evt.detail.headers['X-CSRFToken'] = getCsrfToken();
+    });
 
     function addWorkflowStep(workflowCode) {
         const input = document.getElementById('newStepName');
@@ -358,5 +376,35 @@
             swap: 'innerHTML',
         });
     }
+
+    function openAddEmployeeModal(workflowCode, employerId) {
+        const contentBox = document.getElementById('addEmployeeModalContent');
+        contentBox.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
+
+        const modal = new bootstrap.Modal(document.getElementById('addEmployeeWorkflowModal'));
+        modal.show();
+
+        let url = `/dashboard/workflow/${workflowCode}/employee/add/`;
+        if (employerId) {
+            url += `?employer_id=${employerId}`;
+        }
+        htmx.ajax('GET', url, {
+            target: '#addEmployeeModalContent',
+            swap: 'innerHTML',
+        });
+    }
+
+    // After employees are enrolled, wait until the modal is actually closed
+    // before refreshing the page (so the success message is visible, and the
+    // admin can keep checking more employees in the same session first).
+    let employeesWereAdded = false;
+    document.body.addEventListener('workflowEmployeesAdded', function () {
+        employeesWereAdded = true;
+    });
+    document.getElementById('addEmployeeWorkflowModal').addEventListener('hidden.bs.modal', function () {
+        if (employeesWereAdded) {
+            window.location.reload();
+        }
+    });
 </script>
 {% endblock %}

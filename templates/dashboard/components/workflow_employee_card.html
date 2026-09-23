@@ -43,19 +43,22 @@
                 {% if wf.status == 'finished' or wf.status == 'cancelled' %}
                 <button class="btn btn-sm btn-outline-warning"
                     hx-post="{% url 'employee_workflow_set_status' workflow_type.code wf.employee.id 'in_progress' %}"
-                    hx-target="closest .workflow-employee-card" hx-swap="outerHTML">
+                    hx-target="closest .workflow-employee-card" hx-swap="outerHTML"
+                    hx-select="unset" hx-push-url="false">
                     <i class="ti ti-refresh me-1"></i>{% translate 'reopen' request.session.language %}
                 </button>
                 {% else %}
                 <button class="btn btn-sm btn-success"
                     hx-post="{% url 'employee_workflow_set_status' workflow_type.code wf.employee.id 'finished' %}"
                     hx-target="closest .workflow-employee-card" hx-swap="outerHTML"
+                    hx-select="unset" hx-push-url="false"
                     hx-confirm="{% translate 'confirm_finish_workflow' request.session.language %}">
                     <i class="ti ti-check me-1"></i>{% translate 'finish' request.session.language %}
                 </button>
                 <button class="btn btn-sm btn-outline-danger"
                     hx-post="{% url 'employee_workflow_set_status' workflow_type.code wf.employee.id 'cancelled' %}"
                     hx-target="closest .workflow-employee-card" hx-swap="outerHTML"
+                    hx-select="unset" hx-push-url="false"
                     hx-confirm="{% translate 'confirm_cancel_workflow' request.session.language %}">
                     <i class="ti ti-x me-1"></i>{% translate 'cancel' request.session.language %}
                 </button>
@@ -82,6 +85,7 @@
             hx-post="{% url 'employee_workflow_stage_toggle' workflow_type.code wf.employee.id stage.id %}"
             hx-target="closest .workflow-employee-card"
             hx-swap="outerHTML"
+            hx-select="unset" hx-push-url="false"
             {% if done %}hx-confirm="{% translate 'confirm_undo_stage' request.session.language %}"{% endif %}
             title="{% translate 'click_to_toggle_stage' request.session.language %}">
             {{ stage.name }}

@@ -15,6 +15,77 @@ from django.views.decorators.http import require_POST
 from core.models import WorkflowStageModel
 
 
+def _add_employee_modal_context(request, workflow_type, employer_id, search):
+    already_enrolled_ids = EmployeeWorkflowModel.objects.filter(
+        workflow_type=workflow_type
+    ).values_list("employee_id", flat=True)
+
+    employees = (
+        EmployeeModel.objects.filter(status="active")
+        .exclude(id__in=already_enrolled_ids)
+        .select_related("employer")
+    )
+    if employer_id:
+        employees = employees.filter(employer_id=employer_id)
+    if search:
+        employees = employees.filter(
+            Q(full_name_en__icontains=search) | Q(employer__name_en__icontains=search)
+        )
+    employees = employees.order_by("full_name_en")[:100]  # keep the modal light
+
+    return {
+        "workflow_type": workflow_type,
+        "employees": employees,
+        "employer_options": EmployerModel.objects.order_by("name_en"),
+        "selected_employer_id": employer_id,
+        "search": search,
+    }
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("add_employeeworkflowmodel")
+def workflow_add_employee_modal(request, workflow_type_code):
+    """Opens the 'Add Employee' modal — lists employees not yet enrolled in this
+    workflow type, optionally pre-filtered by employer (when opened from an
+    employer row's own +Add button) and/or a live search box."""
+    workflow_type = get_object_or_404(WorkflowTypeModel, code=workflow_type_code)
+    employer_id = request.GET.get("employer_id", "")
+    search = request.GET.get("search", "").strip()
+
+    context = _add_employee_modal_context(request, workflow_type, employer_id, search)
+    return render(request, "dashboard/components/workflow_add_employee_modal_content.html", context)
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("add_employeeworkflowmodel")
+@require_POST
+def workflow_add_employee(request, workflow_type_code):
+    """Submits the checked employees from the modal — enrolls each one into
+    this workflow type (creates EmployeeWorkflowModel rows) and re-renders the
+    same modal with an updated (now-shorter) list, plus an HX-Trigger so the
+    page behind it can refresh the employer counts/rows without a full reload."""
+    workflow_type = get_object_or_404(WorkflowTypeModel, code=workflow_type_code)
+    employee_ids = request.POST.getlist("employee_ids")
+    employer_id = request.POST.get("employer_id", "")
+    search = request.POST.get("search", "").strip()
+
+    added = 0
+    for emp_id in employee_ids:
+        employee = EmployeeModel.objects.filter(id=emp_id).first()
+        if not employee:
+            continue
+        _, created = EmployeeWorkflowModel.get_or_start(employee, workflow_type, user=request.user)
+        if created:
+            added += 1
+
+    context = _add_employee_modal_context(request, workflow_type, employer_id, search)
+    context["added_count"] = added
+    response = render(request, "dashboard/components/workflow_add_employee_modal_content.html", context)
+    if added:
+        response["HX-Trigger"] = "workflowEmployeesAdded"
+    return response
+
+
 @custom_login_required("dashboard_login")
 @role_permission_required("view_employeeworkflowmodel")
 def workflow_dashboard(request, workflow_type_code="employer_entry_change"):

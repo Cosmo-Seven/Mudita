@@ -288,12 +288,12 @@ urlpatterns = (
         # ========================
         # Workflow (Employer Entry/Change, Departure, MOU)
         # ========================
-        path(
-            "dashboard/workflow/<str:workflow_type_code>/",
-            workflow_views.workflow_dashboard,
-            name="workflow_dashboard",
-        ),
-
+        # NOTE: these 3 short-alias paths MUST be declared before the generic
+        # "<str:workflow_type_code>/" pattern below. Django url-resolves
+        # top-to-bottom and stops at the first match, so if the generic
+        # pattern came first it would swallow "notification/" / "preparation/"
+        # / "transfer/" as a literal (and wrong) workflow_type_code, causing
+        # get_object_or_404() to 404 for all three sidebar buttons.
         path(
             "dashboard/workflow/notification/",
             workflow_views.workflow_dashboard,
@@ -314,9 +314,28 @@ urlpatterns = (
         ),
 
         path(
+            "dashboard/workflow/<str:workflow_type_code>/",
+            workflow_views.workflow_dashboard,
+            name="workflow_dashboard",
+        ),
+
+        path(
             "dashboard/workflow/<str:workflow_type_code>/employer/<uuid:employer_id>/employees/",
             workflow_views.workflow_employer_employees,
             name="workflow_employer_employees",
+        ),
+
+        # literal "employee/add/.../" paths must come before the
+        # "employee/<uuid:employee_id>/..." patterns below (see note above).
+        path(
+            "dashboard/workflow/<str:workflow_type_code>/employee/add/",
+            workflow_views.workflow_add_employee_modal,
+            name="workflow_add_employee_modal",
+        ),
+        path(
+            "dashboard/workflow/<str:workflow_type_code>/employee/add/submit/",
+            workflow_views.workflow_add_employee,
+            name="workflow_add_employee",
         ),
 
         path(

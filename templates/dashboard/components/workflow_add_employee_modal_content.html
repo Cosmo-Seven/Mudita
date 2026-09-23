@@ -9,8 +9,7 @@
 </div>
 
 <form hx-post="{% url 'workflow_add_employee' workflow_type.code %}"
-      hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
-      hx-select="unset" hx-push-url="false">
+      hx-target="#addEmployeeModalContent" hx-swap="innerHTML">
     <div class="modal-body">
         {% if added_count %}
         <div class="alert alert-success py-2 mb-3">
@@ -23,7 +22,6 @@
             <select name="employer_id" class="form-select"
                 hx-get="{% url 'workflow_add_employee_modal' workflow_type.code %}"
                 hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
-                hx-select="unset" hx-push-url="false"
                 hx-include="[name='search']">
                 <option value="">{% translate 'all_employers' request.session.language %}</option>
                 {% for e in employer_options %}
@@ -34,7 +32,6 @@
                 placeholder="{% translate 'search' request.session.language %}..." value="{{ search }}"
                 hx-get="{% url 'workflow_add_employee_modal' workflow_type.code %}"
                 hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
-                hx-select="unset" hx-push-url="false"
                 hx-trigger="keyup changed delay:400ms"
                 hx-include="[name='employer_id']">
         </div>
@@ -56,7 +53,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">
             {% translate 'cancel' request.session.language %}
         </button>
         <button type="submit" class="btn btn-warning">
