@@ -155,11 +155,11 @@ PWA_APP_DIR = "ltr"
 PWA_APP_LANG = "en-US"
 PWA_APP_ICONS = [
     {
-        "src": "/static/dashboard/images/logo.png",
+        "src": "/static/dashboard/images/logo.jpg",
         "sizes": "192x192",
     },
     {
-        "src": "/static/dashboard/images/logo.png",
+        "src": "/static/dashboard/images/logo.jpg",
         "sizes": "512x512",
     },
 ]
