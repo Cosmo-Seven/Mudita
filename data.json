@@ -1,0 +1,1294 @@
+[
+  {
+    "model": "auth.permission",
+    "pk": 57,
+    "fields": {
+      "name": "Can add Role",
+      "content_type": 15,
+      "codename": "add_rolemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 58,
+    "fields": {
+      "name": "Can change Role",
+      "content_type": 15,
+      "codename": "change_rolemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 59,
+    "fields": {
+      "name": "Can delete Role",
+      "content_type": 15,
+      "codename": "delete_rolemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 60,
+    "fields": {
+      "name": "Can view Role",
+      "content_type": 15,
+      "codename": "view_rolemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 61,
+    "fields": {
+      "name": "Can add Site",
+      "content_type": 16,
+      "codename": "add_sitemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 62,
+    "fields": {
+      "name": "Can change Site",
+      "content_type": 16,
+      "codename": "change_sitemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 63,
+    "fields": {
+      "name": "Can delete Site",
+      "content_type": 16,
+      "codename": "delete_sitemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 64,
+    "fields": {
+      "name": "Can view Site",
+      "content_type": 16,
+      "codename": "view_sitemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 65,
+    "fields": {
+      "name": "Can add Text Key",
+      "content_type": 17,
+      "codename": "add_textkeymodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 66,
+    "fields": {
+      "name": "Can change Text Key",
+      "content_type": 17,
+      "codename": "change_textkeymodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 67,
+    "fields": {
+      "name": "Can delete Text Key",
+      "content_type": 17,
+      "codename": "delete_textkeymodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 68,
+    "fields": {
+      "name": "Can view Text Key",
+      "content_type": 17,
+      "codename": "view_textkeymodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 69,
+    "fields": {
+      "name": "Can add Workflow Type",
+      "content_type": 18,
+      "codename": "add_workflowtypemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 70,
+    "fields": {
+      "name": "Can change Workflow Type",
+      "content_type": 18,
+      "codename": "change_workflowtypemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 71,
+    "fields": {
+      "name": "Can delete Workflow Type",
+      "content_type": 18,
+      "codename": "delete_workflowtypemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 72,
+    "fields": {
+      "name": "Can view Workflow Type",
+      "content_type": 18,
+      "codename": "view_workflowtypemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 73,
+    "fields": {
+      "name": "Can add Workflow Stage",
+      "content_type": 19,
+      "codename": "add_workflowstagemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 74,
+    "fields": {
+      "name": "Can change Workflow Stage",
+      "content_type": 19,
+      "codename": "change_workflowstagemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 75,
+    "fields": {
+      "name": "Can delete Workflow Stage",
+      "content_type": 19,
+      "codename": "delete_workflowstagemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 76,
+    "fields": {
+      "name": "Can view Workflow Stage",
+      "content_type": 19,
+      "codename": "view_workflowstagemodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 77,
+    "fields": {
+      "name": "Can add Employee Workflow",
+      "content_type": 20,
+      "codename": "add_employeeworkflowmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 78,
+    "fields": {
+      "name": "Can change Employee Workflow",
+      "content_type": 20,
+      "codename": "change_employeeworkflowmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 79,
+    "fields": {
+      "name": "Can delete Employee Workflow",
+      "content_type": 20,
+      "codename": "delete_employeeworkflowmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 80,
+    "fields": {
+      "name": "Can view Employee Workflow",
+      "content_type": 20,
+      "codename": "view_employeeworkflowmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 81,
+    "fields": {
+      "name": "Can add Translation",
+      "content_type": 21,
+      "codename": "add_translationmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 82,
+    "fields": {
+      "name": "Can change Translation",
+      "content_type": 21,
+      "codename": "change_translationmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 83,
+    "fields": {
+      "name": "Can delete Translation",
+      "content_type": 21,
+      "codename": "delete_translationmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 84,
+    "fields": {
+      "name": "Can view Translation",
+      "content_type": 21,
+      "codename": "view_translationmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 85,
+    "fields": {
+      "name": "Can add Workflow Stage Log",
+      "content_type": 22,
+      "codename": "add_employeeworkflowstagelogmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 86,
+    "fields": {
+      "name": "Can change Workflow Stage Log",
+      "content_type": 22,
+      "codename": "change_employeeworkflowstagelogmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 87,
+    "fields": {
+      "name": "Can delete Workflow Stage Log",
+      "content_type": 22,
+      "codename": "delete_employeeworkflowstagelogmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 88,
+    "fields": {
+      "name": "Can view Workflow Stage Log",
+      "content_type": 22,
+      "codename": "view_employeeworkflowstagelogmodel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 89,
+    "fields": {
+      "name": "Can add site",
+      "content_type": 23,
+      "codename": "add_site"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 90,
+    "fields": {
+      "name": "Can change site",
+      "content_type": 23,
+      "codename": "change_site"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 91,
+    "fields": {
+      "name": "Can delete site",
+      "content_type": 23,
+      "codename": "delete_site"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 92,
+    "fields": {
+      "name": "Can view site",
+      "content_type": 23,
+      "codename": "view_site"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 1,
+    "fields": { "app_label": "admin", "model": "logentry" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 2,
+    "fields": { "app_label": "auth", "model": "permission" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 3,
+    "fields": { "app_label": "auth", "model": "group" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 4,
+    "fields": { "app_label": "contenttypes", "model": "contenttype" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 5,
+    "fields": { "app_label": "sessions", "model": "session" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 6,
+    "fields": { "app_label": "core", "model": "usermodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 7,
+    "fields": { "app_label": "core", "model": "addressmodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 8,
+    "fields": { "app_label": "core", "model": "businesstypemodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 9,
+    "fields": { "app_label": "core", "model": "documenttypemodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 10,
+    "fields": { "app_label": "core", "model": "documentmodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 11,
+    "fields": { "app_label": "core", "model": "employermodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 12,
+    "fields": { "app_label": "core", "model": "languagemodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 13,
+    "fields": { "app_label": "core", "model": "nationalitymodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 14,
+    "fields": { "app_label": "core", "model": "employeemodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 15,
+    "fields": { "app_label": "core", "model": "rolemodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 16,
+    "fields": { "app_label": "core", "model": "sitemodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 17,
+    "fields": { "app_label": "core", "model": "textkeymodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 18,
+    "fields": { "app_label": "core", "model": "workflowtypemodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 19,
+    "fields": { "app_label": "core", "model": "workflowstagemodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 20,
+    "fields": { "app_label": "core", "model": "employeeworkflowmodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 21,
+    "fields": { "app_label": "core", "model": "translationmodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 22,
+    "fields": { "app_label": "core", "model": "employeeworkflowstagelogmodel" }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 23,
+    "fields": { "app_label": "sites", "model": "site" }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "5m5uk4gaokt32um1mg1bxtlj7svwkvij",
+    "fields": {
+      "session_data": ".eJxVzDsOwjAQRdG9uMaWf-PMUNKzhmjscUgAJVI-FWLvECkF1O-e91Itb2vfbkud20HUWbkMUMGDRradjgSsMQfRyRYsiBQ6G9Xpl2UujzruVu483iZTpnGdh2z2xBzrYq6T1OflaP8Oel76r7bOIyZPlB0xB8QgIL7UVCU2Ai4KVSQGosCUuLIXpOQaSjEAFlHvD56DQC8:1x9EnR:Jomzaw2mOdhys5jigYpRw43BUSDd0EY7sUBStFWSew0",
+      "expire_date": "2026-10-07T04:41:29.700Z"
+    }
+  },
+  {
+    "model": "core.rolemodel",
+    "pk": "a2bb9d28-0828-405f-98bb-6e3f4d735eb7",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:48.199Z",
+      "updated_at": "2026-09-23T04:41:48.199Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "name": "psk",
+      "permissions": []
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "0b629f25-5aaa-4cf6-9b17-709429ef7687",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:15.521Z",
+      "updated_at": "2026-09-23T04:41:15.521Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "sign_in",
+      "default_text": "Sign In"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "291813ec-4e27-4817-89b8-bbd759a88c23",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:52.315Z",
+      "updated_at": "2026-09-23T04:40:52.315Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "admin",
+      "default_text": "admin"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "399c7592-1a72-4c46-b998-f07beac10c49",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:15.875Z",
+      "updated_at": "2026-09-23T04:41:15.875Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "email",
+      "default_text": "Email"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "4952ff15-61db-483d-ae11-9810e274944f",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:15.709Z",
+      "updated_at": "2026-09-23T04:41:15.709Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "enter_your_credentials_to_access_the_site_panel",
+      "default_text": "Enter Your Credentials To Access The Site Panel"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "4a141979-ddcb-42f3-ab39-6629fb0b7863",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:22.428Z",
+      "updated_at": "2026-09-23T04:41:22.428Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "back_to_dashboard",
+      "default_text": "Back To Dashboard"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "4ca7cb9d-f171-4656-a409-319d3aadf176",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:16.024Z",
+      "updated_at": "2026-09-23T04:41:16.024Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "password",
+      "default_text": "Password"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "51cdedb2-a1ab-4bf0-8a8a-001a852fff8c",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:15.138Z",
+      "updated_at": "2026-09-23T04:41:15.138Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "dashboard_login",
+      "default_text": "Dashboard Login"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "a1095599-1a75-41eb-b493-a7d706b5e0b2",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:22.275Z",
+      "updated_at": "2026-09-23T04:41:22.275Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "error_404_page_not_found_sorry_the_page_you_are_looking_for_does_not_exist_or_has_been_moved",
+      "default_text": "Error 404 Page Not Found Sorry The Page You Are Looking For Does Not Exist Or Has Been Moved"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "cbf98bbd-854a-4e52-bb44-d65cc2fe925d",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:21.868Z",
+      "updated_at": "2026-09-23T04:41:21.868Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "page_not_found",
+      "default_text": "Page Not Found"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "de1b29a9-2726-4a06-bd07-ce105b9195a7",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:48.190Z",
+      "updated_at": "2026-09-23T04:41:48.190Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "psk",
+      "default_text": "psk"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "f2cb4af1-5e01-4412-bc24-33b4da968b2a",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:22.140Z",
+      "updated_at": "2026-09-23T04:41:22.140Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "oops_something_went_wrong",
+      "default_text": "Oops Something Went Wrong"
+    }
+  },
+  {
+    "model": "core.textkeymodel",
+    "pk": "f756ba33-4868-4d09-83e5-5bac64cbc148",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:41:14.852Z",
+      "updated_at": "2026-09-23T04:41:14.852Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "key": "",
+      "default_text": ""
+    }
+  },
+  {
+    "model": "core.usermodel",
+    "pk": "1b55e525-8a0f-495a-8b3d-60c8c8893f04",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$yXLJl4xcwlj1Ffiwbg64j5$at2bVnLt8f+JaI5M+bmRvPke+63V3siZGfucakRQlJE=",
+      "last_login": "2026-09-23T04:41:29Z",
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:52.512Z",
+      "updated_at": "2026-09-23T04:42:04.731Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "username": "admin",
+      "email": "complierofrealms@gmail.com",
+      "role": "a2bb9d28-0828-405f-98bb-6e3f4d735eb7",
+      "phone": null,
+      "profile": "",
+      "is_staff": true,
+      "is_active": true,
+      "is_superuser": true,
+      "is_developer": true,
+      "last_active": "2026-09-23T04:42:04.731Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "core.workflowtypemodel",
+    "pk": "04df5254-b29b-496f-9cdf-109e275eae1c",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.242Z",
+      "updated_at": "2026-09-23T04:40:27.242Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "code": "pre_production_preparation",
+      "name": "Pre-Production / Preparation",
+      "order": 0,
+      "group": "pre_production",
+      "icon": "ti ti-hierarchy-2",
+      "subtitle": "Prepare documents and confirm data before sending to Workflow."
+    }
+  },
+  {
+    "model": "core.workflowtypemodel",
+    "pk": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.831Z",
+      "updated_at": "2026-09-23T04:40:27.831Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "code": "departure",
+      "name": "Notification of Departure",
+      "order": 2,
+      "group": "employer_notification",
+      "icon": "ti ti-chart-bar",
+      "subtitle": ""
+    }
+  },
+  {
+    "model": "core.workflowtypemodel",
+    "pk": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.821Z",
+      "updated_at": "2026-09-23T04:40:27.821Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "code": "employer_entry_change",
+      "name": "Notification of Employment (Entry/Change)",
+      "order": 1,
+      "group": "employer_notification",
+      "icon": "ti ti-chart-bar",
+      "subtitle": ""
+    }
+  },
+  {
+    "model": "core.workflowtypemodel",
+    "pk": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.842Z",
+      "updated_at": "2026-09-23T04:40:27.842Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "code": "renew_mou",
+      "name": "Renew MOU",
+      "order": 4,
+      "group": "employer_notification",
+      "icon": "ti ti-chart-bar",
+      "subtitle": ""
+    }
+  },
+  {
+    "model": "core.workflowtypemodel",
+    "pk": "8053f229-e01c-4599-9ddd-dc417182b63e",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.836Z",
+      "updated_at": "2026-09-23T04:40:27.836Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "code": "import_mou",
+      "name": "Import MOU",
+      "order": 3,
+      "group": "employer_notification",
+      "icon": "ti ti-chart-bar",
+      "subtitle": ""
+    }
+  },
+  {
+    "model": "core.workflowtypemodel",
+    "pk": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.632Z",
+      "updated_at": "2026-09-23T04:40:27.632Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "code": "employer_transfer_package",
+      "name": "Employer Transfer Process",
+      "order": 5,
+      "group": "employer_transfer",
+      "icon": "ti ti-arrows-right-left",
+      "subtitle": "Employer Change → Social Security & Tax ID → Pink Card → Bank Account"
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "0b901c6e-25c3-4b51-8915-3a51167e8687",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.824Z",
+      "updated_at": "2026-09-23T04:40:27.824Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+      "name": "Submit Request",
+      "order": 1,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "0ce09e02-1745-44d7-9648-984da55b1dcd",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.644Z",
+      "updated_at": "2026-09-23T04:40:27.644Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+      "name": "Bank Account Opening",
+      "order": 4,
+      "is_terminal": true,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "163a001c-1c80-4c82-aa48-e242487dadac",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.840Z",
+      "updated_at": "2026-09-23T04:40:27.840Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
+      "name": "Processing",
+      "order": 3,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "2b71f63a-8287-4a19-90f7-4b5c0e813b44",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.826Z",
+      "updated_at": "2026-09-23T04:40:27.826Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+      "name": "Document Review",
+      "order": 2,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "2ca2699c-9a05-41ee-8e01-b039b420a557",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.835Z",
+      "updated_at": "2026-09-23T04:40:27.835Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+      "name": "Completed",
+      "order": 4,
+      "is_terminal": true,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "31ce7b7e-e56b-4969-80e5-4ece5285c980",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.847Z",
+      "updated_at": "2026-09-23T04:40:27.847Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+      "name": "Processing",
+      "order": 4,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "31f7c203-36ba-435b-a4c5-9ad3a8a460af",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.642Z",
+      "updated_at": "2026-09-23T04:40:27.642Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+      "name": "Pink Card Registration",
+      "order": 3,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "35dc14db-2987-4854-9f85-ba7f91d06dbf",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.827Z",
+      "updated_at": "2026-09-23T04:40:27.827Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+      "name": "Payment",
+      "order": 3,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "3b5a0cad-b12b-4926-9532-c9d11813b286",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.837Z",
+      "updated_at": "2026-09-23T04:40:27.837Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
+      "name": "Submit Request",
+      "order": 1,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "3ba5d59b-01ec-4ee6-b57d-ffc04fecc273",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.828Z",
+      "updated_at": "2026-09-23T04:40:27.828Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+      "name": "Processing",
+      "order": 4,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "5d06c1ed-6567-4447-ba13-dae48064753f",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.839Z",
+      "updated_at": "2026-09-23T04:40:27.839Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
+      "name": "Document Review",
+      "order": 2,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "7c53d87a-fb67-4a10-8769-fe34341a15d9",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.833Z",
+      "updated_at": "2026-09-23T04:40:27.833Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+      "name": "Document Review",
+      "order": 2,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "823addec-e00c-43f7-add3-a74ba804ca64",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.843Z",
+      "updated_at": "2026-09-23T04:40:27.843Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+      "name": "Submit Request",
+      "order": 1,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "852f1531-4b28-44e9-b023-0b8c02af09f7",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.829Z",
+      "updated_at": "2026-09-23T04:40:27.829Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+      "name": "Completed",
+      "order": 5,
+      "is_terminal": true,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "86d175eb-7d10-4fb1-8552-d4ca95c40d87",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.841Z",
+      "updated_at": "2026-09-23T04:40:27.841Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
+      "name": "Completed",
+      "order": 4,
+      "is_terminal": true,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "908da658-5888-400d-8eea-bbfa9e113b89",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.254Z",
+      "updated_at": "2026-09-23T04:40:27.254Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+      "name": "All documents are complete.",
+      "order": 3,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "99a7d61b-0bf2-4abc-b37a-b8650d2de275",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.274Z",
+      "updated_at": "2026-09-23T04:40:27.274Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+      "name": "Waiting for information updates.",
+      "order": 4,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "a1cc04bf-7fb8-4dbb-96e3-6c7294e870f9",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.279Z",
+      "updated_at": "2026-09-23T04:40:27.279Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+      "name": "Reset code",
+      "order": 6,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "a40fdd62-d6a3-4fae-b02a-facc347cc6a7",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.845Z",
+      "updated_at": "2026-09-23T04:40:27.845Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+      "name": "Payment",
+      "order": 3,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "a96aab87-2ab0-4fd1-809f-18cdfac09d36",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.640Z",
+      "updated_at": "2026-09-23T04:40:27.640Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+      "name": "Social Security & Tax ID",
+      "order": 2,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "b421e808-a3b1-42b2-9637-e7300e363a48",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.247Z",
+      "updated_at": "2026-09-23T04:40:27.247Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+      "name": "Waiting for registration code.",
+      "order": 1,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "ba79c670-5fc9-451e-aa16-2bf3ca7d83e8",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.844Z",
+      "updated_at": "2026-09-23T04:40:27.844Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+      "name": "Document Review",
+      "order": 2,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "bbb3aa1f-0719-4dac-9163-c575ebf3130e",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.832Z",
+      "updated_at": "2026-09-23T04:40:27.832Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+      "name": "Submit Request",
+      "order": 1,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "cddd1f37-8419-499e-a2d8-0167b31dddc2",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.250Z",
+      "updated_at": "2026-09-23T04:40:27.250Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+      "name": "The documents are incomplete.",
+      "order": 2,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "dbbefdc5-7a1e-47fb-bafa-8c5e619e7b3a",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.834Z",
+      "updated_at": "2026-09-23T04:40:27.834Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+      "name": "Processing",
+      "order": 3,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "e38a6750-aa46-45bb-b8c6-2f04c339f2f9",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.276Z",
+      "updated_at": "2026-09-23T04:40:27.277Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+      "name": "The code is available.",
+      "order": 5,
+      "is_terminal": true,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "f527930c-b6ca-40ba-ba51-741b0631af50",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.848Z",
+      "updated_at": "2026-09-23T04:40:27.848Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+      "name": "Completed",
+      "order": 5,
+      "is_terminal": true,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "core.workflowstagemodel",
+    "pk": "fbbfc189-cb63-4369-bec8-1ee8321247d5",
+    "fields": {
+      "created_by": null,
+      "updated_by": null,
+      "deleted_by": null,
+      "created_at": "2026-09-23T04:40:27.637Z",
+      "updated_at": "2026-09-23T04:40:27.637Z",
+      "deleted_at": null,
+      "is_deleted": false,
+      "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+      "name": "Employer Change",
+      "order": 1,
+      "is_terminal": false,
+      "is_cancel_stage": false
+    }
+  },
+  {
+    "model": "sites.site",
+    "pk": 1,
+    "fields": { "domain": "example.com", "name": "example.com" }
+  }
+]
