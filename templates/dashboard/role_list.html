@@ -213,9 +213,9 @@
       rowAlls.forEach(allCheckbox => {
         allCheckbox.addEventListener("change", function () {
           const module = this.dataset.module;
-          document
+          const modulePerms = document
             .querySelectorAll(`.perm-checkbox[data-module="${module}"][data-scope="${scope}"]`)
-            .forEach(cb => (cb.checked = this.checked));
+          modulePerms.forEach(cb => (cb.checked = this.checked));
           syncGlobalAll(scope);
         });
       });
@@ -228,6 +228,14 @@
           allBox.checked = Array.from(allPerms).every(x => x.checked);
           syncGlobalAll(scope);
         });
+      });
+
+      rowAlls.forEach(allCheckbox => {
+        const module = allCheckbox.dataset.module;
+        const allPerms = document.querySelectorAll(
+          `.perm-checkbox[data-module="${module}"][data-scope="${scope}"]`
+        );
+        allCheckbox.checked = allPerms.length > 0 && Array.from(allPerms).every(cb => cb.checked);
       });
     }
 
@@ -248,6 +256,8 @@
           .querySelectorAll(`.perm-checkbox[data-scope="${scope}"], .module-all[data-scope="${scope}"]`)
           .forEach(cb => (cb.checked = this.checked));
       });
+
+      syncGlobalAll(scope);
     });
   });
 </script>

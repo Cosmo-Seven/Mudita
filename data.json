@@ -1,1294 +1,3310 @@
 [
-  {
-    "model": "auth.permission",
-    "pk": 57,
-    "fields": {
-      "name": "Can add Role",
-      "content_type": 15,
-      "codename": "add_rolemodel"
+    {
+        "model": "core.rolemodel",
+        "pk": "a2bb9d28-0828-405f-98bb-6e3f4d735eb7",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:48.199Z",
+            "updated_at": "2026-09-23T04:41:48.199Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "name": "psk",
+            "permissions": []
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "01787a86-3018-45f2-bc8d-e4f42959df39",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:58.337Z",
+            "updated_at": "2026-09-23T09:16:58.337Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "all_districts",
+            "default_text": "All Districts"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "024d40d4-3249-4c7f-b499-f0fbfca049b1",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:39.179Z",
+            "updated_at": "2026-09-23T10:10:39.180Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "work_permit_expired",
+            "default_text": "Work Permit Expired"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "032e40af-cab7-42dc-b83c-f438bd3ea6ce",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:37.317Z",
+            "updated_at": "2026-09-23T10:10:37.317Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "renewal_pending",
+            "default_text": "Renewal Pending"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "041e5d54-bf3e-4c02-8c0f-6ea911506465",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:55.568Z",
+            "updated_at": "2026-09-23T09:16:55.568Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "showing",
+            "default_text": "Showing"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "04d6edb5-fb55-4811-ad7e-6f5a7a43ea06",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:56.797Z",
+            "updated_at": "2026-09-23T09:16:56.797Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "actions",
+            "default_text": "Actions"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "093eec3a-e4c1-4b8f-9c1f-49087b1924f7",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:12.098Z",
+            "updated_at": "2026-09-23T09:17:12.098Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "change_image",
+            "default_text": "Change Image"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "09e908c2-12b0-4e41-a85d-e0160fb14ccb",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:05.633Z",
+            "updated_at": "2026-09-23T09:17:05.633Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "visa_expiry_date",
+            "default_text": "Visa Expiry Date"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "0ab029ce-8506-4453-8e18-b3c7ea12fc92",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:16.515Z",
+            "updated_at": "2026-09-23T09:17:16.515Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "edit",
+            "default_text": "Edit"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "0b629f25-5aaa-4cf6-9b17-709429ef7687",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:15.521Z",
+            "updated_at": "2026-09-23T04:41:15.521Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "sign_in",
+            "default_text": "Sign In"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "0c16a9cc-07a0-477b-bbe2-8e7b6dcad973",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:43.206Z",
+            "updated_at": "2026-09-23T09:15:43.206Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "all_stores",
+            "default_text": "All Stores"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "0c67757e-c224-482a-b180-19cb57db1130",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:43.973Z",
+            "updated_at": "2026-09-23T09:15:43.973Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "sale",
+            "default_text": "Sale"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "0de1fc7a-2f3d-4207-a422-d7117ca175a3",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:45.205Z",
+            "updated_at": "2026-09-23T09:15:45.205Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "transfer",
+            "default_text": "Transfer"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "0f75a5c3-a9c7-4f6e-877e-95cb159f5dea",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:47.105Z",
+            "updated_at": "2026-09-23T09:15:47.106Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "users",
+            "default_text": "Users"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "0fb2ef09-1b7f-4623-9a7f-c470b1134ec4",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:45.681Z",
+            "updated_at": "2026-09-23T09:15:45.681Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "logout",
+            "default_text": "Logout"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "17aca3f6-191b-4a9f-8022-05dfcc799c00",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:44.273Z",
+            "updated_at": "2026-09-23T09:15:44.273Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "income",
+            "default_text": "Income"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "17effca9-7e55-4a25-a430-69360445366e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:42.805Z",
+            "updated_at": "2026-09-23T09:15:42.805Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "dashboard",
+            "default_text": "Dashboard"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "187f1f65-0295-420a-94e6-a8780d246f81",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:01.177Z",
+            "updated_at": "2026-09-23T09:17:01.178Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "completed",
+            "default_text": "Completed"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "18d8b0f3-ffa5-4442-b504-db1a06502f56",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:57.641Z",
+            "updated_at": "2026-09-23T09:16:57.641Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "all_provinces",
+            "default_text": "All Provinces"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "1ad28a11-002b-4efd-9be3-cecf3b20fc46",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:40.684Z",
+            "updated_at": "2026-09-23T10:10:40.684Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "recent_employees",
+            "default_text": "Recent Employees"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "1dd55c5d-72d6-4f15-add1-ede807ee0839",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:55.551Z",
+            "updated_at": "2026-09-23T09:16:55.551Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "employee_list",
+            "default_text": "Employee List"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "1fc24bd7-976b-4ffe-a4b8-51dd82425729",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:36.705Z",
+            "updated_at": "2026-09-23T10:10:36.705Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "in_progress",
+            "default_text": "In Progress"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "20199fc2-2a51-4d5e-8552-912564db0251",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:54.374Z",
+            "updated_at": "2026-09-23T09:16:54.374Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "name",
+            "default_text": "Name"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "22bbf835-0019-47b3-9372-8e7b74a3d0f7",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:54.551Z",
+            "updated_at": "2026-09-23T09:16:54.551Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "business_type",
+            "default_text": "Business Type"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "235df6c7-2744-437c-8428-243373251005",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:45.975Z",
+            "updated_at": "2026-09-23T09:15:45.975Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "employer_management",
+            "default_text": "Employer Management"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "241e43e4-4f78-4c88-9f07-bd9b08ac9ceb",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:14.812Z",
+            "updated_at": "2026-09-23T09:17:14.812Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "add_new_role",
+            "default_text": "Add New Role"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "268e554e-1745-404a-88c0-ed66268d39b1",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:02.785Z",
+            "updated_at": "2026-09-23T09:17:02.785Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "passport_status",
+            "default_text": "Passport Status"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "26ac4939-e7de-4420-9be0-3f0c8f218bd3",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:00.843Z",
+            "updated_at": "2026-09-23T09:17:00.843Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "has_pink_card",
+            "default_text": "Has Pink Card"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "291813ec-4e27-4817-89b8-bbd759a88c23",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:52.315Z",
+            "updated_at": "2026-09-23T04:40:52.315Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "admin",
+            "default_text": "admin"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "2969a96b-2aca-46a6-b7fd-bebf0d242549",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:53.819Z",
+            "updated_at": "2026-09-23T09:16:53.819Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "range_picker",
+            "default_text": "Range Picker"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "2f1a14ed-6544-482e-8ffe-76bd93d4423b",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:52.856Z",
+            "updated_at": "2026-09-23T09:16:52.856Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "manage_your_employers",
+            "default_text": "Manage Your Employers"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "30edd4fd-66f7-4de2-bb0f-7633b1d87586",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:06.443Z",
+            "updated_at": "2026-09-23T09:17:06.443Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "preview_data",
+            "default_text": "Preview Data"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "314a7942-aa5e-4570-8158-bdebe1072e43",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:05.943Z",
+            "updated_at": "2026-09-23T09:17:05.943Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "to",
+            "default_text": "To"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "339e336e-c8b4-4641-a326-14862e2d8ade",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:36.862Z",
+            "updated_at": "2026-09-23T10:10:36.862Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "active_accounts",
+            "default_text": "Active Accounts"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "3645ff2a-75b7-4c13-8c4b-27320f387f89",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:02.039Z",
+            "updated_at": "2026-09-23T09:17:02.039Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "notify_settings",
+            "default_text": "Notify Settings"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "367b43f1-6675-49e1-b136-843db3dca153",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:01.018Z",
+            "updated_at": "2026-09-23T09:17:01.018Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "cancelled",
+            "default_text": "Cancelled"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "37f4aa20-7ce7-4b12-96b7-e84d0ddd9591",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:40.892Z",
+            "updated_at": "2026-09-23T10:10:40.892Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "recent_employers",
+            "default_text": "Recent Employers"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "38366d6b-5757-4fd4-8e2d-592c630cf868",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:38.005Z",
+            "updated_at": "2026-09-23T10:10:38.005Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "view_all",
+            "default_text": "View All"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "399c7592-1a72-4c46-b998-f07beac10c49",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:15.875Z",
+            "updated_at": "2026-09-23T04:41:15.875Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "email",
+            "default_text": "Email"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "3a14d8d6-83c1-43c3-98b7-5365f8173dbc",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:01.522Z",
+            "updated_at": "2026-09-23T09:17:01.522Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "workflow_progress_global",
+            "default_text": "Workflow Progress Global"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "3ad412c1-de8d-4eb0-a2c7-365a07f0c746",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:15.320Z",
+            "updated_at": "2026-09-23T09:17:15.320Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "view_permission_hint",
+            "default_text": "View Permission Hint"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "3c743c2e-27bb-4419-b936-7e2d11a6f089",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:43.362Z",
+            "updated_at": "2026-09-23T09:15:43.362Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "add_new",
+            "default_text": "Add New"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "3cd47bac-e407-4d09-a623-cb8c794c4e60",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:00.674Z",
+            "updated_at": "2026-09-23T09:17:00.674Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "daily_check",
+            "default_text": "Daily Check"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "4275f386-ecfa-415e-932a-0ee7515cb1a4",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:16.830Z",
+            "updated_at": "2026-09-23T09:17:16.830Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "delete_permission_hint",
+            "default_text": "Delete Permission Hint"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "4406d2d9-25af-459d-9e4a-ea51736c4dfb",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:38.721Z",
+            "updated_at": "2026-09-23T10:10:38.721Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "visa_expired",
+            "default_text": "Visa Expired"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "44bc6857-9ca0-4ab5-a61f-4ba32692282a",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:02.200Z",
+            "updated_at": "2026-09-23T09:17:02.200Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "no_pink_card",
+            "default_text": "No Pink Card"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "461168a8-9ea5-431a-86c6-6da0afee56d5",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:17.146Z",
+            "updated_at": "2026-09-23T09:17:17.146Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "update_role",
+            "default_text": "Update Role"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "47df311d-df83-4769-8327-318c516ea35f",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:04.277Z",
+            "updated_at": "2026-09-23T09:17:04.277Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "export",
+            "default_text": "Export"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "488ea9cf-4573-4dbe-8e7d-982f1ded1908",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:53.639Z",
+            "updated_at": "2026-09-23T09:16:53.640Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "filter",
+            "default_text": "Filter"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "4952ff15-61db-483d-ae11-9810e274944f",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:15.709Z",
+            "updated_at": "2026-09-23T04:41:15.709Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "enter_your_credentials_to_access_the_site_panel",
+            "default_text": "Enter Your Credentials To Access The Site Panel"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "4a141979-ddcb-42f3-ab39-6629fb0b7863",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:22.428Z",
+            "updated_at": "2026-09-23T04:41:22.428Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "back_to_dashboard",
+            "default_text": "Back To Dashboard"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "4c2a4056-c5b9-4c36-ad0d-914c424ecaac",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:53.457Z",
+            "updated_at": "2026-09-23T09:16:53.457Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "date_picker",
+            "default_text": "Date Picker"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "4ca7cb9d-f171-4656-a409-319d3aadf176",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:16.024Z",
+            "updated_at": "2026-09-23T04:41:16.024Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "password",
+            "default_text": "Password"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "4ce6efe6-f4ab-42d2-9435-4c0bac91a073",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:38.540Z",
+            "updated_at": "2026-09-23T10:10:38.540Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "passport_expiring",
+            "default_text": "Passport Expiring"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "500f3b12-f8bf-4ae3-9553-759e2324fe08",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:44.734Z",
+            "updated_at": "2026-09-23T09:15:44.734Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "customer",
+            "default_text": "Customer"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "51013bc8-1250-47b0-8282-34a84d293f7b",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:44.412Z",
+            "updated_at": "2026-09-23T09:15:44.412Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "return",
+            "default_text": "Return"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "517e04c7-e1fe-4c66-8ae0-339ad23d7d22",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:12.553Z",
+            "updated_at": "2026-09-23T09:17:12.553Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "confirm_password",
+            "default_text": "Confirm Password"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "51cdedb2-a1ab-4bf0-8a8a-001a852fff8c",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:15.138Z",
+            "updated_at": "2026-09-23T04:41:15.138Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "dashboard_login",
+            "default_text": "Dashboard Login"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "5341f37b-d86b-4cee-9916-08f8caa7db69",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:11.572Z",
+            "updated_at": "2026-09-23T09:17:11.572Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "active",
+            "default_text": "Active"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "54f87a82-ca47-45e3-910c-42666b884eaa",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:47.405Z",
+            "updated_at": "2026-09-23T09:15:47.405Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "company_settings",
+            "default_text": "Company Settings"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "55bb4d0a-486b-480c-bd77-b8a5f483b526",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:55.935Z",
+            "updated_at": "2026-09-23T09:16:55.935Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "add_new_employee",
+            "default_text": "Add New Employee"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "5b7ac903-56ad-45e8-bfa3-42e36bed35f3",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:03.977Z",
+            "updated_at": "2026-09-23T09:17:03.977Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "no_bank_account",
+            "default_text": "No Bank Account"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "5ba6b9bd-9257-4691-a24c-0cb7d668bec9",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:06.280Z",
+            "updated_at": "2026-09-23T09:17:06.280Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "results",
+            "default_text": "Results"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "5c1562c8-60cd-48f3-a697-0ebde32a84cd",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:45.819Z",
+            "updated_at": "2026-09-23T09:15:45.819Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "main",
+            "default_text": "Main"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "5c21b266-d3fa-4808-bccb-14369ace27b3",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:57.636Z",
+            "updated_at": "2026-09-23T09:16:57.636Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "clear_selection",
+            "default_text": "Clear Selection"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "5f022d6a-64b9-437b-84b5-ef0b394e5887",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:03.471Z",
+            "updated_at": "2026-09-23T09:17:03.471Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "visa_status",
+            "default_text": "Visa Status"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "63aa1b90-bd21-4c1e-931e-4eb5b0b6193f",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:39.750Z",
+            "updated_at": "2026-09-23T10:10:39.750Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "workflows",
+            "default_text": "Workflows"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "63e583ba-b6ca-4c40-b2a6-9c62bc9cbe81",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:05.365Z",
+            "updated_at": "2026-09-23T09:17:05.365Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "passport",
+            "default_text": "Passport"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "65108261-328d-4076-b77e-8b50c4de620e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:01.363Z",
+            "updated_at": "2026-09-23T09:17:01.363Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "active_projects",
+            "default_text": "Active Projects"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "662a161e-f264-4837-90dd-d6e227a2507a",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:57.128Z",
+            "updated_at": "2026-09-23T09:16:57.128Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "export_pdf",
+            "default_text": "Export Pdf"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "6694ab78-c92e-4a88-b2f2-984b31cc33fb",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:03.818Z",
+            "updated_at": "2026-09-23T09:17:03.818Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "has_bank_account",
+            "default_text": "Has Bank Account"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "669a6e38-5be6-4160-9270-4578ec3cf843",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:46.275Z",
+            "updated_at": "2026-09-23T09:15:46.275Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "employees",
+            "default_text": "Employees"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "66acda04-6903-43fb-8c6a-29a75bb224e7",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:38.188Z",
+            "updated_at": "2026-09-23T10:10:38.188Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "document_alerts",
+            "default_text": "Document Alerts"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "67cb8313-ddd1-4409-b255-3cda2765d1ea",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:10.752Z",
+            "updated_at": "2026-09-23T09:17:10.752Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "manage_your_users",
+            "default_text": "Manage Your Users"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "6a3e3d3e-a575-4c17-9cfd-78a5e95ca08c",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:02.963Z",
+            "updated_at": "2026-09-23T09:17:02.963Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "valid",
+            "default_text": "Valid"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "6b901db1-06f2-40be-a5ba-9539654e88fe",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:54.923Z",
+            "updated_at": "2026-09-23T09:16:54.923Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "status",
+            "default_text": "Status"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "6c24b772-345a-4ad3-8ff5-12a5ef208ad5",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:53.992Z",
+            "updated_at": "2026-09-23T09:16:53.992Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "entries",
+            "default_text": "Entries"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "6c93abe1-4a79-414d-97ce-033b2708355c",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:04.725Z",
+            "updated_at": "2026-09-23T09:17:04.725Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "add_employee",
+            "default_text": "Add Employee"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "6fe71e92-ef42-4a70-a286-c5fc92b696d6",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:03.303Z",
+            "updated_at": "2026-09-23T09:17:03.303Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "expired",
+            "default_text": "Expired"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "6ff5d210-8904-4cb0-913c-e71135d29769",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:11.729Z",
+            "updated_at": "2026-09-23T09:17:11.729Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "staff",
+            "default_text": "Staff"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "70a013d6-6e60-48e4-9fe5-c0f7f27412d1",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:16.985Z",
+            "updated_at": "2026-09-23T09:17:16.985Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "can_permanently_remove_records",
+            "default_text": "Can Permanently Remove Records"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "70e98dc5-a912-4f1a-846e-9abc17e73b04",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:58.723Z",
+            "updated_at": "2026-09-23T09:16:58.724Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "sub_district",
+            "default_text": "Sub District"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "7325c546-5fda-4e4b-82b3-993bd9191715",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:37.655Z",
+            "updated_at": "2026-09-23T10:10:37.655Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "90day_report_overdue",
+            "default_text": "90day Report Overdue"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "73e18ac1-5b8a-4c3e-82ba-d31aa6419fe5",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:37.477Z",
+            "updated_at": "2026-09-23T10:10:37.477Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "terminated",
+            "default_text": "Terminated"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "7446c940-c7f7-45cc-97cd-f32c9644ceeb",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:16.188Z",
+            "updated_at": "2026-09-23T09:17:16.188Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "can_create_new_records",
+            "default_text": "Can Create New Records"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "7484e16d-05a0-4121-97e4-0133cb8de3b7",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:56.123Z",
+            "updated_at": "2026-09-23T09:16:56.123Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "screen_by_address",
+            "default_text": "Screen By Address"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "749ebb46-b104-4214-a9f2-fb4c11fb3eb3",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:39.964Z",
+            "updated_at": "2026-09-23T10:10:39.964Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "attention_needed",
+            "default_text": "Attention Needed"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "75c23d36-b5c3-4904-8a76-db3a77df36b9",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:46.111Z",
+            "updated_at": "2026-09-23T09:15:46.112Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "employers",
+            "default_text": "Employers"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "763f086f-0dbf-4c6b-8406-345dfeaca181",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:06.106Z",
+            "updated_at": "2026-09-23T09:17:06.106Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "of",
+            "default_text": "Of"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "7a634e29-2b44-4975-b168-370765f0e3b1",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:11.894Z",
+            "updated_at": "2026-09-23T09:17:11.894Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "superuser",
+            "default_text": "Superuser"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "7fa5f79f-e9c8-40ab-b33c-69f054bed1e4",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:55.118Z",
+            "updated_at": "2026-09-23T09:16:55.118Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "action",
+            "default_text": "Action"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "83006b5c-ebe4-4031-844a-503058ff3a9e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:00.841Z",
+            "updated_at": "2026-09-23T09:17:00.841Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "not_started",
+            "default_text": "Not Started"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "83dffd4f-4533-4923-ac98-959bc3e9998e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:45.528Z",
+            "updated_at": "2026-09-23T09:15:45.528Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "settings",
+            "default_text": "Settings"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "844335ad-1094-4ff8-b2f1-76385f918808",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:12.861Z",
+            "updated_at": "2026-09-23T09:17:12.861Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "save",
+            "default_text": "Save"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "87ab87d9-c7da-44a2-b6fa-eed41c8fcd6b",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:56.287Z",
+            "updated_at": "2026-09-23T09:16:56.287Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "selected",
+            "default_text": "Selected"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "88b050d5-1fa1-441e-bdd1-8437adeb34a6",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:40.522Z",
+            "updated_at": "2026-09-23T10:10:40.522Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "no_data",
+            "default_text": "No Data"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "89e6088a-b5d8-4e57-9cb6-c3ac86eb8c54",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:39.388Z",
+            "updated_at": "2026-09-23T10:10:39.388Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "work_permit_expiring",
+            "default_text": "Work Permit Expiring"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "89ec9a49-867f-47a7-900c-ec86f6bf4887",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:54.747Z",
+            "updated_at": "2026-09-23T09:16:54.747Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "phone",
+            "default_text": "Phone"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "8a3c5d82-6dfd-4bff-9bf9-134b0bac16aa",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:16.363Z",
+            "updated_at": "2026-09-23T09:17:16.363Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "edit_permission_hint",
+            "default_text": "Edit Permission Hint"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "8ad0cda8-7850-43be-a4a0-e38c5b0532dd",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:56.967Z",
+            "updated_at": "2026-09-23T09:16:56.967Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "export_excel",
+            "default_text": "Export Excel"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "8b8a266c-d227-4ee8-9356-9276ed6fa6ca",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:04.128Z",
+            "updated_at": "2026-09-23T09:17:04.128Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "clear",
+            "default_text": "Clear"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "8c5284c3-df5d-4e38-a5de-e34cfc6f9bc0",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:03.136Z",
+            "updated_at": "2026-09-23T09:17:03.136Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "expiring_soon",
+            "default_text": "Expiring Soon"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "8cd6e470-65fc-41f7-9ea8-ae5f33bc7653",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:43.063Z",
+            "updated_at": "2026-09-23T09:15:43.063Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "search",
+            "default_text": "Search"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "8d2021c6-3030-4ec4-b95b-d072621eabb6",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:14.412Z",
+            "updated_at": "2026-09-23T09:17:14.412Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "roles",
+            "default_text": "Roles"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "8ebc97ce-3793-4ca6-b752-01434f558dbc",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:00.279Z",
+            "updated_at": "2026-09-23T09:17:00.279Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "total_employees",
+            "default_text": "Total Employees"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "8f35c76f-a43c-41da-a362-13ba03c14949",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:15.819Z",
+            "updated_at": "2026-09-23T09:17:15.819Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "add_permission_hint",
+            "default_text": "Add Permission Hint"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "917a4ab4-fd7e-4b04-a620-c8972e70d54e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:04.890Z",
+            "updated_at": "2026-09-23T09:17:04.891Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "table",
+            "default_text": "Table"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "91fbb5f4-46bd-4142-9f6d-e0163fa69803",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:47.554Z",
+            "updated_at": "2026-09-23T09:15:47.554Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "language_settings",
+            "default_text": "Language Settings"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "95d66d59-2e1d-4cbf-a44b-9c083e25642e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:57.306Z",
+            "updated_at": "2026-09-23T09:16:57.306Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "province",
+            "default_text": "Province"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "964fc0b2-3c54-4967-b3fe-723ccb6d0ad3",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:00.094Z",
+            "updated_at": "2026-09-23T09:17:00.094Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "insurance_type",
+            "default_text": "Insurance Type"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "999efe3c-30a9-46d5-ba82-c39f699380ba",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:16.006Z",
+            "updated_at": "2026-09-23T09:17:16.006Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "add",
+            "default_text": "Add"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "9a5da374-43bd-462f-889c-bde7bb3614a4",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:03.648Z",
+            "updated_at": "2026-09-23T09:17:03.648Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "bank_account_status",
+            "default_text": "Bank Account Status"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "9b022f5d-0604-4086-afb5-9db589f48cf6",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:12.356Z",
+            "updated_at": "2026-09-23T09:17:12.356Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "choose_one",
+            "default_text": "Choose One"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "9bfa442a-0312-4503-a8d0-6e3d2a198545",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:59.624Z",
+            "updated_at": "2026-09-23T09:16:59.624Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "all_nationalities",
+            "default_text": "All Nationalities"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "9c23ec54-22bf-44f1-a8e9-3a51be83b59c",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:11.413Z",
+            "updated_at": "2026-09-23T09:17:11.413Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "role",
+            "default_text": "Role"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "a03fd4f3-e9de-4cd4-bb19-bc524ba37475",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:13.017Z",
+            "updated_at": "2026-09-23T09:17:13.017Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "update_user",
+            "default_text": "Update User"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "a0fa49fc-9620-4f35-a6ce-185188360f84",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:38.999Z",
+            "updated_at": "2026-09-23T10:10:38.999Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "visa_expiring",
+            "default_text": "Visa Expiring"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "a1095599-1a75-41eb-b493-a7d706b5e0b2",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:22.275Z",
+            "updated_at": "2026-09-23T04:41:22.275Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "error_404_page_not_found_sorry_the_page_you_are_looking_for_does_not_exist_or_has_been_moved",
+            "default_text": "Error 404 Page Not Found Sorry The Page You Are Looking For Does Not Exist Or Has Been Moved"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "a13c3dc6-9c9c-4c99-9228-9b78cc576075",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:05.780Z",
+            "updated_at": "2026-09-23T09:17:05.780Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "job_position",
+            "default_text": "Job Position"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "a3e4d792-916c-4039-bd20-4dad19197c87",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:11.252Z",
+            "updated_at": "2026-09-23T09:17:11.252Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "table_no",
+            "default_text": "Table No"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "a60d95e0-982c-4c7f-9481-b7a729d1f304",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:47.258Z",
+            "updated_at": "2026-09-23T09:15:47.258Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "roles_and_permissions",
+            "default_text": "Roles And Permissions"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "aaf86cc9-035a-44f8-af5e-66ccf038653b",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:02.199Z",
+            "updated_at": "2026-09-23T09:17:02.199Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "auto_mou_settings",
+            "default_text": "Auto Mou Settings"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "ab811d77-a395-4864-9608-f9715cfb74cb",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:46.947Z",
+            "updated_at": "2026-09-23T09:15:46.947Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "user_management",
+            "default_text": "User Management"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "ab8c9ca8-6344-4ed1-8eaf-acd1dd61fb29",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:58.352Z",
+            "updated_at": "2026-09-23T09:16:58.352Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "no",
+            "default_text": "No"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "ab959a83-3c7e-44e9-a20c-cedfbfcfcf19",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:04.426Z",
+            "updated_at": "2026-09-23T09:17:04.426Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "card",
+            "default_text": "Card"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "ad23079e-0a44-4e84-89bb-4a2511a9b611",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:40.160Z",
+            "updated_at": "2026-09-23T10:10:40.160Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "document",
+            "default_text": "Document"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "aea97296-c995-4de3-9f08-09ad63365f1c",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:11.081Z",
+            "updated_at": "2026-09-23T09:17:11.081Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "add_new_user",
+            "default_text": "Add New User"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "af46a0bc-a6a3-48fd-a97d-f74c569c2ced",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:13.177Z",
+            "updated_at": "2026-09-23T09:17:13.177Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "are_you_sure_you_want_to_delete",
+            "default_text": "Are You Sure You Want To Delete"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "b02148f3-7c47-4070-8872-6e169d30164d",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:37.829Z",
+            "updated_at": "2026-09-23T10:10:37.829Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "new_employees",
+            "default_text": "New Employees"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "b3733959-6155-4fa0-ab09-780b64391af3",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:43.811Z",
+            "updated_at": "2026-09-23T09:15:43.811Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "purchase",
+            "default_text": "Purchase"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "b56eb467-0795-46dc-94ca-8f99632ac082",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:05.058Z",
+            "updated_at": "2026-09-23T09:17:05.058Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "employer",
+            "default_text": "Employer"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "b769d1f5-0b8e-460a-8579-ddb06d175c89",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:54.183Z",
+            "updated_at": "2026-09-23T09:16:54.183Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "show",
+            "default_text": "Show"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "b9a8c4f5-9faf-4f0c-8c17-988e251f283e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:01.869Z",
+            "updated_at": "2026-09-23T09:17:01.869Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "hide_cancelled",
+            "default_text": "Hide Cancelled"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "bc0d0a3c-1807-469c-a0c8-a909a9dacf61",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:36.502Z",
+            "updated_at": "2026-09-23T10:10:36.502Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "operational_overview",
+            "default_text": "Operational Overview"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "bc66f3ad-a24c-4b9d-9f04-85f0fccfdbea",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:00.484Z",
+            "updated_at": "2026-09-23T09:17:00.484Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "pink_card",
+            "default_text": "Pink Card"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "bfcc40e0-85db-4efd-9916-196ddc84caf7",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:43.660Z",
+            "updated_at": "2026-09-23T09:15:43.660Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "product",
+            "default_text": "Product"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "c0912850-7ac7-4721-a63a-2a23c92ce2d2",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:44.121Z",
+            "updated_at": "2026-09-23T09:15:44.121Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "expense",
+            "default_text": "Expense"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "c091b4a6-796d-44cf-89dd-27ab1a1d5cd1",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:58.716Z",
+            "updated_at": "2026-09-23T09:16:58.716Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "yes",
+            "default_text": "Yes"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "c1522187-931a-46ae-afbc-a50530f4dd82",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:02.371Z",
+            "updated_at": "2026-09-23T09:17:02.372Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "steps",
+            "default_text": "Steps"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "c29e0122-9542-40ac-8ff3-ed92f68eeefe",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:43.517Z",
+            "updated_at": "2026-09-23T09:15:43.517Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "category",
+            "default_text": "Category"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "c66774da-5854-4d9e-9d3d-4c22713caef2",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:45.058Z",
+            "updated_at": "2026-09-23T09:15:45.058Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "supplier",
+            "default_text": "Supplier"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "c81339f5-2f58-47b8-a094-a28eba53f4a9",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:55.342Z",
+            "updated_at": "2026-09-23T09:16:55.343Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "no_data_found",
+            "default_text": "No Data Found"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "c946e3e6-df09-4140-bbad-7a3e88531397",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:44.887Z",
+            "updated_at": "2026-09-23T09:15:44.887Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "quotation",
+            "default_text": "Quotation"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "cbf98bbd-854a-4e52-bb44-d65cc2fe925d",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:21.868Z",
+            "updated_at": "2026-09-23T04:41:21.868Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "page_not_found",
+            "default_text": "Page Not Found"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "cbffa093-211e-4715-ab7a-8edae7cc3022",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:59.192Z",
+            "updated_at": "2026-09-23T09:16:59.192Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "every_sub_district",
+            "default_text": "Every Sub District"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "cc1806c9-3bb2-4d5c-b947-44612bae8eeb",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:53.253Z",
+            "updated_at": "2026-09-23T09:16:53.253Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "add_new_employer",
+            "default_text": "Add New Employer"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "ce71d78a-286b-41ba-b2d5-ebdbd641f922",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:14.646Z",
+            "updated_at": "2026-09-23T09:17:14.646Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "manage_your_roles",
+            "default_text": "Manage Your Roles"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "ce74365c-ca0c-4534-bd92-e2d6978587f6",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:46.610Z",
+            "updated_at": "2026-09-23T09:15:46.610Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "processing",
+            "default_text": "Processing"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "d04cf3c7-87e3-4336-b8b7-7631446bcbc1",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:53.088Z",
+            "updated_at": "2026-09-23T09:16:53.088Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "refresh",
+            "default_text": "Refresh"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "d0a09188-a69e-424b-b34b-9ea9198b7ee3",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:39.557Z",
+            "updated_at": "2026-09-23T10:10:39.557Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "90day_report_due",
+            "default_text": "90day Report Due"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "d185a090-55f2-4aa7-a607-327e11519282",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:15.142Z",
+            "updated_at": "2026-09-23T09:17:15.142Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "all",
+            "default_text": "All"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "d1abc93b-270f-45cd-9293-dd8fff8bbe69",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:47.714Z",
+            "updated_at": "2026-09-23T09:15:47.714Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "translate_key_settings",
+            "default_text": "Translate Key Settings"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "d91f52e5-7786-47a2-8ad7-cf2239b06056",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:56.455Z",
+            "updated_at": "2026-09-23T09:16:56.455Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "select_all",
+            "default_text": "Select All"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "d9e1a05b-b2e6-4e21-818d-9322fab4e00c",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:46.781Z",
+            "updated_at": "2026-09-23T09:15:46.781Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "employer_transfer",
+            "default_text": "Employer Transfer"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "daa2b73e-9671-46cc-b98f-6ff944ffdc84",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:44.572Z",
+            "updated_at": "2026-09-23T09:15:44.572Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "employee",
+            "default_text": "Employee"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "dbd1611b-ce0b-4595-9646-5b558927871f",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:56.289Z",
+            "updated_at": "2026-09-23T09:16:56.289Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "dynamic_filter",
+            "default_text": "Dynamic Filter"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "dc6f8a5a-9c94-4c81-a50e-ab9ff6817946",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:59.392Z",
+            "updated_at": "2026-09-23T09:16:59.392Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "workflow",
+            "default_text": "Workflow"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "de1b29a9-2726-4a06-bd07-ce105b9195a7",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:48.190Z",
+            "updated_at": "2026-09-23T04:41:48.190Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "psk",
+            "default_text": "psk"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "e2548066-4162-4c24-a7ce-02c1d0e07c93",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:40.343Z",
+            "updated_at": "2026-09-23T10:10:40.343Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "days",
+            "default_text": "Days"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "e4a48b2b-d81e-4e1c-9082-468eb8d9b469",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:58.150Z",
+            "updated_at": "2026-09-23T09:16:58.150Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "district",
+            "default_text": "District"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "e597a280-7741-4e52-967f-ff05e725a78e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:46.445Z",
+            "updated_at": "2026-09-23T09:15:46.445Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "preparation",
+            "default_text": "Preparation"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "e7515b01-c062-4bda-b95a-31106531656f",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:05.225Z",
+            "updated_at": "2026-09-23T09:17:05.225Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "nationality",
+            "default_text": "Nationality"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "e95155bf-6467-43da-aa02-92f4eea43d2f",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:14.985Z",
+            "updated_at": "2026-09-23T09:17:14.985Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "module",
+            "default_text": "Module"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "ebc7c3aa-cbe6-47bd-97bc-8a552dc00c26",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:38.361Z",
+            "updated_at": "2026-09-23T10:10:38.361Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "passport_expired",
+            "default_text": "Passport Expired"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "ef6c445a-fa12-4392-a702-435c3e13b0f6",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:57.823Z",
+            "updated_at": "2026-09-23T09:16:57.823Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "delete",
+            "default_text": "Delete"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f005da8c-6a58-4d71-aca7-ebb7be01a032",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:12.702Z",
+            "updated_at": "2026-09-23T09:17:12.702Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "close",
+            "default_text": "Close"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f07c98ea-9813-4f5e-ace2-6a604a8819dd",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:10.951Z",
+            "updated_at": "2026-09-23T09:17:10.951Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "collapse",
+            "default_text": "Collapse"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f2a1e172-e486-4528-9ead-8e21000e4fa3",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:57.303Z",
+            "updated_at": "2026-09-23T09:16:57.303Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "delete_selected",
+            "default_text": "Delete Selected"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f2c870c7-11c2-45ad-9c39-7b58cb27d5d2",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:15.653Z",
+            "updated_at": "2026-09-23T09:17:15.653Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "can_see_the_list_and_details",
+            "default_text": "Can See The List And Details"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f2cb4af1-5e01-4412-bc24-33b4da968b2a",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:22.140Z",
+            "updated_at": "2026-09-23T04:41:22.140Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "oops_something_went_wrong",
+            "default_text": "Oops Something Went Wrong"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f4107a83-3d2c-4b34-94c3-cea308b9334b",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T10:10:37.029Z",
+            "updated_at": "2026-09-23T10:10:37.029Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "registration_pending",
+            "default_text": "Registration Pending"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f48d9d6a-ef5e-4f5f-92d0-2cda66909763",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:15:45.381Z",
+            "updated_at": "2026-09-23T09:15:45.381Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "my_profile",
+            "default_text": "My Profile"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f6484824-98f1-47b3-aa8b-f098f4107014",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:16:59.895Z",
+            "updated_at": "2026-09-23T09:16:59.895Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "all_mou_types",
+            "default_text": "All Mou Types"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f756ba33-4868-4d09-83e5-5bac64cbc148",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:41:14.852Z",
+            "updated_at": "2026-09-23T04:41:14.852Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "",
+            "default_text": ""
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "f8643e37-82db-44c0-801e-86f8bb3dcebe",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:02.789Z",
+            "updated_at": "2026-09-23T09:17:02.789Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "trash",
+            "default_text": "Trash"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "fc9bb841-1d15-4be0-a9a0-f94f68802838",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:16.665Z",
+            "updated_at": "2026-09-23T09:17:16.665Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "can_update_existing_records",
+            "default_text": "Can Update Existing Records"
+        }
+    },
+    {
+        "model": "core.textkeymodel",
+        "pk": "fca9ae4a-c4f5-420d-8f05-048917b43385",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T09:17:15.479Z",
+            "updated_at": "2026-09-23T09:17:15.479Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "key": "view",
+            "default_text": "View"
+        }
+    },
+    {
+        "model": "core.usermodel",
+        "pk": "1b55e525-8a0f-495a-8b3d-60c8c8893f04",
+        "fields": {
+            "password": "pbkdf2_sha256$1000000$yXLJl4xcwlj1Ffiwbg64j5$at2bVnLt8f+JaI5M+bmRvPke+63V3siZGfucakRQlJE=",
+            "last_login": "2026-09-24T03:16:00.445Z",
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:52.512Z",
+            "updated_at": "2026-09-23T04:42:04.731Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "username": "admin",
+            "email": "complierofrealms@gmail.com",
+            "role": "a2bb9d28-0828-405f-98bb-6e3f4d735eb7",
+            "phone": null,
+            "profile": "",
+            "is_staff": true,
+            "is_active": true,
+            "is_superuser": true,
+            "is_developer": true,
+            "last_active": "2026-09-23T04:42:04.731Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "core.workflowtypemodel",
+        "pk": "04df5254-b29b-496f-9cdf-109e275eae1c",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.242Z",
+            "updated_at": "2026-09-23T04:40:27.242Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "code": "pre_production_preparation",
+            "name": "Pre-Production / Preparation",
+            "order": 0,
+            "group": "pre_production",
+            "icon": "ti ti-hierarchy-2",
+            "subtitle": "Prepare documents and confirm data before sending to Workflow."
+        }
+    },
+    {
+        "model": "core.workflowtypemodel",
+        "pk": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.831Z",
+            "updated_at": "2026-09-23T04:40:27.831Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "code": "departure",
+            "name": "Notification of Departure",
+            "order": 2,
+            "group": "employer_notification",
+            "icon": "ti ti-chart-bar",
+            "subtitle": ""
+        }
+    },
+    {
+        "model": "core.workflowtypemodel",
+        "pk": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.821Z",
+            "updated_at": "2026-09-23T04:40:27.821Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "code": "employer_entry_change",
+            "name": "Notification of Employment (Entry/Change)",
+            "order": 1,
+            "group": "employer_notification",
+            "icon": "ti ti-chart-bar",
+            "subtitle": ""
+        }
+    },
+    {
+        "model": "core.workflowtypemodel",
+        "pk": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.842Z",
+            "updated_at": "2026-09-23T04:40:27.842Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "code": "renew_mou",
+            "name": "Renew MOU",
+            "order": 4,
+            "group": "employer_notification",
+            "icon": "ti ti-chart-bar",
+            "subtitle": ""
+        }
+    },
+    {
+        "model": "core.workflowtypemodel",
+        "pk": "8053f229-e01c-4599-9ddd-dc417182b63e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.836Z",
+            "updated_at": "2026-09-23T04:40:27.836Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "code": "import_mou",
+            "name": "Import MOU",
+            "order": 3,
+            "group": "employer_notification",
+            "icon": "ti ti-chart-bar",
+            "subtitle": ""
+        }
+    },
+    {
+        "model": "core.workflowtypemodel",
+        "pk": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.632Z",
+            "updated_at": "2026-09-23T04:40:27.632Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "code": "employer_transfer_package",
+            "name": "Employer Transfer Process",
+            "order": 5,
+            "group": "employer_transfer",
+            "icon": "ti ti-arrows-right-left",
+            "subtitle": "Employer Change → Social Security & Tax ID → Pink Card → Bank Account"
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "0b901c6e-25c3-4b51-8915-3a51167e8687",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.824Z",
+            "updated_at": "2026-09-23T04:40:27.824Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+            "name": "Submit Request",
+            "order": 1,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "0ce09e02-1745-44d7-9648-984da55b1dcd",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.644Z",
+            "updated_at": "2026-09-23T04:40:27.644Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+            "name": "Bank Account Opening",
+            "order": 4,
+            "is_terminal": true,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "163a001c-1c80-4c82-aa48-e242487dadac",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.840Z",
+            "updated_at": "2026-09-23T04:40:27.840Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
+            "name": "Processing",
+            "order": 3,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "2b71f63a-8287-4a19-90f7-4b5c0e813b44",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.826Z",
+            "updated_at": "2026-09-23T04:40:27.826Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+            "name": "Document Review",
+            "order": 2,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "2ca2699c-9a05-41ee-8e01-b039b420a557",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.835Z",
+            "updated_at": "2026-09-23T04:40:27.835Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+            "name": "Completed",
+            "order": 4,
+            "is_terminal": true,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "31ce7b7e-e56b-4969-80e5-4ece5285c980",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.847Z",
+            "updated_at": "2026-09-23T04:40:27.847Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+            "name": "Processing",
+            "order": 4,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "31f7c203-36ba-435b-a4c5-9ad3a8a460af",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.642Z",
+            "updated_at": "2026-09-23T04:40:27.642Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+            "name": "Pink Card Registration",
+            "order": 3,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "35dc14db-2987-4854-9f85-ba7f91d06dbf",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.827Z",
+            "updated_at": "2026-09-23T04:40:27.827Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+            "name": "Payment",
+            "order": 3,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "3b5a0cad-b12b-4926-9532-c9d11813b286",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.837Z",
+            "updated_at": "2026-09-23T04:40:27.837Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
+            "name": "Submit Request",
+            "order": 1,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "3ba5d59b-01ec-4ee6-b57d-ffc04fecc273",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.828Z",
+            "updated_at": "2026-09-23T04:40:27.828Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+            "name": "Processing",
+            "order": 4,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "5d06c1ed-6567-4447-ba13-dae48064753f",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.839Z",
+            "updated_at": "2026-09-23T04:40:27.839Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
+            "name": "Document Review",
+            "order": 2,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "7c53d87a-fb67-4a10-8769-fe34341a15d9",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.833Z",
+            "updated_at": "2026-09-23T04:40:27.833Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+            "name": "Document Review",
+            "order": 2,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "823addec-e00c-43f7-add3-a74ba804ca64",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.843Z",
+            "updated_at": "2026-09-23T04:40:27.843Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+            "name": "Submit Request",
+            "order": 1,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "852f1531-4b28-44e9-b023-0b8c02af09f7",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.829Z",
+            "updated_at": "2026-09-23T04:40:27.829Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
+            "name": "Completed",
+            "order": 5,
+            "is_terminal": true,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "86d175eb-7d10-4fb1-8552-d4ca95c40d87",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.841Z",
+            "updated_at": "2026-09-23T04:40:27.841Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
+            "name": "Completed",
+            "order": 4,
+            "is_terminal": true,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "908da658-5888-400d-8eea-bbfa9e113b89",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.254Z",
+            "updated_at": "2026-09-23T04:40:27.254Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+            "name": "All documents are complete.",
+            "order": 3,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "99a7d61b-0bf2-4abc-b37a-b8650d2de275",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.274Z",
+            "updated_at": "2026-09-23T04:40:27.274Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+            "name": "Waiting for information updates.",
+            "order": 4,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "a1cc04bf-7fb8-4dbb-96e3-6c7294e870f9",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.279Z",
+            "updated_at": "2026-09-23T04:40:27.279Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+            "name": "Reset code",
+            "order": 6,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "a40fdd62-d6a3-4fae-b02a-facc347cc6a7",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.845Z",
+            "updated_at": "2026-09-23T04:40:27.845Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+            "name": "Payment",
+            "order": 3,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "a96aab87-2ab0-4fd1-809f-18cdfac09d36",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.640Z",
+            "updated_at": "2026-09-23T04:40:27.640Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+            "name": "Social Security & Tax ID",
+            "order": 2,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "b421e808-a3b1-42b2-9637-e7300e363a48",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.247Z",
+            "updated_at": "2026-09-23T04:40:27.247Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+            "name": "Waiting for registration code.",
+            "order": 1,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "ba79c670-5fc9-451e-aa16-2bf3ca7d83e8",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.844Z",
+            "updated_at": "2026-09-23T04:40:27.844Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+            "name": "Document Review",
+            "order": 2,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "bbb3aa1f-0719-4dac-9163-c575ebf3130e",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.832Z",
+            "updated_at": "2026-09-23T04:40:27.832Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+            "name": "Submit Request",
+            "order": 1,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "cddd1f37-8419-499e-a2d8-0167b31dddc2",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.250Z",
+            "updated_at": "2026-09-23T04:40:27.250Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+            "name": "The documents are incomplete.",
+            "order": 2,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "dbbefdc5-7a1e-47fb-bafa-8c5e619e7b3a",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.834Z",
+            "updated_at": "2026-09-23T04:40:27.834Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
+            "name": "Processing",
+            "order": 3,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "e38a6750-aa46-45bb-b8c6-2f04c339f2f9",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.276Z",
+            "updated_at": "2026-09-23T04:40:27.277Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
+            "name": "The code is available.",
+            "order": 5,
+            "is_terminal": true,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "f527930c-b6ca-40ba-ba51-741b0631af50",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.848Z",
+            "updated_at": "2026-09-23T04:40:27.848Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
+            "name": "Completed",
+            "order": 5,
+            "is_terminal": true,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "core.workflowstagemodel",
+        "pk": "fbbfc189-cb63-4369-bec8-1ee8321247d5",
+        "fields": {
+            "created_by": null,
+            "updated_by": null,
+            "deleted_by": null,
+            "created_at": "2026-09-23T04:40:27.637Z",
+            "updated_at": "2026-09-23T04:40:27.637Z",
+            "deleted_at": null,
+            "is_deleted": false,
+            "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
+            "name": "Employer Change",
+            "order": 1,
+            "is_terminal": false,
+            "is_cancel_stage": false
+        }
+    },
+    {
+        "model": "sites.site",
+        "pk": 1,
+        "fields": {
+            "domain": "example.com",
+            "name": "example.com"
+        }
     }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 58,
-    "fields": {
-      "name": "Can change Role",
-      "content_type": 15,
-      "codename": "change_rolemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 59,
-    "fields": {
-      "name": "Can delete Role",
-      "content_type": 15,
-      "codename": "delete_rolemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 60,
-    "fields": {
-      "name": "Can view Role",
-      "content_type": 15,
-      "codename": "view_rolemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 61,
-    "fields": {
-      "name": "Can add Site",
-      "content_type": 16,
-      "codename": "add_sitemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 62,
-    "fields": {
-      "name": "Can change Site",
-      "content_type": 16,
-      "codename": "change_sitemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 63,
-    "fields": {
-      "name": "Can delete Site",
-      "content_type": 16,
-      "codename": "delete_sitemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 64,
-    "fields": {
-      "name": "Can view Site",
-      "content_type": 16,
-      "codename": "view_sitemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 65,
-    "fields": {
-      "name": "Can add Text Key",
-      "content_type": 17,
-      "codename": "add_textkeymodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 66,
-    "fields": {
-      "name": "Can change Text Key",
-      "content_type": 17,
-      "codename": "change_textkeymodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 67,
-    "fields": {
-      "name": "Can delete Text Key",
-      "content_type": 17,
-      "codename": "delete_textkeymodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 68,
-    "fields": {
-      "name": "Can view Text Key",
-      "content_type": 17,
-      "codename": "view_textkeymodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 69,
-    "fields": {
-      "name": "Can add Workflow Type",
-      "content_type": 18,
-      "codename": "add_workflowtypemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 70,
-    "fields": {
-      "name": "Can change Workflow Type",
-      "content_type": 18,
-      "codename": "change_workflowtypemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 71,
-    "fields": {
-      "name": "Can delete Workflow Type",
-      "content_type": 18,
-      "codename": "delete_workflowtypemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 72,
-    "fields": {
-      "name": "Can view Workflow Type",
-      "content_type": 18,
-      "codename": "view_workflowtypemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 73,
-    "fields": {
-      "name": "Can add Workflow Stage",
-      "content_type": 19,
-      "codename": "add_workflowstagemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 74,
-    "fields": {
-      "name": "Can change Workflow Stage",
-      "content_type": 19,
-      "codename": "change_workflowstagemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 75,
-    "fields": {
-      "name": "Can delete Workflow Stage",
-      "content_type": 19,
-      "codename": "delete_workflowstagemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 76,
-    "fields": {
-      "name": "Can view Workflow Stage",
-      "content_type": 19,
-      "codename": "view_workflowstagemodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 77,
-    "fields": {
-      "name": "Can add Employee Workflow",
-      "content_type": 20,
-      "codename": "add_employeeworkflowmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 78,
-    "fields": {
-      "name": "Can change Employee Workflow",
-      "content_type": 20,
-      "codename": "change_employeeworkflowmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 79,
-    "fields": {
-      "name": "Can delete Employee Workflow",
-      "content_type": 20,
-      "codename": "delete_employeeworkflowmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 80,
-    "fields": {
-      "name": "Can view Employee Workflow",
-      "content_type": 20,
-      "codename": "view_employeeworkflowmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 81,
-    "fields": {
-      "name": "Can add Translation",
-      "content_type": 21,
-      "codename": "add_translationmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 82,
-    "fields": {
-      "name": "Can change Translation",
-      "content_type": 21,
-      "codename": "change_translationmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 83,
-    "fields": {
-      "name": "Can delete Translation",
-      "content_type": 21,
-      "codename": "delete_translationmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 84,
-    "fields": {
-      "name": "Can view Translation",
-      "content_type": 21,
-      "codename": "view_translationmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 85,
-    "fields": {
-      "name": "Can add Workflow Stage Log",
-      "content_type": 22,
-      "codename": "add_employeeworkflowstagelogmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 86,
-    "fields": {
-      "name": "Can change Workflow Stage Log",
-      "content_type": 22,
-      "codename": "change_employeeworkflowstagelogmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 87,
-    "fields": {
-      "name": "Can delete Workflow Stage Log",
-      "content_type": 22,
-      "codename": "delete_employeeworkflowstagelogmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 88,
-    "fields": {
-      "name": "Can view Workflow Stage Log",
-      "content_type": 22,
-      "codename": "view_employeeworkflowstagelogmodel"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 89,
-    "fields": {
-      "name": "Can add site",
-      "content_type": 23,
-      "codename": "add_site"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 90,
-    "fields": {
-      "name": "Can change site",
-      "content_type": 23,
-      "codename": "change_site"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 91,
-    "fields": {
-      "name": "Can delete site",
-      "content_type": 23,
-      "codename": "delete_site"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 92,
-    "fields": {
-      "name": "Can view site",
-      "content_type": 23,
-      "codename": "view_site"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 1,
-    "fields": { "app_label": "admin", "model": "logentry" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 2,
-    "fields": { "app_label": "auth", "model": "permission" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 3,
-    "fields": { "app_label": "auth", "model": "group" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 4,
-    "fields": { "app_label": "contenttypes", "model": "contenttype" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 5,
-    "fields": { "app_label": "sessions", "model": "session" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 6,
-    "fields": { "app_label": "core", "model": "usermodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 7,
-    "fields": { "app_label": "core", "model": "addressmodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 8,
-    "fields": { "app_label": "core", "model": "businesstypemodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 9,
-    "fields": { "app_label": "core", "model": "documenttypemodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 10,
-    "fields": { "app_label": "core", "model": "documentmodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 11,
-    "fields": { "app_label": "core", "model": "employermodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 12,
-    "fields": { "app_label": "core", "model": "languagemodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 13,
-    "fields": { "app_label": "core", "model": "nationalitymodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 14,
-    "fields": { "app_label": "core", "model": "employeemodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 15,
-    "fields": { "app_label": "core", "model": "rolemodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 16,
-    "fields": { "app_label": "core", "model": "sitemodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 17,
-    "fields": { "app_label": "core", "model": "textkeymodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 18,
-    "fields": { "app_label": "core", "model": "workflowtypemodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 19,
-    "fields": { "app_label": "core", "model": "workflowstagemodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 20,
-    "fields": { "app_label": "core", "model": "employeeworkflowmodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 21,
-    "fields": { "app_label": "core", "model": "translationmodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 22,
-    "fields": { "app_label": "core", "model": "employeeworkflowstagelogmodel" }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 23,
-    "fields": { "app_label": "sites", "model": "site" }
-  },
-  {
-    "model": "sessions.session",
-    "pk": "5m5uk4gaokt32um1mg1bxtlj7svwkvij",
-    "fields": {
-      "session_data": ".eJxVzDsOwjAQRdG9uMaWf-PMUNKzhmjscUgAJVI-FWLvECkF1O-e91Itb2vfbkud20HUWbkMUMGDRradjgSsMQfRyRYsiBQ6G9Xpl2UujzruVu483iZTpnGdh2z2xBzrYq6T1OflaP8Oel76r7bOIyZPlB0xB8QgIL7UVCU2Ai4KVSQGosCUuLIXpOQaSjEAFlHvD56DQC8:1x9EnR:Jomzaw2mOdhys5jigYpRw43BUSDd0EY7sUBStFWSew0",
-      "expire_date": "2026-10-07T04:41:29.700Z"
-    }
-  },
-  {
-    "model": "core.rolemodel",
-    "pk": "a2bb9d28-0828-405f-98bb-6e3f4d735eb7",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:48.199Z",
-      "updated_at": "2026-09-23T04:41:48.199Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "name": "psk",
-      "permissions": []
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "0b629f25-5aaa-4cf6-9b17-709429ef7687",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:15.521Z",
-      "updated_at": "2026-09-23T04:41:15.521Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "sign_in",
-      "default_text": "Sign In"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "291813ec-4e27-4817-89b8-bbd759a88c23",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:52.315Z",
-      "updated_at": "2026-09-23T04:40:52.315Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "admin",
-      "default_text": "admin"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "399c7592-1a72-4c46-b998-f07beac10c49",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:15.875Z",
-      "updated_at": "2026-09-23T04:41:15.875Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "email",
-      "default_text": "Email"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "4952ff15-61db-483d-ae11-9810e274944f",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:15.709Z",
-      "updated_at": "2026-09-23T04:41:15.709Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "enter_your_credentials_to_access_the_site_panel",
-      "default_text": "Enter Your Credentials To Access The Site Panel"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "4a141979-ddcb-42f3-ab39-6629fb0b7863",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:22.428Z",
-      "updated_at": "2026-09-23T04:41:22.428Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "back_to_dashboard",
-      "default_text": "Back To Dashboard"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "4ca7cb9d-f171-4656-a409-319d3aadf176",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:16.024Z",
-      "updated_at": "2026-09-23T04:41:16.024Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "password",
-      "default_text": "Password"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "51cdedb2-a1ab-4bf0-8a8a-001a852fff8c",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:15.138Z",
-      "updated_at": "2026-09-23T04:41:15.138Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "dashboard_login",
-      "default_text": "Dashboard Login"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "a1095599-1a75-41eb-b493-a7d706b5e0b2",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:22.275Z",
-      "updated_at": "2026-09-23T04:41:22.275Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "error_404_page_not_found_sorry_the_page_you_are_looking_for_does_not_exist_or_has_been_moved",
-      "default_text": "Error 404 Page Not Found Sorry The Page You Are Looking For Does Not Exist Or Has Been Moved"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "cbf98bbd-854a-4e52-bb44-d65cc2fe925d",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:21.868Z",
-      "updated_at": "2026-09-23T04:41:21.868Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "page_not_found",
-      "default_text": "Page Not Found"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "de1b29a9-2726-4a06-bd07-ce105b9195a7",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:48.190Z",
-      "updated_at": "2026-09-23T04:41:48.190Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "psk",
-      "default_text": "psk"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "f2cb4af1-5e01-4412-bc24-33b4da968b2a",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:22.140Z",
-      "updated_at": "2026-09-23T04:41:22.140Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "oops_something_went_wrong",
-      "default_text": "Oops Something Went Wrong"
-    }
-  },
-  {
-    "model": "core.textkeymodel",
-    "pk": "f756ba33-4868-4d09-83e5-5bac64cbc148",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:41:14.852Z",
-      "updated_at": "2026-09-23T04:41:14.852Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "key": "",
-      "default_text": ""
-    }
-  },
-  {
-    "model": "core.usermodel",
-    "pk": "1b55e525-8a0f-495a-8b3d-60c8c8893f04",
-    "fields": {
-      "password": "pbkdf2_sha256$1000000$yXLJl4xcwlj1Ffiwbg64j5$at2bVnLt8f+JaI5M+bmRvPke+63V3siZGfucakRQlJE=",
-      "last_login": "2026-09-23T04:41:29Z",
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:52.512Z",
-      "updated_at": "2026-09-23T04:42:04.731Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "username": "admin",
-      "email": "complierofrealms@gmail.com",
-      "role": "a2bb9d28-0828-405f-98bb-6e3f4d735eb7",
-      "phone": null,
-      "profile": "",
-      "is_staff": true,
-      "is_active": true,
-      "is_superuser": true,
-      "is_developer": true,
-      "last_active": "2026-09-23T04:42:04.731Z",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "core.workflowtypemodel",
-    "pk": "04df5254-b29b-496f-9cdf-109e275eae1c",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.242Z",
-      "updated_at": "2026-09-23T04:40:27.242Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "code": "pre_production_preparation",
-      "name": "Pre-Production / Preparation",
-      "order": 0,
-      "group": "pre_production",
-      "icon": "ti ti-hierarchy-2",
-      "subtitle": "Prepare documents and confirm data before sending to Workflow."
-    }
-  },
-  {
-    "model": "core.workflowtypemodel",
-    "pk": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.831Z",
-      "updated_at": "2026-09-23T04:40:27.831Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "code": "departure",
-      "name": "Notification of Departure",
-      "order": 2,
-      "group": "employer_notification",
-      "icon": "ti ti-chart-bar",
-      "subtitle": ""
-    }
-  },
-  {
-    "model": "core.workflowtypemodel",
-    "pk": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.821Z",
-      "updated_at": "2026-09-23T04:40:27.821Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "code": "employer_entry_change",
-      "name": "Notification of Employment (Entry/Change)",
-      "order": 1,
-      "group": "employer_notification",
-      "icon": "ti ti-chart-bar",
-      "subtitle": ""
-    }
-  },
-  {
-    "model": "core.workflowtypemodel",
-    "pk": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.842Z",
-      "updated_at": "2026-09-23T04:40:27.842Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "code": "renew_mou",
-      "name": "Renew MOU",
-      "order": 4,
-      "group": "employer_notification",
-      "icon": "ti ti-chart-bar",
-      "subtitle": ""
-    }
-  },
-  {
-    "model": "core.workflowtypemodel",
-    "pk": "8053f229-e01c-4599-9ddd-dc417182b63e",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.836Z",
-      "updated_at": "2026-09-23T04:40:27.836Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "code": "import_mou",
-      "name": "Import MOU",
-      "order": 3,
-      "group": "employer_notification",
-      "icon": "ti ti-chart-bar",
-      "subtitle": ""
-    }
-  },
-  {
-    "model": "core.workflowtypemodel",
-    "pk": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.632Z",
-      "updated_at": "2026-09-23T04:40:27.632Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "code": "employer_transfer_package",
-      "name": "Employer Transfer Process",
-      "order": 5,
-      "group": "employer_transfer",
-      "icon": "ti ti-arrows-right-left",
-      "subtitle": "Employer Change → Social Security & Tax ID → Pink Card → Bank Account"
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "0b901c6e-25c3-4b51-8915-3a51167e8687",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.824Z",
-      "updated_at": "2026-09-23T04:40:27.824Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
-      "name": "Submit Request",
-      "order": 1,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "0ce09e02-1745-44d7-9648-984da55b1dcd",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.644Z",
-      "updated_at": "2026-09-23T04:40:27.644Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
-      "name": "Bank Account Opening",
-      "order": 4,
-      "is_terminal": true,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "163a001c-1c80-4c82-aa48-e242487dadac",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.840Z",
-      "updated_at": "2026-09-23T04:40:27.840Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
-      "name": "Processing",
-      "order": 3,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "2b71f63a-8287-4a19-90f7-4b5c0e813b44",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.826Z",
-      "updated_at": "2026-09-23T04:40:27.826Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
-      "name": "Document Review",
-      "order": 2,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "2ca2699c-9a05-41ee-8e01-b039b420a557",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.835Z",
-      "updated_at": "2026-09-23T04:40:27.835Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
-      "name": "Completed",
-      "order": 4,
-      "is_terminal": true,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "31ce7b7e-e56b-4969-80e5-4ece5285c980",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.847Z",
-      "updated_at": "2026-09-23T04:40:27.847Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
-      "name": "Processing",
-      "order": 4,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "31f7c203-36ba-435b-a4c5-9ad3a8a460af",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.642Z",
-      "updated_at": "2026-09-23T04:40:27.642Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
-      "name": "Pink Card Registration",
-      "order": 3,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "35dc14db-2987-4854-9f85-ba7f91d06dbf",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.827Z",
-      "updated_at": "2026-09-23T04:40:27.827Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
-      "name": "Payment",
-      "order": 3,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "3b5a0cad-b12b-4926-9532-c9d11813b286",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.837Z",
-      "updated_at": "2026-09-23T04:40:27.837Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
-      "name": "Submit Request",
-      "order": 1,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "3ba5d59b-01ec-4ee6-b57d-ffc04fecc273",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.828Z",
-      "updated_at": "2026-09-23T04:40:27.828Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
-      "name": "Processing",
-      "order": 4,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "5d06c1ed-6567-4447-ba13-dae48064753f",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.839Z",
-      "updated_at": "2026-09-23T04:40:27.839Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
-      "name": "Document Review",
-      "order": 2,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "7c53d87a-fb67-4a10-8769-fe34341a15d9",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.833Z",
-      "updated_at": "2026-09-23T04:40:27.833Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
-      "name": "Document Review",
-      "order": 2,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "823addec-e00c-43f7-add3-a74ba804ca64",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.843Z",
-      "updated_at": "2026-09-23T04:40:27.843Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
-      "name": "Submit Request",
-      "order": 1,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "852f1531-4b28-44e9-b023-0b8c02af09f7",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.829Z",
-      "updated_at": "2026-09-23T04:40:27.829Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "5fc2d030-d300-4cb2-9821-a8bf1211643b",
-      "name": "Completed",
-      "order": 5,
-      "is_terminal": true,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "86d175eb-7d10-4fb1-8552-d4ca95c40d87",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.841Z",
-      "updated_at": "2026-09-23T04:40:27.841Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "8053f229-e01c-4599-9ddd-dc417182b63e",
-      "name": "Completed",
-      "order": 4,
-      "is_terminal": true,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "908da658-5888-400d-8eea-bbfa9e113b89",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.254Z",
-      "updated_at": "2026-09-23T04:40:27.254Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
-      "name": "All documents are complete.",
-      "order": 3,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "99a7d61b-0bf2-4abc-b37a-b8650d2de275",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.274Z",
-      "updated_at": "2026-09-23T04:40:27.274Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
-      "name": "Waiting for information updates.",
-      "order": 4,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "a1cc04bf-7fb8-4dbb-96e3-6c7294e870f9",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.279Z",
-      "updated_at": "2026-09-23T04:40:27.279Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
-      "name": "Reset code",
-      "order": 6,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "a40fdd62-d6a3-4fae-b02a-facc347cc6a7",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.845Z",
-      "updated_at": "2026-09-23T04:40:27.845Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
-      "name": "Payment",
-      "order": 3,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "a96aab87-2ab0-4fd1-809f-18cdfac09d36",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.640Z",
-      "updated_at": "2026-09-23T04:40:27.640Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
-      "name": "Social Security & Tax ID",
-      "order": 2,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "b421e808-a3b1-42b2-9637-e7300e363a48",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.247Z",
-      "updated_at": "2026-09-23T04:40:27.247Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
-      "name": "Waiting for registration code.",
-      "order": 1,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "ba79c670-5fc9-451e-aa16-2bf3ca7d83e8",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.844Z",
-      "updated_at": "2026-09-23T04:40:27.844Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
-      "name": "Document Review",
-      "order": 2,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "bbb3aa1f-0719-4dac-9163-c575ebf3130e",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.832Z",
-      "updated_at": "2026-09-23T04:40:27.832Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
-      "name": "Submit Request",
-      "order": 1,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "cddd1f37-8419-499e-a2d8-0167b31dddc2",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.250Z",
-      "updated_at": "2026-09-23T04:40:27.250Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
-      "name": "The documents are incomplete.",
-      "order": 2,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "dbbefdc5-7a1e-47fb-bafa-8c5e619e7b3a",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.834Z",
-      "updated_at": "2026-09-23T04:40:27.834Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "42f8564e-12a6-4b8d-8aa4-6b4bcb8271f5",
-      "name": "Processing",
-      "order": 3,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "e38a6750-aa46-45bb-b8c6-2f04c339f2f9",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.276Z",
-      "updated_at": "2026-09-23T04:40:27.277Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "04df5254-b29b-496f-9cdf-109e275eae1c",
-      "name": "The code is available.",
-      "order": 5,
-      "is_terminal": true,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "f527930c-b6ca-40ba-ba51-741b0631af50",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.848Z",
-      "updated_at": "2026-09-23T04:40:27.848Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "73ea8b88-0ab9-4128-b540-0eef47e50b27",
-      "name": "Completed",
-      "order": 5,
-      "is_terminal": true,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "core.workflowstagemodel",
-    "pk": "fbbfc189-cb63-4369-bec8-1ee8321247d5",
-    "fields": {
-      "created_by": null,
-      "updated_by": null,
-      "deleted_by": null,
-      "created_at": "2026-09-23T04:40:27.637Z",
-      "updated_at": "2026-09-23T04:40:27.637Z",
-      "deleted_at": null,
-      "is_deleted": false,
-      "workflow_type": "bdc5eb16-4305-4122-a733-af4264dcc8d8",
-      "name": "Employer Change",
-      "order": 1,
-      "is_terminal": false,
-      "is_cancel_stage": false
-    }
-  },
-  {
-    "model": "sites.site",
-    "pk": 1,
-    "fields": { "domain": "example.com", "name": "example.com" }
-  }
 ]
