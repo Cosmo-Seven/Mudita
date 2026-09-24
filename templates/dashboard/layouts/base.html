@@ -68,8 +68,53 @@
             });
         }
 
+        window.initRolePermissionSync = function () {
+            document.querySelectorAll('.global-all').forEach(function (globalBox) {
+                var scope = globalBox.dataset.scope;
+                var moduleBoxes = document.querySelectorAll('.module-all[data-scope="' + scope + '"]');
+                moduleBoxes.forEach(function (moduleBox) {
+                    var permissions = document.querySelectorAll(
+                        '.perm-checkbox[data-module="' + moduleBox.dataset.module + '"][data-scope="' + scope + '"]'
+                    );
+                    moduleBox.checked = permissions.length > 0 && Array.from(permissions).every(function (box) {
+                        return box.checked;
+                    });
+                });
+                globalBox.checked = moduleBoxes.length > 0 && Array.from(moduleBoxes).every(function (box) {
+                    return box.checked;
+                });
+            });
+        };
+
+        if (!window.rolePermissionSyncBound) {
+            document.addEventListener('change', function (event) {
+                var checkbox = event.target;
+                if (!checkbox.matches || !checkbox.matches('.global-all, .module-all, .perm-checkbox')) return;
+
+                var scope = checkbox.dataset.scope;
+                if (checkbox.classList.contains('global-all')) {
+                    document.querySelectorAll(
+                        '.perm-checkbox[data-scope="' + scope + '"], .module-all[data-scope="' + scope + '"]'
+                    ).forEach(function (box) {
+                        box.checked = checkbox.checked;
+                    });
+                } else if (checkbox.classList.contains('module-all')) {
+                    document.querySelectorAll(
+                        '.perm-checkbox[data-module="' + checkbox.dataset.module + '"][data-scope="' + scope + '"]'
+                    ).forEach(function (box) {
+                        box.checked = checkbox.checked;
+                    });
+                }
+                window.initRolePermissionSync();
+            });
+            window.rolePermissionSyncBound = true;
+        }
+
         document.body.addEventListener("htmx:afterSettle", function (event) {
             reinitDashboardWidgets(event.detail && event.detail.target);
+            if (window.initRolePermissionSync) {
+                window.initRolePermissionSync();
+            }
         });
 
         document.body.addEventListener('htmx:beforeRequest', function () {
