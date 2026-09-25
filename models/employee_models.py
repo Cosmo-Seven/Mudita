@@ -3,7 +3,6 @@ from django.utils.text import slugify
 from models.base_models import BaseModel
 from models.employer_models import EmployerModel
 from models.attachment_models import AddressModel, DocumentModel
-from helpers.translation import register_key
 from django.contrib.contenttypes.fields import GenericRelation
 from datetime import date
 
@@ -108,10 +107,6 @@ class EmployeeModel(BaseModel):
         verbose_name = "Employee"
         verbose_name_plural = "Employees"
 
-    def save(self, *args, **kwargs):
-        key = slugify(self.full_name_en).replace("-", "_").lower()
-        register_key(key, self.full_name_en)
-        super().save(*args, **kwargs)
 
     @property
     def translation_key(self):

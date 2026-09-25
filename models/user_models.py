@@ -5,7 +5,6 @@ from models.base_models import BaseModel
 from django.utils.timezone import now
 from datetime import timedelta
 from django.utils.text import slugify
-from helpers.translation import register_key
 
 
 class UserModel(AbstractBaseUser, PermissionsMixin, BaseModel):
@@ -37,11 +36,6 @@ class UserModel(AbstractBaseUser, PermissionsMixin, BaseModel):
         db_table = "users"
         verbose_name = "User"
         verbose_name_plural = "Users"
-
-    def save(self, *args, **kwargs):
-        key = slugify(self.username).replace("-", "_").lower()
-        register_key(key, self.username)
-        super().save(*args, **kwargs)
 
     @property
     def translation_key(self):

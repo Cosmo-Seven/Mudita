@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.text import slugify
 from models.base_models import BaseModel
 from models.attachment_models import AddressModel, DocumentModel
-from helpers.translation import register_key
 from django.contrib.contenttypes.fields import GenericRelation
 
 class BusinessTypeModel(BaseModel):
@@ -75,12 +74,6 @@ class EmployerModel(BaseModel):
         verbose_name = "Employer"
         verbose_name_plural = "Employers"
 
-    def save(self, *args, **kwargs):
-        if not self.employer_code:
-            self.employer_code = self._generate_code()
-        key = slugify(self.name_en).replace("-", "_").lower()
-        register_key(key, self.name_en)
-        super().save(*args, **kwargs)
 
     def _generate_code(self):
         last = EmployerModel.objects.order_by("-created_at").first()

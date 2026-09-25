@@ -1,7 +1,6 @@
 from django.db import models
 from models.base_models import BaseModel
 from django.utils.text import slugify
-from helpers.translation import register_key
 
 
 class SiteModel(BaseModel):
@@ -21,10 +20,6 @@ class SiteModel(BaseModel):
         verbose_name = "Site"
         verbose_name_plural = "Sites"
 
-    def save(self, *args, **kwargs):
-        key = slugify(self.name).replace("-", "_").lower()
-        register_key(key, self.name)
-        super().save(*args, **kwargs)
 
     @property
     def translation_key(self):

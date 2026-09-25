@@ -39,12 +39,5 @@ def t(key, lang_code="en"):
     if key in data:
         return data[key]
 
-    pretty = _prettify(key)
-    register_key(key, pretty)
-    cache.delete(f"translations:{lang_code}")   # key အသစ်ထည့်လိုက်တာမို့ cache bust
-    return pretty
+    return _prettify(key)
 
-
-def register_key(key, default_text):
-    from models.text_key_models import TextKeyModel
-    TextKeyModel.objects.get_or_create(key=key, defaults={"default_text": default_text})
