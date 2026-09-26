@@ -49,7 +49,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin, BaseModel):
 
         if not hasattr(self, "_permission_codenames_cache"):
             self._permission_codenames_cache = set(
-                self.role.permissions.values_list("codename", flat=True)   # ← query 1 ခုတည်း
+                self.role.permissions.values_list("codename", flat=True)
             )
         return perm_codename in self._permission_codenames_cache
 
