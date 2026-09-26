@@ -41,23 +41,23 @@ class UserModel(AbstractBaseUser, PermissionsMixin, BaseModel):
     def translation_key(self):
         return slugify(self.username).replace("-", "_").lower()
 
-    # def has_permission(self, perm_codename):
-    #     if self.is_superuser:
-    #         return True
-    #     if not self.role:
-    #         return False
+    def has_permission(self, perm_codename):
+        if self.is_superuser:
+            return True
+        if not self.role:
+            return False
 
-    #     if not hasattr(self, "_permission_codenames_cache"):
-    #         self._permission_codenames_cache = set(
-    #             self.role.permissions.values_list("codename", flat=True)
-    #         )
-    #     return perm_codename in self._permission_codenames_cache
+        if not hasattr(self, "_permission_codenames_cache"):
+            self._permission_codenames_cache = set(
+                self.role.permissions.values_list("codename", flat=True)
+            )
+        return perm_codename in self._permission_codenames_cache
 
-    # def has_module_perms(self, app_label):
-    #     return (
-    #         self.role
-    #         and self.role.permissions.filter(content_type__app_label=app_label).exists()
-    #     )
+    def has_module_perms(self, app_label):
+        return (
+            self.role
+            and self.role.permissions.filter(content_type__app_label=app_label).exists()
+        )
 
     def get_all_permission_ids(self):
         role_perms = set()
