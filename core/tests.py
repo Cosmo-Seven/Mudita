@@ -45,6 +45,21 @@ class DashboardLoginTests(TestCase):
 
         self.assertRedirects(response, reverse("dashboard"))
 
+    def test_user_list_history_restore_includes_new_roles(self):
+        self.role.permissions.add(Permission.objects.get(codename="view_usermodel"))
+        new_role = RoleModel.objects.create(name="Newly Added Role")
+
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("user_list"),
+            HTTP_HX_REQUEST="true",
+            HTTP_HX_HISTORY_RESTORE_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'hx-history="false"')
+        self.assertContains(response, f'<option value="{new_role.id}">{new_role.name}</option>')
+
     def test_workflow_steps_modal_uses_delegated_actions_without_inline_script(self):
         self.role.permissions.add(
             Permission.objects.get(codename="view_workflowstagemodel"),
