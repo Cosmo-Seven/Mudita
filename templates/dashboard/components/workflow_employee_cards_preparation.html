@@ -1,6 +1,24 @@
 {% load translate %}
 {% load static %}
 {% load dict_extras %}
+{% for workflow_job in workflow_jobs %}
+<div class="d-flex align-items-center justify-content-between gap-2 border rounded px-3 py-2 mx-2 mt-2">
+    <div>
+        <div class="fw-semibold">
+            <i class="ti ti-box me-1 text-warning"></i>
+            {{ workflow_job.project_name|default:workflow_type.name }}
+        </div>
+        <div class="small text-muted">
+            {{ workflow_job.employee_count }} {% translate 'employees' request.session.language %}
+        </div>
+    </div>
+    <button type="button" class="btn btn-sm btn-outline-warning"
+            onclick="openAddEmployeeModal('{{ workflow_type.code }}', '{{ employer.id }}', '{{ workflow_job.id }}')">
+        <i class="ti ti-user-plus me-1"></i>{% translate 'add_employee' request.session.language %}
+    </button>
+</div>
+{% endfor %}
+
 {% for wf in workflows %}
 <div class="workflow-employee-card">
     <div class="workflow-employee-body">
@@ -13,6 +31,7 @@
                 <a href="{% url 'employee_detail' wf.employee.id %}" class="text-info small">
                     <i class="ti ti-search"></i> {{ workflow_type.name|default:"" }}
                 </a>
+                {% if wf.project_name %}<div class="small text-warning-emphasis"><i class="ti ti-box me-1"></i>{{ wf.project_name }}</div>{% endif %}
                 <div class="text-muted small">{{ wf.employee.title_th }} {{ wf.employee.name_th }}</div>
                 <div class="small"><i class="ti ti-building"></i> {{ employer.name_en }}</div>
                 <div class="small text-muted">{{ wf.employee.identification_number|default:"-" }}</div>
@@ -72,7 +91,9 @@
     </div>
 </div>
 {% empty %}
+{% if not workflow_jobs %}
 <p class="text-muted text-center py-3">{% translate 'no_employees_found' request.session.language %}</p>
+{% endif %}
 {% endfor %}
 
 <style>

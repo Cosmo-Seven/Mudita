@@ -1,0 +1,72 @@
+{% load translate %}
+<div class="modal-header border-0 pb-0">
+  <div>
+    <h5 class="modal-title fw-bold">Create New Job</h5>
+    <div class="small text-muted">Choose a job type and employer to create a work set.</div>
+  </div>
+  <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">×</span>
+  </button>
+</div>
+
+{% if saved %}
+<div class="modal-body">
+  <div class="alert alert-success mb-0">
+    <i class="ti ti-circle-check me-1"></i>
+    {{ workflow_type.name }} job created for {{ employer.name_en }}{% if project_name %} — {{ project_name }}{% endif %}.
+  </div>
+</div>
+{% else %}
+<form hx-post="{% url 'workflow_job_create' %}"
+      hx-target="#jobFormModalContent" hx-swap="innerHTML"
+      hx-select="unset" hx-push-url="false">
+  {% csrf_token %}
+  <div class="modal-body pt-3">
+    <div class="mb-3">
+      <label class="form-label" for="workflow-job-type">Job type <span class="text-danger">*</span></label>
+      <select id="workflow-job-type" name="workflow_type_id"
+              class="form-select searchable-select {% if errors.workflow_type_id %}is-invalid{% endif %}" required>
+        <option value="">Choose work type</option>
+        {% for workflow_type in workflow_types %}
+        <option value="{{ workflow_type.id }}"
+                {% if values.workflow_type_id == workflow_type.id|stringformat:"s" %}selected{% endif %}>
+          {{ workflow_type.name }}
+        </option>
+        {% endfor %}
+      </select>
+      {% if errors.workflow_type_id %}<div class="invalid-feedback">{{ errors.workflow_type_id }}</div>{% endif %}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="workflow-job-employer">Employer <span class="text-danger">*</span></label>
+      <select id="workflow-job-employer" name="employer_id"
+              class="form-select searchable-select {% if errors.employer_id %}is-invalid{% endif %}" required>
+        <option value="">Search and choose employer</option>
+        {% for employer in employers %}
+        <option value="{{ employer.id }}"
+                {% if values.employer_id == employer.id|stringformat:"s" %}selected{% endif %}>
+          {{ employer.name_th }} / {{ employer.name_en }} ({{ employer.employer_code|default:"-" }})
+        </option>
+        {% endfor %}
+      </select>
+      {% if errors.employer_id %}<div class="invalid-feedback">{{ errors.employer_id }}</div>{% endif %}
+    </div>
+
+    <div class="mb-1">
+      <label class="form-label" for="workflow-job-project">Project Name / Work Set Name <small class="text-muted">(Optional)</small></label>
+      <input id="workflow-job-project" type="text" name="project_name" maxlength="255"
+             class="form-control {% if errors.project_name %}is-invalid{% endif %}"
+             value="{{ values.project_name|default:'' }}" placeholder="For example, Set 1 - January 2024">
+      {% if errors.project_name %}<div class="invalid-feedback">{{ errors.project_name }}</div>
+      {% else %}<div class="form-text">Used to create multiple work sets for importing MOU.</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="modal-footer border-0 pt-0">
+    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-warning">
+      <i class="ti ti-plus me-1"></i>Create Job
+    </button>
+  </div>
+</form>
+{% endif %}

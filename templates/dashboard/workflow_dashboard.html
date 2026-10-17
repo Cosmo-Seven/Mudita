@@ -28,10 +28,10 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="stage-pill-grid">
+            <div class="card-body" id="workflowStagesSummary">
+                <div class="stage-pill-grid" id="workflowStagePillGrid">
                     {% for stage in stages %}
-                    <div class="stage-pill {% if stage.is_terminal %}stage-pill-finish{% elif stage_counts|get_item:stage.id %}stage-pill-active{% endif %}">
+                    <div class="stage-pill {% if stage.is_terminal %}stage-pill-finish{% elif stage_counts|get_item:stage.id %}stage-pill-active{% endif %}" data-stage-id="{{ stage.id }}">
                         <span class="stage-pill-count">{{ stage_counts|get_item:stage.id|default:0 }}</span>
                         {{ stage.name }}
                     </div>
@@ -62,6 +62,15 @@
                 <button type="button" class="btn btn-warning" onclick="openAddEmployeeModal('{{ workflow_type.code }}')">
                     <i class="ti ti-plus me-1"></i>{% translate 'add_employee' request.session.language %}
                 </button>
+                {% if can_add_job %}
+                <button type="button" class="btn btn-warning"
+                        data-bs-toggle="modal" data-bs-target="#jobFormModal"
+                        hx-get="{% url 'workflow_job_create' %}?workflow_type_id={{ workflow_type.id }}"
+                        hx-target="#jobFormModalContent" hx-swap="innerHTML"
+                        hx-select="unset" hx-push-url="false">
+                    <i class="ti ti-plus me-1"></i>Create Job
+                </button>
+                {% endif %}
             </div>
         </form>
 
@@ -136,7 +145,14 @@
             <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
         </div>
     </div>
-</div>
+    </div>
+    <div class="modal fade" id="jobFormModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="jobFormModalContent">
+                <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -310,6 +326,58 @@
         });
     }
 
+    function refreshWorkflowStageSummary() {
+        const modalContent = document.getElementById('workflowStepsModalContent');
+        const summaryGrid = document.getElementById('workflowStagePillGrid');
+        if (!modalContent || !summaryGrid || !modalContent.querySelector('.workflow-step-list')) return;
+
+        const existingCounts = new Map(
+            Array.from(summaryGrid.querySelectorAll('.stage-pill')).map((pill) => [
+                pill.dataset.stageId,
+                pill.querySelector('.stage-pill-count')?.textContent.trim() || '0',
+            ])
+        );
+        const stages = Array.from(modalContent.querySelectorAll('.workflow-step-row'))
+            .map((row) => ({
+                id: row.dataset.stageId,
+                name: row.querySelector('.workflow-step-name span')?.textContent.trim(),
+            }))
+            .filter((stage) => stage.id && stage.name);
+
+        summaryGrid.replaceChildren();
+        stages.forEach((stage, index) => {
+            const count = existingCounts.get(stage.id) || '0';
+            const pill = document.createElement('div');
+            pill.className = 'stage-pill';
+            pill.dataset.stageId = stage.id;
+            if (index === stages.length - 1) {
+                pill.classList.add('stage-pill-finish');
+            } else if (Number(count) > 0) {
+                pill.classList.add('stage-pill-active');
+            }
+
+            const countElement = document.createElement('span');
+            countElement.className = 'stage-pill-count';
+            countElement.textContent = count;
+            pill.append(countElement, document.createTextNode(stage.name));
+            summaryGrid.appendChild(pill);
+        });
+    }
+
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        if (event.detail.target && event.detail.target.id === 'workflowStepsModalContent') {
+            refreshWorkflowStageSummary();
+        }
+    });
+
+    document.body.addEventListener('htmx:beforeSwap', function (event) {
+        const target = event.detail.target;
+        if (target && target.id === 'workflowStepsModalContent' &&
+                !String(event.detail.serverResponse || '').includes('workflow-step-list')) {
+            event.detail.shouldSwap = false;
+        }
+    });
+
     document.addEventListener('click', function (event) {
         const trigger = event.target.closest('[data-workflow-step-action]');
         if (!trigger) return;
@@ -317,6 +385,10 @@
         const action = trigger.dataset.workflowStepAction;
         const stageId = trigger.dataset.stageId;
         const workflowCode = trigger.dataset.workflowCode;
+
+        if (trigger.hasAttribute('hx-post') && action !== 'toggle-edit-step') {
+            return;
+        }
 
         if (action === 'add-step') {
             addWorkflowStep(workflowCode);
@@ -377,7 +449,7 @@
         });
     }
 
-    function openAddEmployeeModal(workflowCode, employerId) {
+    function openAddEmployeeModal(workflowCode, employerId, workflowJobId) {
         const contentBox = document.getElementById('addEmployeeModalContent');
         contentBox.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
 
@@ -388,11 +460,46 @@
         if (employerId) {
             url += `?employer_id=${employerId}`;
         }
+        if (workflowJobId) {
+            url += `${employerId ? '&' : '?'}workflow_job_id=${workflowJobId}`;
+        }
         htmx.ajax('GET', url, {
             target: '#addEmployeeModalContent',
             swap: 'innerHTML',
         });
     }
+
+    function updateManualEmployeeAge(input) {
+        const ageOutput = document.getElementById('manualEmployeeAge');
+        if (!ageOutput) return;
+
+        if (!input.value) {
+            ageOutput.textContent = '—';
+            return;
+        }
+
+        const [year, month, day] = input.value.split('-').map(Number);
+        const today = new Date();
+        let age = today.getFullYear() - year;
+        if (today.getMonth() + 1 < month ||
+                (today.getMonth() + 1 === month && today.getDate() < day)) {
+            age -= 1;
+        }
+        ageOutput.textContent = age >= 0 ? String(age) : '—';
+    }
+
+    document.body.addEventListener('change', function (event) {
+        if (event.target.matches('#addEmployeeModalContent [name="date_of_birth"]')) {
+            updateManualEmployeeAge(event.target);
+        }
+    });
+
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        if (event.detail.target && event.detail.target.id === 'addEmployeeModalContent') {
+            const dateOfBirth = event.detail.target.querySelector('[name="date_of_birth"]');
+            if (dateOfBirth) updateManualEmployeeAge(dateOfBirth);
+        }
+    });
 
     // After employees are enrolled, wait until the modal is actually closed
     // before refreshing the page (so the success message is visible, and the

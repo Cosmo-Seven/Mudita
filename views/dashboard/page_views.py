@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import check_password
 
 from models.user_models import UserModel
 from utils.decorators import custom_login_required
+from views.dashboard.workflow_job_views import ensure_default_workflow_types
 from core.models import (
     SiteModel,
     EmployeeModel,
@@ -24,6 +25,7 @@ from constants.message import UPDATE
 # ========================
 @custom_login_required("dashboard_login")
 def dashboard(request):
+    ensure_default_workflow_types()
     today = date.today()
     soon = today + timedelta(days=90)
     report_window = today + timedelta(days=14)

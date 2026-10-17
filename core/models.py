@@ -14,4 +14,10 @@ from models.attachment_models import DocumentTypeModel, AddressModel, DocumentMo
 from models.employer_models import BusinessTypeModel, EmployerModel
 from models.employee_models import NationalityModel, EmployeeModel
 
-from models.workflow_models import WorkflowStageModel, WorkflowTypeModel, EmployeeWorkflowModel, EmployeeWorkflowStageLogModel
+from models.workflow_models import (
+    EmployeeWorkflowModel,
+    EmployeeWorkflowStageLogModel,
+    WorkflowJobModel,
+    WorkflowStageModel,
+    WorkflowTypeModel,
+)

@@ -12,6 +12,7 @@
                 <a href="{% url 'employee_detail' wf.employee.id %}" class="text-info small">
                     <i class="ti ti-search"></i> {{ workflow_type.name|default:"" }}
                 </a>
+                {% if wf.project_name %}<div class="small text-warning-emphasis"><i class="ti ti-box me-1"></i>{{ wf.project_name }}</div>{% endif %}
                 <div class="text-muted small">{{ wf.employee.title_th }} {{ wf.employee.name_th }}</div>
                 <div class="small"><i class="ti ti-building"></i> {{ employer.name_en }}</div>
                 <div class="small text-muted">{{ wf.employee.identification_number|default:"-" }}</div>

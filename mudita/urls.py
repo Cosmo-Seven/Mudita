@@ -13,6 +13,7 @@ from views.dashboard import (
     attachment_views,
     bulk_views,
     workflow_views,
+    workflow_job_views,
 )
 from views.dashboard import page_views as dashboard_page_views
 
@@ -285,15 +286,11 @@ urlpatterns = (
             name="document_type_create",
         ),
 
-        # ========================
-        # Workflow (Employer Entry/Change, Departure, MOU)
-        # ========================
-        # NOTE: these 3 short-alias paths MUST be declared before the generic
-        # "<str:workflow_type_code>/" pattern below. Django url-resolves
-        # top-to-bottom and stops at the first match, so if the generic
-        # pattern came first it would swallow "notification/" / "preparation/"
-        # / "transfer/" as a literal (and wrong) workflow_type_code, causing
-        # get_object_or_404() to 404 for all three sidebar buttons.
+        path("dashboard/workflow/jobs/", workflow_job_views.workflow_job_list, name="workflow_job_list"),
+        path("dashboard/workflow/jobs/create/", workflow_job_views.workflow_job_create, name="workflow_job_create"),
+        path("dashboard/workflow/jobs/work-types/create/", workflow_job_views.workflow_type_create, name="workflow_type_create"),
+        path("dashboard/workflow/jobs/<uuid:pk>/update/", workflow_job_views.workflow_job_update, name="workflow_job_update"),
+        path("dashboard/workflow/jobs/<uuid:pk>/delete/", workflow_job_views.workflow_job_delete, name="workflow_job_delete"),
         path(
             "dashboard/workflow/notification/",
             workflow_views.workflow_dashboard,

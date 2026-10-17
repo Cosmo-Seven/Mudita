@@ -1,0 +1,85 @@
+{% load translate %}
+<div id="jobs-table">
+  {% if message %}<div class="alert alert-success py-2">{{ message }}</div>{% endif %}
+  {% if error %}<div class="alert alert-danger py-2">{{ error }}</div>{% endif %}
+
+  {% if jobs %}
+  <div class="workflow-job-grid">
+    {% for job in jobs %}
+    <article class="workflow-job-card">
+      <div class="d-flex align-items-start gap-2">
+        <a href="{% url 'workflow_dashboard' job.code %}" class="d-flex align-items-start gap-2 flex-grow-1 text-decoration-none text-reset">
+          <span class="workflow-job-icon">
+            <i class="{{ job.icon }}" aria-hidden="true"></i>
+          </span>
+          <div class="workflow-job-copy flex-grow-1">
+            <div class="workflow-job-title" title="{{ job.name }}">{{ job.name }}</div>
+            {% if job.subtitle %}
+            <div class="workflow-job-meta text-truncate" title="{{ job.subtitle }}">{{ job.subtitle }}</div>
+            {% endif %}
+            <code class="small text-muted">{{ job.code }}</code>
+          </div>
+        </a>
+        <div class="workflow-job-actions" aria-label="Job actions">
+          <button type="button" class="workflow-job-action-button workflow-job-edit-btn"
+                  data-bs-toggle="modal" data-bs-target="#jobFormModal"
+                  hx-get="{% url 'workflow_job_update' job.id %}"
+                  hx-target="#jobFormModalContent" hx-swap="innerHTML"
+                  hx-select="unset" hx-push-url="false"
+                  title="{% translate 'edit_job' request.session.language %}"
+                  aria-label="{% translate 'edit_job' request.session.language %}">
+            <i class="ti ti-edit me-1"></i>{% translate 'edit' request.session.language %}
+          </button>
+          <button type="button" class="workflow-job-action-button workflow-job-delete-btn"
+                  hx-post="{% url 'workflow_job_delete' job.id %}"
+                  hx-target="#jobs-table" hx-swap="outerHTML"
+                  hx-select="unset" hx-push-url="false"
+                  hx-confirm="{% translate 'confirm_delete_job' request.session.language %}"
+                  title="Delete"
+                  aria-label="Delete">
+            <i class="ti ti-trash me-1"></i>Delete
+          </button>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center justify-content-between gap-2 mt-3 pt-2 border-top">
+        <div class="d-flex align-items-center flex-wrap gap-2">
+          {% if job.group == 'pre_production' %}
+          <span class="badge bg-info-subtle text-info">Preparation</span>
+          {% elif job.group == 'employer_transfer' %}
+          <span class="badge bg-secondary-subtle text-secondary">Employer Transfer</span>
+          {% else %}
+          <span class="badge bg-warning-subtle text-warning-emphasis">Processing</span>
+          {% endif %}
+          <span class="workflow-job-meta" title="{% translate 'steps' request.session.language %}">
+            <i class="ti ti-list-check me-1"></i>{{ job.stage_count }} {% translate 'steps' request.session.language %}
+          </span>
+        </div>
+        <span class="workflow-job-meta text-nowrap" title="{% translate 'employees' request.session.language %}">
+          <i class="ti ti-users me-1"></i>{{ job.employee_count }} {% translate 'employees' request.session.language %}
+        </span>
+        {% if can_add_job %}
+        <button type="button" class="btn btn-sm btn-outline-warning btn-icon"
+                data-bs-toggle="modal" data-bs-target="#jobFormModal"
+                hx-get="{% url 'workflow_job_create' %}?workflow_type_id={{ job.id }}"
+                hx-target="#jobFormModalContent" hx-swap="innerHTML"
+                hx-select="unset" hx-push-url="false"
+                title="Create a job for {{ job.name }}"
+                aria-label="Create a job for {{ job.name }}">
+          <i class="ti ti-plus"></i>
+        </button>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card">
+    <div class="card-body text-center py-5">
+      <span class="workflow-job-icon mx-auto mb-3"><i class="ti ti-briefcase" aria-hidden="true"></i></span>
+      <h5 class="mb-1">{% translate 'no_jobs_found' request.session.language %}</h5>
+      <p class="text-muted mb-0">Create a workflow job to get started.</p>
+    </div>
+  </div>
+  {% endif %}
+</div>

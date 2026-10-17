@@ -17,13 +17,18 @@ from constants.message import CREATE, UPDATE, DELETE
 @custom_login_required("dashboard_login")
 @role_permission_required("view_usermodel")
 def user_list(request):
-    if request.user.role.name == settings.HYPER:
+    hyper_role = RoleModel.objects.filter(name=settings.HYPER).first()
+    user_role_name = getattr(getattr(request.user, "role", None), "name", None)
+
+    if user_role_name == settings.HYPER:
         users = UserModel.objects.all().order_by("-created_at")
         roles = RoleModel.objects.all().order_by("-created_at")
-    else:
+    elif hyper_role is not None:
         roles = RoleModel.objects.exclude(name=settings.HYPER).order_by("-created_at")
-        role = RoleModel.objects.get(name=settings.HYPER)
-        users = UserModel.objects.exclude(role=role).order_by("-created_at")
+        users = UserModel.objects.exclude(role=hyper_role).order_by("-created_at")
+    else:
+        roles = RoleModel.objects.all().order_by("-created_at")
+        users = UserModel.objects.all().order_by("-created_at")
 
     filters = filter_querysets(
         request,
@@ -151,10 +156,11 @@ def user_export_pdf(request):
     search = request.GET.get("search", "")
     date = request.GET.get("date", "")
     date_range = request.GET.get("date_range", "")
-    role = RoleModel.objects.get(name=settings.HYPER)
+    hyper_role = RoleModel.objects.filter(name=settings.HYPER).first()
 
+    users_queryset = UserModel.objects.exclude(role=hyper_role) if hyper_role else UserModel.objects.all()
     users = filter_queryset_for_export(
-        UserModel.objects.exclude(role=role),
+        users_queryset,
         search=search,
         date=date,
         date_range=date_range,
@@ -188,10 +194,11 @@ def user_export_excel(request):
     search = request.GET.get("search", "")
     date = request.GET.get("date", "")
     date_range = request.GET.get("date_range", "")
-    role = RoleModel.objects.get(name=settings.HYPER)
+    hyper_role = RoleModel.objects.filter(name=settings.HYPER).first()
 
+    users_queryset = UserModel.objects.exclude(role=hyper_role) if hyper_role else UserModel.objects.all()
     users = filter_queryset_for_export(
-        UserModel.objects.exclude(role=role),
+        users_queryset,
         search=search,
         date=date,
         date_range=date_range,

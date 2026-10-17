@@ -8,59 +8,141 @@
     <button type="button" class="close text-white" data-bs-dismiss="modal"><span>&times;</span></button>
 </div>
 
-<form hx-post="{% url 'workflow_add_employee' workflow_type.code %}"
-      hx-target="#addEmployeeModalContent" hx-swap="innerHTML">
-    <div class="modal-body">
-        {% if added_count %}
-        <div class="alert alert-success py-2 mb-3">
-            <i class="ti ti-check me-1"></i>
-            {% translate 'employees_added_successfully' request.session.language %} ({{ added_count }})
+<div class="modal-body">
+    {% if selection_error %}
+    <div class="alert alert-danger py-2 mb-3">{{ selection_error }}</div>
+    {% endif %}
+    {% if workflow_job %}
+    <div class="alert alert-info py-2 mb-3">
+        Adding to work set: <strong>{{ workflow_job.project_name|default:workflow_type.name }}</strong>
+    </div>
+    {% endif %}
+    {% if added_count %}
+    <div class="alert alert-success py-2 mb-3">
+        <i class="ti ti-check me-1"></i>
+        {% translate 'employees_added_successfully' request.session.language %} ({{ added_count }})
+    </div>
+    {% endif %}
+    {% if created_employee %}
+    <div class="alert alert-success py-2 mb-3">
+        <i class="ti ti-check me-1"></i>
+        {{ created_employee.full_name_en }} added to {{ workflow_type.name }}.
+    </div>
+    {% endif %}
+
+    <ul class="nav nav-tabs mb-3" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if active_tab != 'manual' %}active{% endif %}" id="existing-employee-tab"
+                    data-bs-toggle="tab" data-bs-target="#existing-employee-pane" type="button" role="tab"
+                    aria-controls="existing-employee-pane" aria-selected="{% if active_tab != 'manual' %}true{% else %}false{% endif %}">
+                Select Existing
+            </button>
+        </li>
+        {% if can_create_employee %}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if active_tab == 'manual' %}active{% endif %}" id="manual-employee-tab"
+                    data-bs-toggle="tab" data-bs-target="#manual-employee-pane" type="button" role="tab"
+                    aria-controls="manual-employee-pane" aria-selected="{% if active_tab == 'manual' %}true{% else %}false{% endif %}">
+                New / Manual
+            </button>
+        </li>
+        {% endif %}
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade {% if active_tab != 'manual' %}show active{% endif %}" id="existing-employee-pane" role="tabpanel" aria-labelledby="existing-employee-tab">
+            <form hx-post="{% url 'workflow_add_employee' workflow_type.code %}"
+                  hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
+                  hx-select="unset" hx-push-url="false">
+                {% csrf_token %}
+                <input type="hidden" name="mode" value="existing">
+                {% if workflow_job_id %}<input type="hidden" name="workflow_job_id" value="{{ workflow_job_id }}">{% endif %}
+                {% if is_employer_change %}
+                <div class="alert alert-info py-2 mb-3">
+                    <i class="ti ti-info-circle me-1"></i>
+                    Select the new employer, then choose employees to add or transfer.
+                </div>
+                {% endif %}
+                <div class="d-flex gap-2 mb-3">
+                    <select name="employer_id" class="form-select" {% if is_employer_change %}required{% endif %}
+                        hx-get="{% url 'workflow_add_employee_modal' workflow_type.code %}"
+                        hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
+                        hx-select="unset" hx-push-url="false"
+                        hx-include="[name='search']">
+                        <option value="">{% translate 'all_employers' request.session.language %}</option>
+                        {% for e in employer_options %}
+                        <option value="{{ e.id }}" {% if e.id|stringformat:"s" == selected_employer_id %}selected{% endif %}>{{ e.name_en }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="search" class="form-control"
+                        placeholder="{% translate 'search' request.session.language %}..." value="{{ search }}"
+                        hx-get="{% url 'workflow_add_employee_modal' workflow_type.code %}"
+                        hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
+                        hx-select="unset" hx-push-url="false"
+                        hx-trigger="keyup changed delay:400ms"
+                        hx-include="[name='employer_id']">
+                </div>
+
+                <div class="add-employee-list">
+                    {% for employee in employees %}
+                    <label class="add-employee-row">
+                        <input type="checkbox" name="employee_ids" value="{{ employee.id }}" class="form-check-input">
+                        <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                            class="rounded" style="width:36px;height:36px;object-fit:cover;">
+                        <span class="flex-grow-1">
+                            <span class="fw-bold d-block">{{ employee.prefix_en }} {{ employee.full_name_en }}</span>
+                            <span class="small text-muted">{{ employee.employer.name_en|default:"-" }} · {{ employee.get_status_display }}</span>
+                        </span>
+                    </label>
+                    {% empty %}
+                    <p class="text-muted text-center py-3">{% translate 'no_employees_found' request.session.language %}</p>
+                    {% endfor %}
+                </div>
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="ti ti-plus me-1"></i>{% translate 'add_selected' request.session.language %}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {% if can_create_employee %}
+        <div class="tab-pane fade {% if active_tab == 'manual' %}show active{% endif %}" id="manual-employee-pane" role="tabpanel" aria-labelledby="manual-employee-tab">
+            <form hx-post="{% url 'workflow_add_employee' workflow_type.code %}"
+                  hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
+                  hx-select="unset" hx-push-url="false"
+                  hx-encoding="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="mode" value="manual">
+                {% if workflow_job_id %}<input type="hidden" name="workflow_job_id" value="{{ workflow_job_id }}">{% endif %}
+                <div class="row g-3">
+                    {% for field in manual_form %}
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                        {% if field.name == "date_of_birth" %}
+                        <small class="text-muted">Age: <span id="manualEmployeeAge">—</span> (calculated from date of birth)</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="ti ti-plus me-1"></i>Create and add to workflow
+                    </button>
+                </div>
+            </form>
         </div>
         {% endif %}
-
-        <div class="d-flex gap-2 mb-3">
-            <select name="employer_id" class="form-select"
-                hx-get="{% url 'workflow_add_employee_modal' workflow_type.code %}"
-                hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
-                hx-include="[name='search']">
-                <option value="">{% translate 'all_employers' request.session.language %}</option>
-                {% for e in employer_options %}
-                <option value="{{ e.id }}" {% if e.id|stringformat:"s" == selected_employer_id %}selected{% endif %}>{{ e.name_en }}</option>
-                {% endfor %}
-            </select>
-            <input type="text" name="search" class="form-control"
-                placeholder="{% translate 'search' request.session.language %}..." value="{{ search }}"
-                hx-get="{% url 'workflow_add_employee_modal' workflow_type.code %}"
-                hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
-                hx-trigger="keyup changed delay:400ms"
-                hx-include="[name='employer_id']">
-        </div>
-
-        <div class="add-employee-list">
-            {% for employee in employees %}
-            <label class="add-employee-row">
-                <input type="checkbox" name="employee_ids" value="{{ employee.id }}" class="form-check-input">
-                <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
-                    class="rounded" style="width:36px;height:36px;object-fit:cover;">
-                <span class="flex-grow-1">
-                    <span class="fw-bold d-block">{{ employee.prefix_en }} {{ employee.full_name_en }}</span>
-                    <span class="small text-muted">{{ employee.employer.name_en|default:"-" }}</span>
-                </span>
-            </label>
-            {% empty %}
-            <p class="text-muted text-center py-3">{% translate 'no_employees_found' request.session.language %}</p>
-            {% endfor %}
-        </div>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">
-            {% translate 'cancel' request.session.language %}
-        </button>
-        <button type="submit" class="btn btn-warning">
-            <i class="ti ti-plus me-1"></i>{% translate 'add_selected' request.session.language %}
-        </button>
-    </div>
-</form>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+        {% translate 'cancel' request.session.language %}
+    </button>
+</div>
 
 <style>
     .add-employee-header { background: linear-gradient(135deg, #ff8a3d, #ff6b1a); }

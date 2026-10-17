@@ -45,6 +45,25 @@ class WorkflowStageModel(BaseModel):
         verbose_name = "Workflow Stage"
 
 
+class WorkflowJobModel(BaseModel):
+    workflow_type = models.ForeignKey(
+        WorkflowTypeModel, on_delete=models.CASCADE, related_name="jobs"
+    )
+    employer = models.ForeignKey(
+        EmployerModel, on_delete=models.CASCADE, related_name="workflow_jobs"
+    )
+    project_name = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.project_name or f"{self.workflow_type.name} — {self.employer.name_en}"
+
+    class Meta:
+        app_label = "core"
+        db_table = "workflow_jobs"
+        verbose_name = "Workflow Job"
+        verbose_name_plural = "Workflow Jobs"
+
+
 class EmployeeWorkflowModel(BaseModel):
     """Employee တစ်ယောက်ရဲ့ workflow instance တစ်ခု (e.g. 'employer entry/change'
     process တစ်ခု စတင်ခြင်း) — employee တစ်ယောက်ကို workflow type တစ်ခုအောက်မှာ
@@ -57,10 +76,15 @@ class EmployeeWorkflowModel(BaseModel):
 
     employee = models.ForeignKey(EmployeeModel, on_delete=models.CASCADE, related_name="workflows")
     workflow_type = models.ForeignKey(WorkflowTypeModel, on_delete=models.PROTECT, related_name="workflows")
+    workflow_job = models.ForeignKey(
+        WorkflowJobModel, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="workflows",
+    )
     current_stage = models.ForeignKey(WorkflowStageModel, on_delete=models.PROTECT, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="in_progress")
 
     note = models.TextField(blank=True)
+    project_name = models.CharField(max_length=255, blank=True)
     appointment_date = models.DateField(null=True, blank=True)
     contact_email = models.EmailField(blank=True)
     contact_phone = models.CharField(max_length=50, blank=True)
@@ -92,15 +116,26 @@ class EmployeeWorkflowModel(BaseModel):
         return self.PROGRESS_PENDING
 
     @classmethod
-    def get_or_start(cls, employee, workflow_type, user=None):
+    def get_or_start(cls, employee, workflow_type, user=None, workflow_job=None):
         """Lazily enrolls an employee into a workflow type the first time any
         of its stages is touched, instead of requiring a separate 'enroll' step."""
         first_stage = workflow_type.stages.order_by("order").first()
         obj, created = cls.objects.get_or_create(
             employee=employee,
             workflow_type=workflow_type,
-            defaults={"current_stage": first_stage, "status": "in_progress", "created_by": user},
+            defaults={
+                "current_stage": first_stage,
+                "status": "in_progress",
+                "created_by": user,
+                "workflow_job": workflow_job,
+                "project_name": workflow_job.project_name if workflow_job else "",
+            },
         )
+        if not created and workflow_job and obj.workflow_job_id != workflow_job.id:
+            obj.workflow_job = workflow_job
+            obj.project_name = workflow_job.project_name
+            obj.updated_by = user
+            obj.save(update_fields=["workflow_job", "project_name", "updated_by", "updated_at"])
         return obj, created
 
     def toggle_stage(self, stage, user=None):

@@ -1,74 +1,119 @@
 {% load translate %}
-{% load static %}
-<div class="modal-header add-employee-header">
-    <h5 class="modal-title text-white">
-        <i class="ti ti-user-plus me-2"></i>
-        {% translate 'add_employee' request.session.language %} - {{ workflow_type.name }}
+{% load permissions %}
+<div class="modal-header bg-warning text-white">
+    <h5 class="modal-title mb-0">
+        <i class="ti ti-list-check me-2"></i>
+        {{ workflow_type.name }} {% translate 'steps' request.session.language %}
     </h5>
-    <button type="button" class="close text-white" data-bs-dismiss="modal"><span>&times;</span></button>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
 </div>
 
-<form hx-post="{% url 'workflow_add_employee' workflow_type.code %}"
-      hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
-      hx-select="unset" hx-push-url="false">
-    <div class="modal-body">
-        {% if added_count %}
-        <div class="alert alert-success py-2 mb-3">
-            <i class="ti ti-check me-1"></i>
-            {% translate 'employees_added_successfully' request.session.language %} ({{ added_count }})
-        </div>
-        {% endif %}
+<div class="modal-body">
+    {% if error_message %}
+    <div class="alert alert-danger py-2 mb-3">{{ error_message }}</div>
+    {% endif %}
 
-        <div class="d-flex gap-2 mb-3">
-            <select name="employer_id" class="form-select"
-                hx-get="{% url 'workflow_add_employee_modal' workflow_type.code %}"
-                hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
-                hx-select="unset" hx-push-url="false"
-                hx-include="[name='search']">
-                <option value="">{% translate 'all_employers' request.session.language %}</option>
-                {% for e in employer_options %}
-                <option value="{{ e.id }}" {% if e.id|stringformat:"s" == selected_employer_id %}selected{% endif %}>{{ e.name_en }}</option>
-                {% endfor %}
-            </select>
-            <input type="text" name="search" class="form-control"
-                placeholder="{% translate 'search' request.session.language %}..." value="{{ search }}"
-                hx-get="{% url 'workflow_add_employee_modal' workflow_type.code %}"
-                hx-target="#addEmployeeModalContent" hx-swap="innerHTML"
-                hx-select="unset" hx-push-url="false"
-                hx-trigger="keyup changed delay:400ms"
-                hx-include="[name='employer_id']">
-        </div>
-
-        <div class="add-employee-list">
-            {% for employee in employees %}
-            <label class="add-employee-row">
-                <input type="checkbox" name="employee_ids" value="{{ employee.id }}" class="form-check-input">
-                <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
-                    class="rounded" style="width:36px;height:36px;object-fit:cover;">
-                <span class="flex-grow-1">
-                    <span class="fw-bold d-block">{{ employee.prefix_en }} {{ employee.full_name_en }}</span>
-                    <span class="small text-muted">{{ employee.employer.name_en|default:"-" }}</span>
-                </span>
-            </label>
-            {% empty %}
-            <p class="text-muted text-center py-3">{% translate 'no_employees_found' request.session.language %}</p>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            {% translate 'cancel' request.session.language %}
-        </button>
-        <button type="submit" class="btn btn-warning">
-            <i class="ti ti-plus me-1"></i>{% translate 'add_selected' request.session.language %}
+    <div class="workflow-step-add-row d-flex gap-2 mb-3 align-items-center">
+        <input id="newStepName" name="name" type="text" class="form-control form-control-sm" placeholder="{% translate 'step_name' request.session.language %}...">
+        <button type="button" class="btn btn-warning btn-sm px-3"
+                data-workflow-step-action="add-step"
+                data-workflow-code="{{ workflow_type.code }}"
+                hx-post="{% url 'workflow_stage_create' workflow_type.code %}"
+                hx-target="#workflowStepsModalContent"
+                hx-swap="innerHTML"
+                hx-select="unset"
+                hx-push-url="false"
+                hx-include="#newStepName">
+            <i class="ti ti-plus me-1"></i>{% translate 'add' request.session.language %}
         </button>
     </div>
-</form>
+
+    <div id="addStepError" class="alert alert-danger py-2 d-none mb-3"></div>
+
+    <div class="workflow-step-list">
+        {% for stage in stages %}
+        <div class="workflow-step-row d-flex align-items-center gap-2 mb-2" data-stage-id="{{ stage.id }}" data-stage-name="{{ stage.name }}">
+            <div class="workflow-step-order d-flex flex-column gap-1">
+                <button type="button" class="btn btn-xs btn-outline-secondary px-2 py-1"
+                        data-workflow-step-action="reorder-step"
+                        data-stage-id="{{ stage.id }}"
+                        data-direction="up"
+                        title="Move up"
+                        hx-post="{% url 'workflow_stage_reorder' stage.id 'up' %}"
+                        hx-target="#workflowStepsModalContent"
+                        hx-swap="innerHTML"
+                        hx-select="unset"
+                        hx-push-url="false">
+                    <i class="ti ti-chevron-up"></i>
+                </button>
+                <button type="button" class="btn btn-xs btn-outline-secondary px-2 py-1"
+                        data-workflow-step-action="reorder-step"
+                        data-stage-id="{{ stage.id }}"
+                        data-direction="down"
+                        title="Move down"
+                        hx-post="{% url 'workflow_stage_reorder' stage.id 'down' %}"
+                        hx-target="#workflowStepsModalContent"
+                        hx-swap="innerHTML"
+                        hx-select="unset"
+                        hx-push-url="false">
+                    <i class="ti ti-chevron-down"></i>
+                </button>
+            </div>
+
+            <div class="workflow-step-name flex-grow-1 border rounded px-3 py-2 bg-light-subtle">
+                <span id="step-name-{{ stage.id }}" class="fw-medium">{{ stage.name }}</span>
+                <input id="step-name-input-{{ stage.id }}" type="text" class="form-control d-none" value="{{ stage.name }}">
+            </div>
+
+            <button type="button" class="btn btn-sm btn-outline-primary"
+                    data-workflow-step-action="toggle-edit-step"
+                    data-stage-id="{{ stage.id }}">
+                <i class="ti ti-pencil me-1"></i>{% translate 'edit' request.session.language %}
+            </button>
+            {% if request.user|has_role_permission:'delete_workflowstagemodel' %}
+                <button type="button" class="btn btn-sm btn-outline-danger"
+                        data-workflow-step-action="delete-step"
+                        data-stage-id="{{ stage.id }}"
+                        hx-post="{% url 'workflow_stage_delete' stage.id %}"
+                        hx-target="#workflowStepsModalContent"
+                        hx-swap="innerHTML"
+                        hx-select="unset"
+                        hx-push-url="false"
+                        hx-confirm="{% translate 'confirm_delete' request.session.language %}">
+                    <i class="ti ti-trash me-1"></i>{% translate 'delete' request.session.language %}
+                </button>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="text-muted text-center py-4">{% translate 'no_steps_found' request.session.language %}</div>
+        {% endfor %}
+    </div>
+</div>
 
 <style>
-    .add-employee-header { background: linear-gradient(135deg, #ff8a3d, #ff6b1a); }
-    .add-employee-list { max-height: 360px; overflow-y: auto; border: 1px solid #f0f1f4; border-radius: 8px; }
-    .add-employee-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid #f0f1f4; margin: 0; cursor: pointer; }
-    .add-employee-row:last-child { border-bottom: none; }
-    .add-employee-row:hover { background: #fdfaf0; }
+    .workflow-step-add-row { padding: 0.25rem 0; }
+    .workflow-step-add-row .form-control { min-width: 0; }
+    .workflow-step-row {
+        padding: 10px 12px;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+    }
+    .workflow-step-order { min-width: 34px; }
+    .btn-xs {
+        --bs-btn-padding-y: 0.15rem;
+        --bs-btn-padding-x: 0.35rem;
+        --bs-btn-font-size: 0.76rem;
+        line-height: 1.2;
+    }
+    .workflow-step-name {
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.5);
+    }
+    .workflow-step-name input { width: 100%; }
 </style>

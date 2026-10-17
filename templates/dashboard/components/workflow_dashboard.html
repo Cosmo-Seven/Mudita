@@ -306,6 +306,10 @@
         const stageId = trigger.dataset.stageId;
         const workflowCode = trigger.dataset.workflowCode;
 
+        if (trigger.hasAttribute('hx-post') && action !== 'toggle-edit-step') {
+            return;
+        }
+
         if (action === 'add-step') {
             addWorkflowStep(workflowCode);
             return;

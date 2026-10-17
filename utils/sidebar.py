@@ -28,23 +28,37 @@ def sidebar(request):
                         "icon": "ti ti-users",
                         "permission": "view_employeemodel",
                     },
+                    
+                    
+                    # {
+                    #     "label": "preparation",
+                    #     "url_name": "workflow_preparation",
+                    #     "icon": "ti ti-hierarchy-2",
+                    #     "permission": "view_employeeworkflowmodel",
+                    # },
+                    # {
+                    #     "label": "processing",
+                    #     "url_name": "workflow_notification",
+                    #     "icon": "ti ti-chart-bar",
+                    #     "permission": "view_employeeworkflowmodel",
+                    # },
+                    # {
+                    #     "label": "employer_transfer",
+                    #     "url_name": "workflow_transfer",
+                    #     "icon": "ti ti-arrows-right-left",
+                    #     "permission": "view_employeeworkflowmodel",
+                    # },
+                ],
+            },
+            {
+                "title": "workflow",
+                "permissions": ["view_workflowtypemodel"],
+                "items": [
                     {
-                        "label": "preparation",
-                        "url_name": "workflow_preparation",
+                        "label": "workflow",
+                        "url_name": "workflow_job_list",
                         "icon": "ti ti-hierarchy-2",
-                        "permission": "view_employeeworkflowmodel",
-                    },
-                    {
-                        "label": "processing",
-                        "url_name": "workflow_notification",
-                        "icon": "ti ti-chart-bar",
-                        "permission": "view_employeeworkflowmodel",
-                    },
-                    {
-                        "label": "employer_transfer",
-                        "url_name": "workflow_transfer",
-                        "icon": "ti ti-arrows-right-left",
-                        "permission": "view_employeeworkflowmodel",
+                        "permission": "view_workflowtypemodel",
                     },
                 ],
             },

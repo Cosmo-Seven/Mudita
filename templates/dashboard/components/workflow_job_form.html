@@ -1,0 +1,67 @@
+{% load translate %}
+<div class="modal-header">
+  <h5 class="modal-title">
+    {% if job %}{% translate 'edit_job' request.session.language %}{% else %}{% translate 'create_job' request.session.language %}{% endif %}
+  </h5>
+  <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">×</span>
+  </button>
+</div>
+
+{% if saved %}
+<div class="modal-body">
+  <div class="alert alert-success py-2 mb-0">Saved.</div>
+</div>
+{% else %}
+<form {% if job %}hx-post="{% url 'workflow_job_update' job.id %}"{% else %}hx-post="{% url 'workflow_type_create' %}"{% endif %}
+      hx-target="#jobFormModalContent" hx-swap="innerHTML"
+      hx-select="unset" hx-push-url="false">
+  {% csrf_token %}
+  <div class="modal-body">
+    <div class="mb-3">
+      <label class="form-label">{% translate 'job_name' request.session.language %} <span class="text-danger">*</span></label>
+      <input type="text" name="name" class="form-control {% if errors.name %}is-invalid{% endif %}"
+             value="{{ values.name|default:job.name|default:'' }}" placeholder="e.g. Import MOU">
+      {% if errors.name %}<div class="invalid-feedback">{{ errors.name }}</div>{% endif %}
+    </div>
+
+    {% if not job %}
+    <div class="mb-3">
+      <label class="form-label">Code <small class="text-muted">(optional, auto from name)</small></label>
+      <input type="text" name="code" class="form-control {% if errors.code %}is-invalid{% endif %}" value="{{ values.code|default:'' }}">
+      {% if errors.code %}<div class="invalid-feedback">{{ errors.code }}</div>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="mb-3">
+      <label class="form-label">{% translate 'group' request.session.language %}</label>
+      <select name="group" class="form-select {% if errors.group %}is-invalid{% endif %}">
+        {% for value, label in group_choices %}
+        <option value="{{ value }}" {% if values.group == value or not values.group and job.group == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      {% if errors.group %}<div class="invalid-feedback">{{ errors.group }}</div>{% endif %}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Subtitle</label>
+      <input type="text" name="subtitle" class="form-control" value="{{ values.subtitle|default:job.subtitle|default:'' }}">
+    </div>
+
+    <div class="row">
+      <div class="col-8 mb-3">
+        <label class="form-label">Icon <small class="text-muted">(Tabler class)</small></label>
+        <input type="text" name="icon" class="form-control" value="{{ values.icon|default:job.icon|default:'ti ti-chart-bar' }}">
+      </div>
+      <div class="col-4 mb-3">
+        <label class="form-label">Order</label>
+        <input type="number" name="order" min="0" class="form-control" value="{{ values.order|default:job.order|default:'' }}">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">{% translate 'cancel' request.session.language %}</button>
+    <button type="submit" class="btn btn-warning">{% translate 'save' request.session.language %}</button>
+  </div>
+</form>
+{% endif %}

@@ -1,0 +1,175 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load translate %}
+{% block title %}{% translate 'workflow_jobs' request.session.language %}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+  <div class="content" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <h4 class="mb-0">{% translate 'workflow_jobs' request.session.language %}</h4>
+        <small class="text-muted">Inform/change employer, Import MOU, Renewal MOU ...</small>
+      </div>
+      <div class="d-flex flex-wrap gap-2">
+        {% if can_add_workflow_type %}
+        <button type="button" class="btn btn-outline-warning"
+                data-bs-toggle="modal" data-bs-target="#jobFormModal"
+                hx-get="{% url 'workflow_type_create' %}"
+                hx-target="#jobFormModalContent" hx-swap="innerHTML"
+                hx-select="unset" hx-push-url="false">
+          <i class="ti ti-settings-plus me-1"></i>Add Work Type
+        </button>
+        {% endif %}
+        {% if can_add_job %}
+        <button type="button" class="btn btn-warning"
+                data-bs-toggle="modal" data-bs-target="#jobFormModal"
+                hx-get="{% url 'workflow_job_create' %}"
+                hx-target="#jobFormModalContent" hx-swap="innerHTML"
+                hx-select="unset" hx-push-url="false">
+          <i class="ti ti-plus me-1"></i>{% translate 'create_job' request.session.language %}
+        </button>
+        {% endif %}
+      </div>
+    </div>
+
+    <div id="jobs-table-wrap">
+      {% include "dashboard/components/workflow_job_table.html" %}
+    </div>
+
+    <div class="modal fade" id="jobFormModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="jobFormModalContent">
+          <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .workflow-job-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+    gap: 12px;
+  }
+
+  .workflow-job-card {
+    min-width: 0;
+    overflow: hidden;
+    padding: 14px;
+    border: 1px solid #e9edf2;
+    border-radius: 10px;
+    background: #fff;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  }
+
+  .workflow-job-card > .d-flex {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .workflow-job-card:hover {
+    border-color: #ffd3a8;
+    box-shadow: 0 5px 16px rgba(33, 43, 54, .07);
+    transform: translateY(-2px);
+  }
+
+  .workflow-job-icon {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    place-items: center;
+    border-radius: 50%;
+    background: #fff2e6;
+    color: #fe9f43;
+    font-size: 19px;
+  }
+
+  .workflow-job-title {
+    overflow: hidden;
+    color: #212b36;
+    font-size: 14px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .workflow-job-copy {
+    min-width: 0;
+    flex: 1 1 140px;
+  }
+
+  .workflow-job-meta {
+    color: #7b8794;
+    font-size: 12px;
+  }
+
+  .workflow-job-card .workflow-job-copy .text-truncate,
+  .workflow-job-card .workflow-job-title {
+    max-width: 100%;
+  }
+
+  .workflow-job-card .btn-icon {
+    display: inline-grid;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    place-items: center;
+  }
+
+  .workflow-job-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-left: auto;
+    flex: 0 0 auto;
+  }
+
+  .workflow-job-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all .2s ease;
+  }
+
+  .workflow-job-edit-btn {
+    background: rgba(255, 159, 67, 0.12);
+    color: #b25d00;
+    border-color: rgba(255, 159, 67, 0.25);
+  }
+
+  .workflow-job-edit-btn:hover {
+    background: rgba(255, 159, 67, 0.2);
+    color: #8a4700;
+  }
+
+  .workflow-job-delete-btn {
+    background: rgba(220, 53, 69, 0.08);
+    color: #b42318;
+    border-color: rgba(220, 53, 69, 0.18);
+  }
+
+  .workflow-job-delete-btn:hover {
+    background: rgba(220, 53, 69, 0.12);
+    color: #9f1d1d;
+  }
+
+  @media (max-width: 768px) {
+    .workflow-job-actions {
+      width: 100%;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+  }
+</style>
+{% endblock %}
