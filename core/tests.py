@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
@@ -334,6 +336,7 @@ class WorkflowJobCreateTests(TestCase):
         )
         self.assertEqual(dashboard_response.status_code, 200)
         self.assertContains(dashboard_response, "Create Job")
+        self.assertContains(dashboard_response, "openAddEmployeeModal")
         self.assertEqual(
             dashboard_response.content.count(b'class="card mb-2 employer-workflow-row"'),
             1,
@@ -349,6 +352,54 @@ class WorkflowJobCreateTests(TestCase):
         self.assertContains(employer_response, "January MOU Batch")
         self.assertContains(employer_response, f"'{workset.id}'")
         self.assertContains(employer_response, "0")
+
+    def test_create_job_button_only_shows_for_mou_import_and_social_security(self):
+        dashboard_url = reverse("workflow_dashboard", args=[self.workflow_type.code])
+        response = self.client.get(dashboard_url)
+        self.assertContains(response, "Create Job")
+        self.assertNotContains(
+            response,
+            f"onclick=\"openAddEmployeeModal('{self.workflow_type.code}')\"",
+        )
+
+        other_workflow = WorkflowTypeModel.objects.create(
+            code="custom_test_workflow",
+            name="Custom Test Workflow",
+        )
+        response = self.client.get(
+            reverse("workflow_dashboard", args=[other_workflow.code])
+        )
+        self.assertNotContains(response, "Create Job")
+        self.assertContains(
+            response,
+            f"onclick=\"openAddEmployeeModal('{other_workflow.code}')\"",
+        )
+
+        social_security = WorkflowTypeModel.objects.create(
+            code="social_security",
+            name="Social Security",
+        )
+        response = self.client.get(
+            reverse("workflow_dashboard", args=[social_security.code])
+        )
+        self.assertContains(response, "Create Job")
+        self.assertNotContains(
+            response,
+            f"onclick=\"openAddEmployeeModal('{social_security.code}')\"",
+        )
+
+        renamed_social_security = WorkflowTypeModel.objects.create(
+            code="pre_production_preparation",
+            name="Social Security submission.",
+        )
+        response = self.client.get(
+            reverse("workflow_dashboard", args=[renamed_social_security.code])
+        )
+        self.assertContains(response, "Create Job")
+        self.assertNotContains(
+            response,
+            f"onclick=\"openAddEmployeeModal('{renamed_social_security.code}')\"",
+        )
 
     def test_workflow_add_employee_modal_offers_manual_employee_creation(self):
         response = self.client.get(
@@ -509,6 +560,59 @@ class WorkflowJobCreateTests(TestCase):
                 employee=employee, workflow_type=change_workflow
             ).exists()
         )
+
+    def test_workflow_dashboard_shows_all_workflow_types_in_tabs(self):
+        response = self.client.get(
+            reverse("workflow_dashboard", args=[self.workflow_type.code])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["workflow_types"]), 6)
+        self.assertCountEqual(
+            [wt.code for wt in response.context["workflow_types"]],
+            [
+                "employer_entry_change",
+                "employer_exit_notice",
+                "pre_production_preparation",
+                "employer_transfer_package",
+                "mou_import",
+                "renewal_mou",
+            ],
+        )
+
+    def test_workflow_list_calendar_shows_appointments_and_changes_month(self):
+        appointment_date = date.today() + timedelta(days=2)
+        EmployeeWorkflowModel.objects.create(
+            employee=self.employee_a,
+            workflow_type=self.workflow_type,
+            appointment_date=appointment_date,
+        )
+
+        response = self.client.get(reverse("workflow_job_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["calendar_days"]), 42)
+        self.assertEqual(
+            next(
+                day["appointment_count"]
+                for day in response.context["calendar_days"]
+                if day["date"] == appointment_date
+            ),
+            1,
+        )
+        self.assertEqual(
+            list(response.context["upcoming_appointments"])[0].employee.full_name_en,
+            self.employee_a.full_name_en,
+        )
+        self.assertContains(response, "Monthly Overview")
+
+        response = self.client.get(reverse("workflow_job_list"), {"month": "2027-01"})
+        self.assertEqual(response.context["calendar_month"], date(2027, 1, 1))
+
+        dashboard_response = self.client.get(
+            reverse("workflow_dashboard", args=[self.workflow_type.code])
+        )
+        self.assertNotContains(dashboard_response, "Monthly Overview")
 
     def test_workflow_dashboard_shows_one_employer_row_with_all_employees_nested(self):
         EmployeeWorkflowModel.objects.create(

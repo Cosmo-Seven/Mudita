@@ -14,7 +14,6 @@
             <div class="col"><div class="workflow-stat bg-success"><h2 class="text-white">{{ stat_cards.completed }}</h2><span>{% translate 'completed' request.session.language %}</span></div></div>
             <div class="col"><div class="workflow-stat bg-orange-dark"><h2 class="text-white">{{ stat_cards.active_projects }}</h2><span>{% translate 'active_projects' request.session.language %}</span></div></div>
         </div>
-
         <!-- Global stage progress -->
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -59,10 +58,12 @@
                     {% endif %}
                 </select>
                 <button type="button" class="btn btn-dark"><i class="ti ti-trash me-1"></i>{% translate 'trash' request.session.language %}</button>
+                {% if not show_create_job_button %}
                 <button type="button" class="btn btn-warning" onclick="openAddEmployeeModal('{{ workflow_type.code }}')">
                     <i class="ti ti-plus me-1"></i>{% translate 'add_employee' request.session.language %}
                 </button>
-                {% if can_add_job %}
+                {% endif %}
+                {% if can_add_job and show_create_job_button %}
                 <button type="button" class="btn btn-warning"
                         data-bs-toggle="modal" data-bs-target="#jobFormModal"
                         hx-get="{% url 'workflow_job_create' %}?workflow_type_id={{ workflow_type.id }}"

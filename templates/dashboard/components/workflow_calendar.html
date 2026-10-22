@@ -1,0 +1,232 @@
+<section class="row g-3 mb-3 workflow-calendar-section">
+    <div class="col-lg-6">
+        <div class="card workflow-calendar-card h-100">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="ti ti-calendar-check me-1 text-warning"></i>Upcoming Appointments (Next 7 Days)</h6>
+            </div>
+            <div class="card-body workflow-upcoming-list">
+                {% for appointment in upcoming_appointments %}
+                <div class="workflow-upcoming-item">
+                    <div class="workflow-upcoming-date">
+                        <span>{{ appointment.appointment_date|date:"D" }}</span>
+                        <strong>{{ appointment.appointment_date|date:"j" }}</strong>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="fw-semibold text-truncate">{{ appointment.employee.full_name_en }}</div>
+                        <div class="small text-muted text-truncate">{{ appointment.workflow_type.name }}</div>
+                    </div>
+                    <time class="small text-muted ms-auto" datetime="{{ appointment.appointment_date|date:'Y-m-d' }}">
+                        {{ appointment.appointment_date|date:"M j" }}
+                    </time>
+                </div>
+                {% empty %}
+                <div class="workflow-calendar-empty">
+                    <i class="ti ti-calendar-check"></i>
+                    <p class="mb-1">No upcoming appointments in the next 7 days.</p>
+                    <span>Appointments will appear here when a date is scheduled.</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card workflow-calendar-card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between gap-2">
+                <h6 class="mb-0"><i class="ti ti-calendar-month me-1 text-warning"></i>Monthly Overview</h6>
+                <div class="d-flex align-items-center gap-2">
+                    <a class="btn btn-sm btn-light workflow-calendar-nav"
+                       href="?month={{ calendar_previous_month }}&amp;search={{ search|urlencode }}&amp;employer={{ request.GET.employer|urlencode }}"
+                       aria-label="Previous month">
+                        <i class="ti ti-chevron-left"></i>
+                    </a>
+                    <strong class="workflow-calendar-month">{{ calendar_month|date:"F Y" }}</strong>
+                    <a class="btn btn-sm btn-light workflow-calendar-nav"
+                       href="?month={{ calendar_next_month }}&amp;search={{ search|urlencode }}&amp;employer={{ request.GET.employer|urlencode }}"
+                       aria-label="Next month">
+                        <i class="ti ti-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="workflow-calendar-grid" role="grid" aria-label="{{ calendar_month|date:'F Y' }}">
+                    {% for weekday in calendar_weekdays %}
+                    <div class="workflow-calendar-weekday" role="columnheader">{{ weekday }}</div>
+                    {% endfor %}
+                    {% for day in calendar_days %}
+                    <div class="workflow-calendar-day {% if not day.is_current_month %}is-outside-month{% endif %} {% if day.is_today %}is-today{% endif %} {% if day.appointment_count %}has-appointments{% endif %}"
+                         role="gridcell"
+                         aria-label="{{ day.date|date:'F j, Y' }}{% if day.appointment_count %}, {{ day.appointment_count }} appointment{{ day.appointment_count|pluralize }}{% endif %}">
+                        <time datetime="{{ day.date|date:'Y-m-d' }}">{{ day.date|date:"j" }}</time>
+                        {% if day.appointment_count %}
+                        <span class="workflow-calendar-count" aria-hidden="true">{{ day.appointment_count }}</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="workflow-calendar-legend small text-muted mt-2">
+                    <span></span> Scheduled appointments
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .workflow-calendar-card {
+        border: 1px solid #e7ebf2;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(24, 39, 75, 0.04);
+        overflow: hidden;
+    }
+    .workflow-calendar-card .card-header {
+        min-height: 46px;
+        background: #fff;
+        border-bottom: 1px solid #edf0f5;
+    }
+    .workflow-calendar-card .card-header h6 {
+        color: #374151;
+        font-size: 0.88rem;
+        font-weight: 700;
+    }
+    .workflow-upcoming-list {
+        min-height: 312px;
+        max-height: 390px;
+        overflow-y: auto;
+    }
+    .workflow-upcoming-item {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid #f0f2f6;
+    }
+    .workflow-upcoming-item:last-child {
+        border-bottom: 0;
+    }
+    .workflow-upcoming-date {
+        display: flex;
+        flex: 0 0 42px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        border-radius: 9px;
+        background: #fff4e8;
+        color: #f47b20;
+        line-height: 1.15;
+    }
+    .workflow-upcoming-date span {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+    }
+    .workflow-upcoming-date strong {
+        font-size: 1rem;
+    }
+    .workflow-calendar-empty {
+        display: flex;
+        min-height: 280px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        text-align: center;
+    }
+    .workflow-calendar-empty i {
+        margin-bottom: 0.7rem;
+        color: #cbd2dc;
+        font-size: 2rem;
+    }
+    .workflow-calendar-empty p {
+        font-size: 0.9rem;
+    }
+    .workflow-calendar-empty span {
+        font-size: 0.75rem;
+    }
+    .workflow-calendar-nav {
+        display: inline-flex;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid #e7ebf2;
+    }
+    .workflow-calendar-month {
+        min-width: 110px;
+        color: #374151;
+        font-size: 0.8rem;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .workflow-calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 4px;
+    }
+    .workflow-calendar-weekday {
+        padding: 0.15rem 0;
+        color: #6b7280;
+        font-size: 0.68rem;
+        font-weight: 600;
+        text-align: center;
+    }
+    .workflow-calendar-day {
+        display: flex;
+        min-height: 47px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 2px;
+        padding: 0.35rem 0.15rem;
+        border: 1px solid #e7ebf2;
+        border-radius: 6px;
+        color: #374151;
+        font-size: 0.75rem;
+    }
+    .workflow-calendar-day.is-outside-month {
+        background: #f8f9fb;
+        color: #9ca3af;
+    }
+    .workflow-calendar-day.is-today {
+        border-color: #ff9a4d;
+        box-shadow: inset 0 0 0 1px #ff9a4d;
+    }
+    .workflow-calendar-count {
+        display: inline-flex;
+        min-width: 16px;
+        height: 16px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 4px;
+        border-radius: 999px;
+        background: #e63b50;
+        color: #fff;
+        font-size: 0.62rem;
+        line-height: 1;
+    }
+    .workflow-calendar-legend {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.7rem;
+    }
+    .workflow-calendar-legend span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #e63b50;
+    }
+    @media (max-width: 575.98px) {
+        .workflow-calendar-card .card-body {
+            padding: 0.75rem;
+        }
+        .workflow-upcoming-list {
+            min-height: 200px;
+        }
+        .workflow-calendar-day {
+            min-height: 40px;
+            padding: 0.25rem 0.1rem;
+            font-size: 0.7rem;
+        }
+    }
+</style>

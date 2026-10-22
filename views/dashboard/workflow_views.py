@@ -2,8 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from django.db import models
 from django.db.models import Count, Q
 from django import forms
-from datetime import date, timedelta
+from datetime import date
 from django.db import transaction
+from django.utils.text import slugify
 
 from utils.decorators import custom_login_required
 from decorators.role_decorator import role_permission_required
@@ -316,7 +317,7 @@ def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
     workflow_type = get_object_or_404(WorkflowTypeModel, code=workflow_type_code)
     stages = workflow_type.stages.order_by("order")
 
-    sibling_types = WorkflowTypeModel.objects.filter(group=workflow_type.group).order_by("order")
+    sibling_types = WorkflowTypeModel.objects.filter(is_deleted=False).order_by("order", "name")
 
     workflows = EmployeeWorkflowModel.objects.filter(workflow_type=workflow_type).select_related(
         "employee", "employee__employer", "current_stage"
@@ -386,6 +387,10 @@ def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
         "employers": employers,
         "search": search,
         "can_add_job": request.user.has_permission("add_employeeworkflowmodel"),
+        "show_create_job_button": (
+            workflow_type.code in {"mou_import", "social_security"}
+            or slugify(workflow_type.name) == "social-security-submission"
+        ),
     }
     return render(request, "dashboard/workflow_dashboard.html", context)
 

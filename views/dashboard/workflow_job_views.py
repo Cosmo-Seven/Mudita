@@ -1,4 +1,5 @@
 """Workflow type management and employee workflow job creation."""
+from datetime import date, timedelta
 from uuid import UUID
 
 from django.db.models import Count
@@ -173,10 +174,65 @@ def _render_create_job_form(request, errors=None, values=None):
 @custom_login_required("dashboard_login")
 @role_permission_required("view_workflowtypemodel")
 def workflow_job_list(request):
+    today = date.today()
+    calendar_month = today.replace(day=1)
+    requested_month = request.GET.get("month", "")
+    if requested_month:
+        try:
+            calendar_month = date.fromisoformat(f"{requested_month}-01")
+        except ValueError:
+            pass
+
+    calendar_start = calendar_month - timedelta(
+        days=(calendar_month.weekday() + 1) % 7
+    )
+    calendar_dates = [
+        calendar_start + timedelta(days=offset) for offset in range(42)
+    ]
+    calendar_counts = dict(
+        EmployeeWorkflowModel.objects.filter(
+            workflow_type__is_deleted=False,
+            appointment_date__range=(calendar_start, calendar_dates[-1]),
+        )
+        .exclude(status="cancelled")
+        .values("appointment_date")
+        .annotate(count=Count("id"))
+        .values_list("appointment_date", "count")
+    )
+    calendar_days = [
+        {
+            "date": calendar_date,
+            "is_current_month": (
+                calendar_date.month == calendar_month.month
+                and calendar_date.year == calendar_month.year
+            ),
+            "is_today": calendar_date == today,
+            "appointment_count": calendar_counts.get(calendar_date, 0),
+        }
+        for calendar_date in calendar_dates
+    ]
+    upcoming_appointments = (
+        EmployeeWorkflowModel.objects.filter(
+            workflow_type__is_deleted=False,
+            appointment_date__range=(today, today + timedelta(days=6)),
+        )
+        .exclude(status="cancelled")
+        .select_related("employee", "workflow_type")
+        .order_by("appointment_date", "employee__full_name_en")
+    )
+    previous_month = (calendar_month - timedelta(days=1)).replace(day=1)
+    next_month = (calendar_month.replace(day=28) + timedelta(days=4)).replace(day=1)
+
     return render(request, "dashboard/workflow_job_list.html", {
         "jobs": _jobs_queryset(),
         "can_add_job": request.user.has_permission("add_employeeworkflowmodel"),
         "can_add_workflow_type": request.user.has_permission("add_workflowtypemodel"),
+        "calendar_month": calendar_month,
+        "calendar_weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        "calendar_days": calendar_days,
+        "calendar_previous_month": previous_month.strftime("%Y-%m"),
+        "calendar_next_month": next_month.strftime("%Y-%m"),
+        "upcoming_appointments": upcoming_appointments,
     })
 
 
