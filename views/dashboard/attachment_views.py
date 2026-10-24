@@ -10,12 +10,6 @@ from core.models import AddressModel, DocumentModel, DocumentTypeModel
 
 
 def _resolve_owner(model_name, object_id):
-    """
-    'employer' / 'employee' စတဲ့ model_name string ကနေ
-    ContentType + object instance ကို ရှာပေးတဲ့ helper.
-    ALLOWED_MODELS ထဲ ပါမှသာ ခွင့်ပြုတယ် (helpers/allowed_models.py) —
-    ဒါမှသာ URL parameter ကနေ ကျပန်း model ကို attack မလုပ်နိုင်အောင်။
-    """
     if model_name not in get_allowed_models():
         return None, None
 

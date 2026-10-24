@@ -1,0 +1,766 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load permissions %}
+{% load static %}
+{% block title %}Managing Independent Groups{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header independent-groups-header">
+            <div class="page-title">
+                <a href="{% url 'group_team_management' %}" class="independent-groups-back">
+                    <i class="ti ti-arrow-left" aria-hidden="true"></i> Back
+                </a>
+                <h4 class="fw-bold">Managing Independent Groups</h4>
+            </div>
+            {% if request.user|can:'add_groupmodel' %}
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createGroupModal">
+                <i class="ti ti-plus me-1" aria-hidden="true"></i>Create a new group
+            </button>
+            {% endif %}
+        </div>
+        {% regroup available_employees by employer as available_employer_groups %}
+
+        {% if request.user|can:'add_groupmodel' %}
+        <div class="modal fade" id="createGroupModal" tabindex="-1" aria-labelledby="createGroupModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form method="post" action="{% url 'group_create' %}">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createGroupModalLabel">Create a group</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label class="form-label" for="newGroupName">Group name</label>
+                            <input class="form-control" id="newGroupName" name="name" maxlength="255" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create group</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="independent-groups-list">
+            {% for group in groups %}
+            <section class="card independent-group-card">
+                <div class="card-header independent-group-header">
+                    <div class="independent-group-title">
+                        <i class="ti ti-users-group text-primary" aria-hidden="true"></i>
+                        <h5 class="mb-0">{{ group.name }}</h5>
+                        <span class="badge bg-light text-dark">{{ group.teams.count }} team{{ group.teams.count|pluralize }}</span>
+                    </div>
+                    <div class="independent-group-actions">
+                        {% if request.user|can:'change_groupmodel' %}
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#editGroupModal{{ group.id }}">
+                            <i class="ti ti-pencil me-1" aria-hidden="true"></i>Edit group
+                            </button>
+                        {% endif %}
+                        {% if request.user|can:'delete_groupmodel' %}
+                        <form method="post" action="{% url 'group_delete' group.id %}"
+                            onsubmit="return confirm('Delete this group and all its teams? Employees will remain and become unassigned.');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="ti ti-trash" aria-hidden="true"></i> Delete group
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if request.user|can:'change_groupmodel' %}
+                <div class="modal fade" id="editGroupModal{{ group.id }}" tabindex="-1"
+                    aria-labelledby="editGroupModalLabel{{ group.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <form method="post" action="{% url 'group_update' group.id %}">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editGroupModalLabel{{ group.id }}">Edit group</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <label class="form-label" for="groupName{{ group.id }}">Group name</label>
+                                    <input id="groupName{{ group.id }}" class="form-control" name="name"
+                                        value="{{ group.name }}" maxlength="255" required>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="card-body">
+                    {% if request.user|can:'add_teammodel' %}
+                    <form method="post" action="{% url 'team_create' group.id %}" class="independent-create-team">
+                        {% csrf_token %}
+                        <label class="visually-hidden" for="newTeamName{{ group.id }}">Team name</label>
+                        <input class="form-control" id="newTeamName{{ group.id }}" name="name" maxlength="255"
+                            placeholder="New team name" required>
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="ti ti-plus me-1" aria-hidden="true"></i>Create a team
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    {% for team in group.teams.all %}
+                    <details class="independent-team">
+                        <summary class="independent-team-summary">
+                            <span class="independent-team-name">
+                                <i class="ti ti-layout-grid" aria-hidden="true"></i>{{ team.name }}
+                            </span>
+                            <span class="badge bg-light text-dark">{{ team.employees.count }} members</span>
+                        </summary>
+                        <div class="independent-team-content">
+                            <div class="independent-team-actions">
+                                {% if request.user|can:'change_teammodel' %}
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                    data-bs-target="#editTeamModal{{ team.id }}">
+                                    <i class="ti ti-pencil me-1" aria-hidden="true"></i>Edit team
+                                </button>
+                                {% endif %}
+                                {% if request.user|can:'delete_teammodel' %}
+                                <form method="post" action="{% url 'team_delete' team.id %}"
+                                    onsubmit="return confirm('Delete this team? Its employees will become unassigned.');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="ti ti-trash" aria-hidden="true"></i> Delete team
+                                    </button>
+                                </form>
+                                {% endif %}
+                                {% if request.user|can:'change_employeemodel' and available_employees %}
+                                <form method="post" action="{% url 'team_add_employee' team.id %}" class="independent-inline-form">
+                                    {% csrf_token %}
+                                    <label class="visually-hidden" for="employee{{ team.id }}">Employee</label>
+                                    <select id="employee{{ team.id }}" class="form-select form-select-sm searchable-select"
+                                        name="employee" required>
+                                        <option value="">Select employee</option>
+                                        {% for employer_group in available_employer_groups %}
+                                        <optgroup label="{{ employer_group.grouper.name_en }}">
+                                            {% for employee in employer_group.list %}
+                                            <option value="{{ employee.id }}">{{ employee.full_name_en }}</option>
+                                            {% endfor %}
+                                        </optgroup>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="ti ti-user-plus me-1" aria-hidden="true"></i>Add member
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+
+                            {% if request.user|can:'change_teammodel' %}
+                            <div class="modal fade" id="editTeamModal{{ team.id }}" tabindex="-1"
+                                aria-labelledby="editTeamModalLabel{{ team.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form method="post" action="{% url 'team_update' team.id %}">
+                                            {% csrf_token %}
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editTeamModalLabel{{ team.id }}">Edit team</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <label class="form-label" for="teamName{{ team.id }}">Team name</label>
+                                                <input id="teamName{{ team.id }}" class="form-control" name="name"
+                                                    value="{{ team.name }}" maxlength="255" required>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="independent-team-members">
+                                {% regroup team.employees.all by employer as team_employer_groups %}
+                                {% for employer_group in team_employer_groups %}
+                                <section class="independent-employer-group">
+                                    <div class="independent-employer-heading">
+                                        <span><i class="ti ti-building me-1" aria-hidden="true"></i>{{ employer_group.grouper.name_en }}</span>
+                                        <span class="badge bg-light text-dark">{{ employer_group.list|length }} member{{ employer_group.list|length|pluralize }}</span>
+                                    </div>
+                                    <div class="independent-employer-members">
+                                        {% for employee in employer_group.list %}
+                                        <article class="employee-card">
+                                            <div class="employee-card-meta">
+                                                <span>
+                                                    <i class="ti ti-pencil" aria-hidden="true"></i>
+                                                    {{ employee.updated_by.username|default:employee.created_by.username|default:"-" }}
+                                                    <span class="ms-1">{{ employee.updated_at|timesince }} ago</span>
+                                                </span>
+                                                <span class="d-inline-flex align-items-center p-1 pe-2 rounded-1 text-white
+                                                    bg-{% if employee.status == 'active' %}success{% elif employee.status == 'renewal_pending' %}warning{% elif employee.status == 'terminated' %}danger{% else %}info{% endif %} fs-10">
+                                                    <i class="ti ti-point-filled me-1 fs-11" aria-hidden="true"></i>
+                                                    {{ employee.get_status_display }}
+                                                </span>
+                                            </div>
+                                            <div class="employee-card-body">
+                                                <div class="employee-card-check" aria-hidden="true">
+                                                    <i class="ti ti-user text-muted"></i>
+                                                </div>
+                                                <a href="{% url 'employee_detail' employee.id %}" class="employee-card-photo">
+                                                    <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                                                        alt="{{ employee.full_name_en }}">
+                                                </a>
+                                                <div class="employee-card-identity">
+                                                    <div class="d-flex align-items-center flex-wrap gap-1">
+                                                        <a class="fw-bold fs-14" href="{% url 'employee_detail' employee.id %}">
+                                                            {{ employee.prefix_en }} {{ employee.full_name_en }}
+                                                        </a>
+                                                        {% if employee.nationality %}
+                                                        <span class="badge bg-light text-dark">{{ employee.nationality.name }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="text-muted small mt-1">
+                                                        {{ employee.title_th }} {{ employee.name_th }}
+                                                        <span class="fst-italic">({{ employee.job_position|default:"-" }})</span>
+                                                    </div>
+                                                    <div class="mt-1">
+                                                        Employer:
+                                                        <a href="{% url 'employer_detail' employee.employer.id %}">{{ employee.employer.name_en }}</a>
+                                                    </div>
+                                                </div>
+                                                <div class="employee-card-facts">
+                                                    <div class="employee-fact">
+                                                        <span class="employee-fact-label">Passport</span>
+                                                        <span class="employee-fact-value">{{ employee.passport_number|default:"-" }}</span>
+                                                        {% if employee.passport_expiry_date %}
+                                                        <span class="employee-fact-sub {% if employee.passport_status == 'expired' %}text-danger{% elif employee.passport_status == 'expiring_soon' %}text-warning{% else %}text-success{% endif %}">
+                                                            Expires: {{ employee.passport_expiry_date }}
+                                                        </span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="employee-fact">
+                                                        <span class="employee-fact-label">Visa</span>
+                                                        <span class="employee-fact-value">{{ employee.visa_type|default:"-" }}</span>
+                                                        {% if employee.visa_expiry_date %}
+                                                        <span class="employee-fact-sub {% if employee.visa_status == 'expired' %}text-danger{% elif employee.visa_status == 'expiring_soon' %}text-warning{% else %}text-success{% endif %}">
+                                                            Expires: {{ employee.visa_expiry_date }}
+                                                        </span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="employee-fact">
+                                                        <span class="employee-fact-label">90-Day Report</span>
+                                                        <span class="employee-fact-value">{{ employee.report_90day_date|default:"-" }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="employee-card-actions">
+                                                    {% if request.user|can:'view_employeemodel' %}
+                                                    <button type="button" class="btn btn-sm btn-success-transparent"
+                                                        title="Documents and employee preview"
+                                                        aria-label="Open {{ employee.full_name_en }} preview"
+                                                        onclick="openIndependentEmployeePreview('{{ employee.id }}')">
+                                                        <i class="ti ti-folder" aria-hidden="true"></i>
+                                                    </button>
+                                                    {% endif %}
+                                                    {% if request.user|can:'change_employeemodel' %}
+                                                    <a href="{% url 'employee_update' employee.id %}"
+                                                        class="btn btn-sm btn-warning-transparent"
+                                                        title="Address and employee details"
+                                                        aria-label="Edit {{ employee.full_name_en }}">
+                                                        <i class="ti ti-map-pin" aria-hidden="true"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                    {% if request.user|can:'view_employeemodel' %}
+                                                    <a href="{% url 'employee_export_pdf' %}?search={{ employee.full_name_en|urlencode }}"
+                                                        class="btn btn-sm btn-info-transparent" title="Download employee PDF"
+                                                        aria-label="Download {{ employee.full_name_en }} PDF">
+                                                        <i class="ti ti-download" aria-hidden="true"></i>
+                                                    </a>
+                                                    {% endif %}
+                                            {% if request.user|can:'change_employeemodel' %}
+                                                    <form method="post" class="employee-card-remove-form"
+                                                        action="{% url 'team_remove_employee' team.id employee.id %}"
+                                                        onsubmit="return confirm('Remove this employee from the team?');">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-light employee-card-remove"
+                                                            title="Remove from team"
+                                                            aria-label="Remove {{ employee.full_name_en }} from team">
+                                                            <i class="ti ti-x" aria-hidden="true"></i>
+                                                        </button>
+                                                    </form>
+                                            {% endif %}
+                                                </div>
+                                            </div>
+                                        </article>
+                                        {% endfor %}
+                                    </div>
+                                </section>
+                                {% empty %}
+                                <p class="independent-team-empty">There are no members on this team yet.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </details>
+                    {% empty %}
+                    <p class="independent-group-empty">No teams in this group yet. Create a team to add employees.</p>
+                    {% endfor %}
+                </div>
+            </section>
+            {% empty %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="ti ti-users-group independent-groups-empty-icon" aria-hidden="true"></i>
+                    <h5>No independent groups yet</h5>
+                    <p class="text-muted mb-0">Create a group to start organizing teams and employees.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+
+<div class="modal fade" id="independentEmployeePreviewModal" tabindex="-1"
+    aria-labelledby="independentEmployeePreviewTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="independentEmployeePreviewTitle">Employee preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="independentEmployeePreviewBody" style="max-height: 75vh; overflow-y: auto;">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.openIndependentEmployeePreview = function (employeeId) {
+        var body = document.getElementById("independentEmployeePreviewBody");
+        var modalElement = document.getElementById("independentEmployeePreviewModal");
+        if (!body || !modalElement) return;
+
+        body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>';
+        bootstrap.Modal.getOrCreateInstance(modalElement).show();
+
+        fetch("{% url 'employee_preview' '00000000-0000-0000-0000-000000000000' %}".replace(
+            "00000000-0000-0000-0000-000000000000",
+            employeeId
+        ))
+            .then(function (response) {
+                if (!response.ok) throw new Error("Employee preview request failed.");
+                return response.text();
+            })
+            .then(function (html) {
+                body.innerHTML = html;
+            })
+            .catch(function () {
+                body.innerHTML = '<p class="text-danger text-center">Failed to load employee preview.</p>';
+            });
+    };
+</script>
+
+<style>
+    .independent-groups-header {
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+
+    .independent-groups-header > .btn {
+        flex: 0 0 auto;
+        box-shadow: 0 3px 8px rgba(251, 107, 22, 0.2);
+    }
+
+    .independent-groups-header > .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .independent-groups-header {
+        align-items: center;
+    }
+
+    .independent-groups-back {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: #667085;
+        font-size: 13px;
+    }
+
+    .independent-groups-list {
+        display: grid;
+        gap: 18px;
+    }
+
+    .independent-group-card {
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .independent-group-header,
+    .independent-group-title,
+    .independent-group-actions,
+    .independent-inline-form,
+    .independent-team-summary,
+    .independent-team-actions,
+    .independent-team-member {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .independent-group-header,
+    .independent-team-summary,
+    .independent-team-member {
+        justify-content: space-between;
+    }
+
+    .independent-group-header {
+        min-height: 62px;
+        padding: 12px 18px;
+        background: #fff;
+    }
+
+    .independent-group-title {
+        min-width: 0;
+        flex-wrap: wrap;
+    }
+
+    .independent-group-actions,
+    .independent-team-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .independent-group-actions form,
+    .independent-team-actions form {
+        margin: 0;
+    }
+
+    .independent-group-card > .card-body {
+        padding: 18px;
+    }
+
+    .independent-create-team {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .independent-create-team input {
+        max-width: 360px;
+        height: 42px;
+    }
+
+    .independent-create-team .btn {
+        height: 42px;
+    }
+
+    .independent-team {
+        margin-top: 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 7px;
+        background: #fff;
+        overflow: hidden;
+    }
+
+    .independent-team-summary {
+        min-height: 54px;
+        padding: 12px 16px;
+        background: #f8fafc;
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .independent-team-summary:hover {
+        background: #fff5ed;
+    }
+
+    .independent-team-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .independent-team-summary::after {
+        content: "\25be";
+        color: #667085;
+    }
+
+    .independent-team[open] .independent-team-summary::after {
+        content: "\25b4";
+    }
+
+    .independent-team-name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+    }
+
+    .independent-team-content {
+        padding: 16px;
+        border-top: 1px solid #e5e7eb;
+        background: #fff;
+    }
+
+    .independent-team-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .independent-team-actions .independent-inline-form {
+        display: flex;
+        flex: 1 1 360px;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        min-width: min(100%, 360px);
+    }
+
+    .independent-team-actions .independent-inline-form select {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
+    }
+
+    .independent-team-actions .btn {
+        white-space: nowrap;
+    }
+
+    .independent-team-members {
+        display: grid;
+        gap: 12px;
+    }
+
+    .independent-employer-group {
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+    }
+
+    .independent-employer-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 9px 13px;
+        background: #f8fafc;
+        color: #344054;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .independent-employer-members {
+        display: grid;
+        gap: 10px;
+    }
+
+    .independent-team-empty,
+    .independent-group-empty {
+        margin: 0;
+        padding: 13px 15px;
+        border: 0;
+        background: #f8fafc;
+    }
+
+    .independent-team-empty,
+    .independent-group-empty {
+        color: #667085;
+        text-align: center;
+    }
+
+    .independent-groups-empty-icon {
+        display: block;
+        margin-bottom: 12px;
+        color: #fb6b16;
+        font-size: 42px;
+    }
+
+    .employee-card {
+        margin-bottom: 0;
+        padding: 14px 16px;
+        border: 1px solid #f0e4b8;
+        border-radius: 12px;
+        background: #fdfaf0;
+        transition: box-shadow .15s ease, border-color .15s ease, transform .1s ease;
+    }
+
+    .employee-card:hover {
+        border-color: #f4b942;
+        box-shadow: 0 6px 18px rgba(244, 185, 66, .25);
+        transform: translateY(-1px);
+    }
+
+    .employee-card-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 10px;
+        color: #a89860;
+        font-size: 11px;
+    }
+
+    .employee-card-body {
+        display: grid;
+        grid-template-columns: auto auto minmax(220px, 1.4fr) minmax(280px, 1.6fr) auto;
+        align-items: start;
+        gap: 14px 16px;
+    }
+
+    .employee-card-check {
+        padding-top: 4px;
+    }
+
+    .employee-card-photo img {
+        width: 64px;
+        height: 64px;
+        border: 1px solid #efe3c0;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+
+    .employee-card-facts {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .employee-fact {
+        min-width: 0;
+        padding: 8px 10px;
+        border: 1px solid #f0e4b8;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .employee-fact-label {
+        display: block;
+        margin-bottom: 2px;
+        color: #8a8170;
+        font-size: 11px;
+    }
+
+    .employee-fact-value {
+        display: block;
+        color: #2f2a22;
+        font-size: 13px;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .employee-fact-sub {
+        display: block;
+        margin-top: 2px;
+        font-size: 11px;
+    }
+
+    .employee-card-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+    }
+
+    .employee-card-remove-form {
+        margin: 0;
+    }
+
+    .employee-card-remove {
+        display: inline-flex;
+        width: 36px;
+        height: 36px;
+        align-items: center;
+        justify-content: center;
+        color: #dc3545;
+    }
+
+    .employee-card-remove:hover {
+        background: #fff0f0;
+        color: #b02a37;
+    }
+
+    @media (max-width: 1199px) {
+        .employee-card-body {
+            grid-template-columns: auto auto 1fr auto;
+        }
+
+        .employee-card-facts {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .independent-groups-header {
+            align-items: flex-start;
+        }
+
+        .independent-groups-header > .btn {
+            width: 100%;
+        }
+
+        .independent-group-header {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .independent-group-actions,
+        .independent-team-actions {
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .independent-create-team,
+        .employee-card-body {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .employee-card-body {
+            grid-template-columns: auto auto 1fr auto;
+        }
+
+        .employee-card-photo {
+            grid-column: 2 / 3;
+        }
+
+        .employee-card-identity {
+            grid-column: 3 / 4;
+        }
+
+        .employee-card-facts {
+            grid-column: 1 / -1;
+        }
+
+        .employee-card-actions {
+            grid-row: 1 / span 2;
+            flex-direction: row;
+            justify-content: flex-end;
+        }
+
+        .independent-create-team input {
+            max-width: none;
+            width: 100%;
+        }
+
+        .independent-team-actions .independent-inline-form {
+            flex-basis: 100%;
+            min-width: 100%;
+        }
+
+        .independent-team-content {
+            padding: 12px;
+        }
+    }
+</style>
+{% endblock %}

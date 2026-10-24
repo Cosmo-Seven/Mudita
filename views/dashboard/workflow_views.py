@@ -574,27 +574,74 @@ def workflow_stage_delete(request, pk):
 @role_permission_required("change_workflowstagemodel")
 @require_POST
 def workflow_stage_reorder(request, pk, direction):
+    if direction not in {"up", "down"}:
+        return HttpResponseBadRequest("Invalid direction.")
+
     stage = get_object_or_404(WorkflowStageModel, id=pk)
-
-    if direction == "up":
-        neighbor = (
-            WorkflowStageModel.objects.filter(workflow_type=stage.workflow_type, order__lt=stage.order)
-            .order_by("-order").first()
+    workflow_type = stage.workflow_type
+    with transaction.atomic():
+        stages = list(
+            WorkflowStageModel.objects.select_for_update()
+            .filter(workflow_type=workflow_type)
+            .order_by("order", "id")
         )
-    else:
-        neighbor = (
-            WorkflowStageModel.objects.filter(workflow_type=stage.workflow_type, order__gt=stage.order)
-            .order_by("order").first()
-        )
+        current_index = next(index for index, item in enumerate(stages) if item.pk == stage.pk)
+        target_index = current_index + (-1 if direction == "up" else 1)
+        if target_index < 0 or target_index >= len(stages):
+            can_move = False
+        else:
+            can_move = True
+            stages[current_index], stages[target_index] = stages[target_index], stages[current_index]
+            _save_workflow_stage_order(stages, request.user)
 
-    if not neighbor:
+    if not can_move:
         if request.headers.get("HX-Request"):
-            return _render_workflow_steps_modal(request, stage.workflow_type, "Cannot move further.")
+            return _render_workflow_steps_modal(request, workflow_type, "Cannot move further.")
         return JsonResponse({"success": False, "error": "Cannot move further."})
 
-    stage.order, neighbor.order = neighbor.order, stage.order
-    stage.save(update_fields=["order"])
-    neighbor.save(update_fields=["order"])
     if request.headers.get("HX-Request"):
-        return _render_workflow_steps_modal(request, stage.workflow_type)
+        return _render_workflow_steps_modal(request, workflow_type)
     return JsonResponse({"success": True})
+
+
+def _save_workflow_stage_order(stages, user):
+    if not stages:
+        return
+
+    temporary_order = max(stage.order for stage in stages) + len(stages) + 1
+    for index, stage in enumerate(stages):
+        stage.order = temporary_order + index
+        stage.updated_by = user
+        stage.save(update_fields=["order", "updated_by", "updated_at"])
+
+    for order, stage in enumerate(stages, start=1):
+        stage.order = order
+        stage.save(update_fields=["order", "updated_at"])
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("change_workflowstagemodel")
+@require_POST
+def workflow_stage_move(request, pk, position):
+    stage = get_object_or_404(WorkflowStageModel, id=pk)
+    workflow_type = stage.workflow_type
+
+    with transaction.atomic():
+        stages = list(
+            WorkflowStageModel.objects.select_for_update()
+            .filter(workflow_type=workflow_type)
+            .order_by("order", "id")
+        )
+        current_index = next(index for index, item in enumerate(stages) if item.pk == stage.pk)
+        target_index = position - 1
+        if target_index < 0 or target_index >= len(stages):
+            return HttpResponseBadRequest("Invalid workflow step position.")
+
+        moved_stage = stages.pop(current_index)
+        stages.insert(target_index, moved_stage)
+        if current_index != target_index:
+            _save_workflow_stage_order(stages, request.user)
+
+    if request.headers.get("HX-Request"):
+        return _render_workflow_steps_modal(request, workflow_type)
+    return JsonResponse({"success": True, "order": position})

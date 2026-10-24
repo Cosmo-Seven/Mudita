@@ -36,30 +36,13 @@
         {% for stage in stages %}
         <div class="workflow-step-row d-flex align-items-center gap-2 mb-2" data-stage-id="{{ stage.id }}" data-stage-name="{{ stage.name }}">
             <div class="workflow-step-order d-flex flex-column gap-1">
-                <button type="button" class="btn btn-xs btn-outline-secondary px-2 py-1"
-                        data-workflow-step-action="reorder-step"
-                        data-stage-id="{{ stage.id }}"
-                        data-direction="up"
-                        title="Move up"
-                        hx-post="{% url 'workflow_stage_reorder' stage.id 'up' %}"
-                        hx-target="#workflowStepsModalContent"
-                        hx-swap="innerHTML"
-                        hx-select="unset"
-                        hx-push-url="false">
-                    <i class="ti ti-chevron-up"></i>
+                <button type="button" class="workflow-step-drag-handle btn btn-xs btn-outline-secondary px-2 py-1"
+                        draggable="true"
+                        aria-label="Drag to reorder {{ stage.name }}"
+                        title="Drag to reorder">
+                    <i class="ti ti-grip-vertical"></i>
                 </button>
-                <button type="button" class="btn btn-xs btn-outline-secondary px-2 py-1"
-                        data-workflow-step-action="reorder-step"
-                        data-stage-id="{{ stage.id }}"
-                        data-direction="down"
-                        title="Move down"
-                        hx-post="{% url 'workflow_stage_reorder' stage.id 'down' %}"
-                        hx-target="#workflowStepsModalContent"
-                        hx-swap="innerHTML"
-                        hx-select="unset"
-                        hx-push-url="false">
-                    <i class="ti ti-chevron-down"></i>
-                </button>
+                
             </div>
 
             <div class="workflow-step-name flex-grow-1 border rounded px-3 py-2 bg-light-subtle">
@@ -103,6 +86,10 @@
         box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
     }
     .workflow-step-order { min-width: 34px; }
+    .workflow-step-drag-handle { cursor: grab; }
+    .workflow-step-drag-handle:active { cursor: grabbing; }
+    .workflow-step-row.workflow-step-dragging { opacity: 0.45; }
+    .workflow-step-row.workflow-step-drop-target { border-color: #f5b400; }
     .btn-xs {
         --bs-btn-padding-y: 0.15rem;
         --bs-btn-padding-x: 0.35rem;

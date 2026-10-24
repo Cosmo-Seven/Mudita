@@ -14,7 +14,12 @@ def sidebar(request):
             },
             {
                 "title": "employer_management",
-                "permissions": ["view_employermodel", "view_employeemodel", "view_employeeworkflowmodel"],
+                "permissions": [
+                    "view_employermodel",
+                    "view_employeemodel",
+                    "view_employeeworkflowmodel",
+                    "view_groupmodel",
+                ],
                 "items": [
                     {
                         "label": "employers",
@@ -28,6 +33,13 @@ def sidebar(request):
                         "icon": "ti ti-users",
                         "permission": "view_employeemodel",
                     },
+                    {
+                        "label": "manage_groups_and_teams",
+                        "url_name": "group_team_management",
+                        "icon": "ti ti-hierarchy-2",
+                        "permission": "view_employermodel",
+                    },
+                    
                     
                     
                     # {

@@ -42,6 +42,16 @@ class DashboardLoginTests(TestCase):
 
         self.assertRedirects(response, reverse("dashboard"))
 
+    def test_login_welcome_message_is_shown_only_once(self):
+        response = self.client.post(
+            reverse("dashboard_login"),
+            {"email": "manager@example.com", "password": "StrongPass123!"},
+            follow=True,
+        )
+
+        self.assertContains(response, "Welcome manager")
+        self.assertNotContains(self.client.get(reverse("dashboard")), "Welcome manager")
+
     def test_authenticated_user_visiting_login_is_redirected_to_dashboard(self):
         User.objects.create_user(
             username="basicuser",
@@ -88,6 +98,8 @@ class DashboardLoginTests(TestCase):
         self.assertContains(response, 'data-workflow-step-action="toggle-edit-step"')
         self.assertContains(response, 'data-workflow-step-action="delete-step"')
         self.assertContains(response, 'data-workflow-step-action="reorder-step"')
+        self.assertContains(response, 'class="workflow-step-drag-handle btn btn-xs btn-outline-secondary px-2 py-1"')
+        self.assertContains(response, 'draggable="true"')
         self.assertContains(response, 'hx-select="unset"', count=4)
         self.assertContains(response, 'hx-push-url="false"', count=4)
         self.assertNotContains(response, "<script>")
@@ -121,6 +133,62 @@ class DashboardLoginTests(TestCase):
         self.assertContains(response, "Existing Step")
         self.assertContains(response, "New Step")
         self.assertEqual(list(workflow_type.stages.order_by("order").values_list("name", flat=True)), ["Existing Step", "New Step"])
+
+    def test_workflow_stage_reorder_moves_step_up_and_down(self):
+        self.role.permissions.add(Permission.objects.get(codename="change_workflowstagemodel"))
+        workflow_type = WorkflowTypeModel.objects.create(code="stage_reorder", name="Stage Reorder")
+        stages = [
+            WorkflowStageModel.objects.create(workflow_type=workflow_type, name=name, order=order)
+            for order, name in enumerate(("First", "Second", "Third"), start=1)
+        ]
+        self.client.force_login(self.user)
+
+        up_response = self.client.post(
+            reverse("workflow_stage_reorder", args=[stages[1].id, "up"]),
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(up_response.status_code, 200)
+        self.assertEqual(
+            list(workflow_type.stages.order_by("order").values_list("name", flat=True)),
+            ["Second", "First", "Third"],
+        )
+
+        down_response = self.client.post(
+            reverse("workflow_stage_reorder", args=[stages[1].id, "down"]),
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(down_response.status_code, 200)
+        self.assertEqual(
+            list(workflow_type.stages.order_by("order").values_list("name", flat=True)),
+            ["First", "Second", "Third"],
+        )
+
+    def test_workflow_stage_move_reorders_to_requested_position(self):
+        self.role.permissions.add(Permission.objects.get(codename="change_workflowstagemodel"))
+        workflow_type = WorkflowTypeModel.objects.create(code="stage_move", name="Stage Move")
+        stages = [
+            WorkflowStageModel.objects.create(workflow_type=workflow_type, name=name, order=order)
+            for order, name in enumerate(("First", "Second", "Third", "Fourth"), start=1)
+        ]
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("workflow_stage_move", args=[stages[3].id, 2]),
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Fourth")
+        self.assertEqual(
+            list(workflow_type.stages.order_by("order").values_list("name", flat=True)),
+            ["First", "Fourth", "Second", "Third"],
+        )
+        self.assertEqual(
+            list(workflow_type.stages.order_by("order").values_list("order", flat=True)),
+            [1, 2, 3, 4],
+        )
 
     def test_workflow_stage_delete_htmx_response_keeps_remaining_stages(self):
         self.role.permissions.add(

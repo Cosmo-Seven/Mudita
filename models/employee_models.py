@@ -32,6 +32,13 @@ class EmployeeModel(BaseModel):
     employer = models.ForeignKey(
         EmployerModel, on_delete=models.PROTECT, related_name="employees"
     )
+    team = models.ForeignKey(
+        "core.TeamModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="employees",
+    )
     user = models.OneToOneField(
         "core.UserModel", on_delete=models.SET_NULL, null=True, blank=True,
         related_name="employee_profile",

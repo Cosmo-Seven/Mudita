@@ -175,6 +175,14 @@
     .stage-pill-finish { border-color: #16a34a; color: #16a34a; font-weight: 700; }
     .stage-pill-finish .stage-pill-count { background: #16a34a; color: #fff; }
 
+    .workflow-employer-employees {
+        max-height: min(70vh, 640px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
+    }
+
     .workflow-search-form {
         display: flex;
         align-items: center;
@@ -409,6 +417,61 @@
         if (action === 'reorder-step' && stageId) {
             reorderStep(stageId, trigger.dataset.direction || 'up');
         }
+    });
+
+    document.addEventListener('dragstart', function (event) {
+        const handle = event.target.closest('.workflow-step-drag-handle');
+        if (!handle) return;
+
+        const row = handle.closest('.workflow-step-row');
+        event.dataTransfer.setData('text/plain', row.dataset.stageId);
+        event.dataTransfer.effectAllowed = 'move';
+        row.classList.add('workflow-step-dragging');
+    });
+
+    document.addEventListener('dragend', function (event) {
+        const handle = event.target.closest('.workflow-step-drag-handle');
+        if (!handle) return;
+        document.querySelectorAll('.workflow-step-row').forEach(function (row) {
+            row.classList.remove('workflow-step-dragging', 'workflow-step-drop-target');
+        });
+    });
+
+    document.addEventListener('dragover', function (event) {
+        const targetRow = event.target.closest('.workflow-step-row');
+        if (!targetRow) return;
+        event.preventDefault();
+        document.querySelectorAll('.workflow-step-row.workflow-step-drop-target').forEach(function (row) {
+            row.classList.remove('workflow-step-drop-target');
+        });
+        targetRow.classList.add('workflow-step-drop-target');
+    });
+
+    document.addEventListener('drop', function (event) {
+        const targetRow = event.target.closest('.workflow-step-row');
+        const list = targetRow && targetRow.closest('.workflow-step-list');
+        if (!targetRow || !list) return;
+        event.preventDefault();
+
+        const stageId = event.dataTransfer.getData('text/plain');
+        const rows = Array.from(list.querySelectorAll('.workflow-step-row'));
+        const currentIndex = rows.findIndex(function (row) {
+            return row.dataset.stageId === stageId;
+        });
+        const targetIndex = rows.indexOf(targetRow);
+        if (currentIndex < 0 || targetIndex < 0) return;
+
+        const insertAfter = event.clientY >= targetRow.getBoundingClientRect().top
+            + targetRow.getBoundingClientRect().height / 2;
+        let destinationIndex = targetIndex + (insertAfter ? 1 : 0);
+        if (currentIndex < destinationIndex) destinationIndex -= 1;
+        if (currentIndex === destinationIndex) return;
+
+        htmx.ajax('POST', `/dashboard/workflow/step/${stageId}/move/${destinationIndex + 1}/`, {
+            target: '#workflowStepsModalContent',
+            swap: 'innerHTML',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+        });
     });
 
     function toggleEmployerRow(btn, employerId, workflowCode) {

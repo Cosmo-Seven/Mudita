@@ -1,0 +1,125 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% block title %}Managing groups and teams{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold">Managing groups and teams.</h4>
+            </div>
+        </div>
+
+        <div class="row g-4 group-team-options">
+            <div class="col-lg-6">
+                <section class="card group-team-card group-team-card-employer h-100">
+                    <div class="card-body">
+                        <i class="ti ti-building group-team-icon" aria-hidden="true"></i>
+                        <h5>Affiliated with an employer.</h5>
+                        <p>Employers manage specific groups and teams; employees must be affiliated with their chosen employer.</p>
+                        <a href="{% url 'employer_list' %}" class="btn group-team-button group-team-button-employer">
+                            Choose an employer <i class="ti ti-arrow-right ms-2" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-6">
+                <section class="card group-team-card group-team-card-independent h-100">
+                    <div class="card-body">
+                        <i class="ti ti-hierarchy-2 group-team-icon" aria-hidden="true"></i>
+                        <h5>Independent / No employer</h5>
+                        <p>Manage independent groups and add employees from within the system regardless of the employer.</p>
+                        <a href="{% url 'independent_group_list' %}" class="btn group-team-button group-team-button-independent">
+                            Manage independent groups <i class="ti ti-arrow-right ms-2" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+
+<style>
+    .group-team-options {
+        align-items: stretch;
+    }
+
+    .group-team-card {
+        min-height: 390px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .group-team-card .card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 36px;
+        text-align: center;
+    }
+
+    .group-team-icon {
+        margin-bottom: 30px;
+        font-size: 58px;
+        line-height: 1;
+    }
+
+    .group-team-card-employer .group-team-icon {
+        color: #fb6b16;
+    }
+
+    .group-team-card-independent .group-team-icon {
+        color: #198754;
+    }
+
+    .group-team-card h5 {
+        margin-bottom: 14px;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .group-team-card p {
+        max-width: 620px;
+        margin-bottom: 26px;
+        color: #667085;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .group-team-button {
+        width: 100%;
+        max-width: 640px;
+        padding: 11px 20px;
+        color: #fff;
+        font-size: 18px;
+    }
+
+    .group-team-button-employer,
+    .group-team-button-employer:hover {
+        background: #fb6b16;
+        color: #fff;
+    }
+
+    .group-team-button-independent,
+    .group-team-button-independent:disabled {
+        background: #198754;
+        color: #fff;
+        opacity: 1;
+    }
+
+    @media (max-width: 767.98px) {
+        .group-team-card {
+            min-height: 330px;
+        }
+
+        .group-team-card .card-body {
+            padding: 28px 20px;
+        }
+
+        .group-team-card p {
+            font-size: 15px;
+        }
+    }
+</style>
+{% endblock %}

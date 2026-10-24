@@ -14,6 +14,7 @@ from views.dashboard import (
     bulk_views,
     workflow_views,
     workflow_job_views,
+    group_views,
 )
 from views.dashboard import page_views as dashboard_page_views
 
@@ -158,6 +159,56 @@ urlpatterns = (
             "dashboard/employer/list/",
             employer_views.employer_list,
             name="employer_list",
+        ),
+        path(
+            "dashboard/group-team-management/",
+            dashboard_page_views.group_team_management,
+            name="group_team_management",
+        ),
+        path(
+            "dashboard/independent-groups/",
+            group_views.independent_group_list,
+            name="independent_group_list",
+        ),
+        path(
+            "dashboard/independent-groups/create/",
+            group_views.group_create,
+            name="group_create",
+        ),
+        path(
+            "dashboard/independent-groups/<uuid:pk>/update/",
+            group_views.group_update,
+            name="group_update",
+        ),
+        path(
+            "dashboard/independent-groups/<uuid:pk>/delete/",
+            group_views.group_delete,
+            name="group_delete",
+        ),
+        path(
+            "dashboard/independent-groups/<uuid:group_id>/teams/create/",
+            group_views.team_create,
+            name="team_create",
+        ),
+        path(
+            "dashboard/independent-teams/<uuid:pk>/update/",
+            group_views.team_update,
+            name="team_update",
+        ),
+        path(
+            "dashboard/independent-teams/<uuid:pk>/delete/",
+            group_views.team_delete,
+            name="team_delete",
+        ),
+        path(
+            "dashboard/independent-teams/<uuid:pk>/employees/add/",
+            group_views.team_add_employee,
+            name="team_add_employee",
+        ),
+        path(
+            "dashboard/independent-teams/<uuid:pk>/employees/<uuid:employee_id>/remove/",
+            group_views.team_remove_employee,
+            name="team_remove_employee",
         ),
         path(
             "dashboard/employer/create/",
@@ -351,6 +402,7 @@ urlpatterns = (
         path("dashboard/workflow/step/<uuid:pk>/update/", workflow_views.workflow_stage_update, name="workflow_stage_update"),
         path("dashboard/workflow/step/<uuid:pk>/delete/", workflow_views.workflow_stage_delete, name="workflow_stage_delete"),
         path("dashboard/workflow/step/<uuid:pk>/reorder/<str:direction>/", workflow_views.workflow_stage_reorder, name="workflow_stage_reorder"),
+        path("dashboard/workflow/step/<uuid:pk>/move/<int:position>/", workflow_views.workflow_stage_move, name="workflow_stage_move"),
 
 
         # ========================

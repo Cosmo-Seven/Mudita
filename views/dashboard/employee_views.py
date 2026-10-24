@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import date, timedelta
+from uuid import UUID
 from django.db import models
 from utils.decorators import custom_login_required
 from decorators.role_decorator import role_permission_required
@@ -11,6 +12,7 @@ from constants.message import CREATE, UPDATE, DELETE
 from core.models import EmployeeModel, EmployerModel, NationalityModel, AddressModel, DocumentTypeModel
 from django.core.paginator import Paginator
 from django.core.cache import cache
+from django.utils.dateparse import parse_date
 
 @custom_login_required("dashboard_login")
 @role_permission_required("view_employeemodel")
@@ -38,15 +40,47 @@ def employee_list(request):
 
     search = request.GET.get("search", "")
     nationality_id = request.GET.get("nationality", "")
-    work_permit_type = request.GET.get("work_permit_type", "")
     insurance_type = request.GET.get("insurance_type", "")
     pink_card = request.GET.get("pink_card", "")          # "yes" / "no"
     passport_status = request.GET.get("passport_status", "")   # valid/expiring_soon/expired
     visa_status = request.GET.get("visa_status", "")
     bank_status = request.GET.get("bank_status", "")       # "yes" / "no"
+    employer_id = request.GET.get("employer", "")
+    passport_country = request.GET.get("passport_country", "")
     province = request.GET.get("province", "")
     district = request.GET.get("district", "")
     sub_district = request.GET.get("sub_district", "")
+    if employer_id:
+        try:
+            employer_id = UUID(employer_id)
+        except ValueError:
+            messages.error(request, "Select a valid employer.")
+            employer_id = ""
+
+    expiry_date_filters = {
+        "work_permit_expiry_range": "work_permit_expiry_date",
+        "visa_expiry_range": "visa_expiry_date",
+    }
+    expiry_dates = {}
+    for parameter, field in expiry_date_filters.items():
+        raw_value = request.GET.get(parameter, "")
+        if not raw_value:
+            continue
+
+        date_parts = [part.strip() for part in raw_value.split(" to ")]
+        parsed_dates = [parse_date(part) for part in date_parts]
+        if len(parsed_dates) not in (1, 2) or any(parsed_date is None for parsed_date in parsed_dates):
+            messages.error(request, f"Invalid date for {parameter.replace('_', ' ')}.")
+            continue
+        if len(parsed_dates) == 2 and parsed_dates[0] > parsed_dates[1]:
+            messages.error(request, f"Invalid date range for {parameter.replace('_', ' ')}.")
+            continue
+
+        expiry_dates[parameter] = raw_value
+        lookup = "range" if len(parsed_dates) == 2 else "exact"
+        value = parsed_dates if lookup == "range" else parsed_dates[0]
+        employees = employees.filter(**{f"{field}__{lookup}": value})
+
     view_mode = request.GET.get("view", "card")
     per_page = int(request.GET.get("per_page", 25))
 
@@ -62,8 +96,22 @@ def employee_list(request):
     if nationality_id:
         employees = employees.filter(nationality_id=nationality_id)
 
-    if work_permit_type:
-        employees = employees.filter(work_permit_type=work_permit_type)
+    if employer_id:
+        employees = employees.filter(employer_id=employer_id)
+
+    if passport_country == "myanmar":
+        employees = employees.filter(
+            models.Q(nationality__name__icontains="Myanmar")
+            | models.Q(nationality__name__icontains="Burma")
+            | models.Q(nationality__country_code__iexact="MM")
+            | models.Q(nationality__country_code__iexact="MMR")
+        )
+    elif passport_country == "cambodia":
+        employees = employees.filter(
+            models.Q(nationality__name__icontains="Cambodia")
+            | models.Q(nationality__country_code__iexact="KH")
+            | models.Q(nationality__country_code__iexact="KHM")
+        )
 
     if insurance_type:
         employees = employees.filter(insurance_type=insurance_type)
@@ -123,10 +171,9 @@ def employee_list(request):
             lambda: list(NationalityModel.objects.all().order_by("name")),
             300,
         ),
-        "work_permit_types": cache.get_or_set(
-            "filter_opts:work_permit_types",
-            lambda: list(EmployeeModel.objects.exclude(work_permit_type="")
-                         .values_list("work_permit_type", flat=True).distinct()),
+        "employers": cache.get_or_set(
+            "filter_opts:employers",
+            lambda: list(EmployerModel.objects.filter(is_deleted=False).order_by("name_en")),
             300,
         ),
         "insurance_types": cache.get_or_set(
@@ -138,6 +185,10 @@ def employee_list(request):
         "view_mode": view_mode,
         "per_page": per_page,
         "search": search,
+        "expiry_dates": {
+            parameter: request.GET.get(parameter, "")
+            for parameter in expiry_date_filters
+        },
         "querystring": request.GET.urlencode(),
     }
 

@@ -58,6 +58,13 @@
 
 
 <script>
+    function clearToastNotifications() {
+        document.querySelectorAll('.toast-container').forEach((container) => container.remove());
+    }
+
+    document.body.addEventListener("htmx:beforeRequest", clearToastNotifications);
+    window.addEventListener("pagehide", clearToastNotifications);
+
     document.addEventListener("DOMContentLoaded", function () {
         const toastElList = document.querySelectorAll('.toast');
         toastElList.forEach((toastEl) => {

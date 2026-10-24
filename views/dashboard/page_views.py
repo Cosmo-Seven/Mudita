@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import check_password
 
 from models.user_models import UserModel
 from utils.decorators import custom_login_required
+from decorators.role_decorator import role_permission_required
 from views.dashboard.workflow_job_views import ensure_default_workflow_types
 from core.models import (
     SiteModel,
@@ -159,6 +160,15 @@ def dashboard(request):
         "chart_data": json.dumps(chart_data),
     }
     return render(request, "dashboard/index.html", context)
+
+
+# ========================
+# Group and Team Management
+# ========================
+@custom_login_required("dashboard_login")
+@role_permission_required("view_employermodel")
+def group_team_management(request):
+    return render(request, "dashboard/group_team_management.html")
 
 
 # ========================
