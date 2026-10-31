@@ -161,6 +161,11 @@ urlpatterns = (
             name="employer_list",
         ),
         path(
+            "dashboard/employer/select/",
+            employer_views.employer_selection,
+            name="employer_selection",
+        ),
+        path(
             "dashboard/group-team-management/",
             dashboard_page_views.group_team_management,
             name="group_team_management",
@@ -169,6 +174,16 @@ urlpatterns = (
             "dashboard/independent-groups/",
             group_views.independent_group_list,
             name="independent_group_list",
+        ),
+        path(
+            "dashboard/employer/<uuid:employer_id>/groups/",
+            group_views.employer_group_list,
+            name="employer_group_list",
+        ),
+        path(
+            "dashboard/employer/<uuid:employer_id>/groups/create/",
+            group_views.employer_group_create,
+            name="employer_group_create",
         ),
         path(
             "dashboard/independent-groups/create/",
@@ -254,6 +269,11 @@ urlpatterns = (
             "dashboard/employee/list/",
             employee_views.employee_list,
             name="employee_list",
+        ),
+        path(
+            "dashboard/employee/termination-notices/",
+            dashboard_page_views.termination_notified_employees,
+            name="termination_notified_employees",
         ),
         path(
             "dashboard/employee/create/",

@@ -17,6 +17,7 @@ from core.models import (
     EmployerModel,
     EmployeeWorkflowModel,
     WorkflowTypeModel,
+    NationalityModel,
 )
 from constants.message import UPDATE
 
@@ -169,6 +170,35 @@ def dashboard(request):
 @role_permission_required("view_employermodel")
 def group_team_management(request):
     return render(request, "dashboard/group_team_management.html")
+
+
+# ========================
+# Employees Notified of Termination
+# ========================
+@custom_login_required("dashboard_login")
+@role_permission_required("view_employeemodel")
+def termination_notified_employees(request):
+    return render(
+        request,
+        "dashboard/termination_notified_employees.html",
+        {
+            "employers": EmployerModel.objects.filter(is_deleted=False).order_by(
+                "name_en"
+            ),
+            "nationalities": NationalityModel.objects.filter(
+                is_deleted=False
+            ).order_by("name"),
+            "resolution_types": (
+                EmployeeModel.objects.filter(is_deleted=False)
+                .exclude(work_permit_type__isnull=True)
+                .exclude(work_permit_type="")
+                .values_list("work_permit_type", flat=True)
+                .distinct()
+                .order_by("work_permit_type")
+            ),
+            "total_count": 0,
+        },
+    )
 
 
 # ========================

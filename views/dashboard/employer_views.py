@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import messages
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
@@ -75,6 +76,70 @@ def employer_list(request):
         return render(request, "dashboard/employer_list.html", context)
 
     return render(request, "dashboard/employer_list.html", context)
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("view_employermodel")
+def employer_selection(request):
+    search = request.GET.get("search", "").strip()
+    province = request.GET.get("province", "").strip()
+    district = request.GET.get("district", "").strip()
+    sub_district = request.GET.get("sub_district", "").strip()
+
+    employers = EmployerModel.objects.filter(is_deleted=False)
+    if search:
+        employers = employers.filter(
+            Q(name_en__icontains=search)
+            | Q(name_th__icontains=search)
+            | Q(employer_code__icontains=search)
+            | Q(employer_id_number__icontains=search)
+        )
+    address_filters = {}
+    if province:
+        address_filters["addresses__province"] = province
+    if district:
+        address_filters["addresses__district"] = district
+    if sub_district:
+        address_filters["addresses__sub_district"] = sub_district
+    if address_filters:
+        employers = employers.filter(**address_filters)
+
+    has_filters = bool(search or province or district or sub_district)
+    context = {
+        "employers": employers.select_related("business_type")
+        .distinct()
+        .order_by("name_en"),
+        "search": search,
+        "province": province,
+        "district": district,
+        "sub_district": sub_district,
+        "has_filters": has_filters,
+        "provinces": EmployerModel.objects.filter(is_deleted=False)
+        .filter(
+            addresses__province__isnull=False,
+            addresses__province__gt="",
+        )
+        .values_list("addresses__province", flat=True)
+        .distinct()
+        .order_by("addresses__province"),
+        "districts": EmployerModel.objects.filter(is_deleted=False)
+        .filter(
+            addresses__district__isnull=False,
+            addresses__district__gt="",
+        )
+        .values_list("addresses__district", flat=True)
+        .distinct()
+        .order_by("addresses__district"),
+        "sub_districts": EmployerModel.objects.filter(is_deleted=False)
+        .filter(
+            addresses__sub_district__isnull=False,
+            addresses__sub_district__gt="",
+        )
+        .values_list("addresses__sub_district", flat=True)
+        .distinct()
+        .order_by("addresses__sub_district"),
+    }
+    return render(request, "dashboard/employer_selection.html", context)
 
 
 # ========================

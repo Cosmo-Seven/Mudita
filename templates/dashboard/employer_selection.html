@@ -1,0 +1,234 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% block title %}Choose an employer{% endblock %}
+{% block body %}
+<div class="page-wrapper employer-selection-page">
+    <div class="content">
+        <a href="{% url 'group_team_management' %}" class="employer-selection-back">
+            <i class="ti ti-arrow-left" aria-hidden="true"></i> Go back to selection.
+        </a>
+        <h1 class="employer-selection-title">Choose an employer to manage the group.</h1>
+
+        <form method="get" action="{% url 'employer_selection' %}" class="employer-selection-form">
+            <div class="employer-address-filters">
+                <div class="employer-address-label">
+                    <i class="ti ti-map-pin" aria-hidden="true"></i>
+                    <strong>Screen by address.</strong>
+                </div>
+                <label class="visually-hidden" for="employer-province">Province</label>
+                <select id="employer-province" name="province" class="form-select">
+                    <option value="">All provinces</option>
+                    {% for item in provinces %}
+                    <option value="{{ item }}" {% if province == item %}selected{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+                <label class="visually-hidden" for="employer-district">District</label>
+                <select id="employer-district" name="district" class="form-select">
+                    <option value="">All districts</option>
+                    {% for item in districts %}
+                    <option value="{{ item }}" {% if district == item %}selected{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+                <label class="visually-hidden" for="employer-sub-district">Sub-district</label>
+                <select id="employer-sub-district" name="sub_district" class="form-select">
+                    <option value="">-- Every sub-district --</option>
+                    {% for item in sub_districts %}
+                    <option value="{{ item }}" {% if sub_district == item %}selected{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="employer-search-panel">
+                <label class="visually-hidden" for="employer-search">Search employers</label>
+                <input id="employer-search" type="search" name="search" value="{{ search }}"
+                    class="form-control" placeholder="Search by employer name or company name...">
+                <button type="submit" class="btn employer-search-button">
+                    <i class="ti ti-search" aria-hidden="true"></i> Search
+                </button>
+            </div>
+        </form>
+
+        {% if has_filters %}
+        <div class="employer-selection-results" aria-live="polite">
+            {% for employer in employers %}
+            <a class="employer-selection-result" href="{% url 'employer_group_list' employer.id %}">
+                <span>
+                    <strong>{{ employer.name_en }}</strong>
+                    {% if employer.business_type_en %}
+                    <small>{{ employer.business_type_en }}</small>
+                    {% endif %}
+                </span>
+                <span class="employer-selection-result-action">
+                    View employer <i class="ti ti-arrow-right" aria-hidden="true"></i>
+                </span>
+            </a>
+            {% empty %}
+            <p class="employer-selection-empty">No employers found.</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+
+<style>
+    .employer-selection-page .content {
+        padding-top: 20px;
+    }
+
+    .employer-selection-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 12px;
+        color: #64748b;
+        font-size: 15px;
+        text-decoration: none;
+    }
+
+    .employer-selection-back:hover {
+        color: #fb6b16;
+    }
+
+    .employer-selection-title {
+        margin: 0 0 20px;
+        color: #1f2937;
+        font-size: 30px;
+        font-weight: 500;
+    }
+
+    .employer-address-filters,
+    .employer-search-panel {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 7px;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+
+    .employer-address-filters {
+        margin-bottom: 15px;
+    }
+
+    .employer-address-label {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 6px;
+        padding: 0 4px;
+        color: #64748b;
+        white-space: nowrap;
+    }
+
+    .employer-address-label i {
+        color: #fb6b16;
+        font-size: 17px;
+    }
+
+    .employer-address-filters .form-select {
+        min-width: 0;
+        flex: 1 1 0;
+        height: 40px;
+        border-color: #e2e8f0;
+        color: #334155;
+    }
+
+    .employer-search-panel {
+        padding: 16px;
+    }
+
+    .employer-search-panel .form-control {
+        min-width: 0;
+        height: 46px;
+        flex: 1 1 auto;
+        border-color: #d7dce2;
+        font-size: 16px;
+    }
+
+    .employer-search-button {
+        display: inline-flex;
+        min-width: 232px;
+        height: 46px;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        border: 0;
+        background: #fb6b16;
+        color: #fff;
+        font-size: 18px;
+    }
+
+    .employer-search-button:hover,
+    .employer-search-button:focus {
+        background: #e95b0a;
+        color: #fff;
+    }
+
+    .employer-selection-results {
+        margin-top: 16px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 7px;
+        background: #fff;
+    }
+
+    .employer-selection-result {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px;
+        color: #1f2937;
+        text-decoration: none;
+    }
+
+    .employer-selection-result + .employer-selection-result {
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .employer-selection-result small {
+        display: block;
+        margin-top: 4px;
+        color: #64748b;
+    }
+
+    .employer-selection-result-action {
+        color: #fb6b16;
+        white-space: nowrap;
+    }
+
+    .employer-selection-empty {
+        margin: 0;
+        padding: 18px;
+        color: #64748b;
+        text-align: center;
+    }
+
+    @media (max-width: 767.98px) {
+        .employer-selection-title {
+            font-size: 24px;
+        }
+
+        .employer-address-filters {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .employer-address-filters .form-select {
+            flex-basis: auto;
+            width: 100%;
+        }
+
+        .employer-search-panel {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .employer-search-button {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}

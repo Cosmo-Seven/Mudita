@@ -76,13 +76,62 @@ class EmployeeListFilterTests(TestCase):
         self.assertNotContains(response, 'name="work_permit_type"')
         self.assertNotContains(response, "all_mou_types")
 
+    def test_employee_card_pdf_download_bypasses_htmx(self):
+        employer = EmployerModel.objects.create(
+            name_en="PDF Employer", name_th="PDF Employer"
+        )
+        EmployeeModel.objects.create(
+            employer=employer,
+            created_by=self.user,
+            full_name_en="PDF Employee",
+        )
+
+        response = self.client.get(reverse("employee_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'hx-boost="false" hx-disable download')
+        self.assertContains(response, reverse("employee_export_pdf"))
+
     def test_employee_expiry_dates_use_single_range_inputs(self):
         response = self.client.get(reverse("employee_list"))
 
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'class="form-control date-range employee-expiry-range"')
+        self.assertContains(response, 'data-range-name="work_permit_expiry_range"')
+        self.assertContains(response, 'data-range-name="visa_expiry_range"')
         self.assertContains(response, 'name="work_permit_expiry_range"')
         self.assertContains(response, 'name="visa_expiry_range"')
         self.assertNotContains(response, 'name="work_permit_expiry_from"')
         self.assertNotContains(response, 'name="work_permit_expiry_to"')
         self.assertNotContains(response, 'name="visa_expiry_from"')
         self.assertNotContains(response, 'name="visa_expiry_to"')
+        self.assertNotContains(response, 'class="form-control flatpickr-range"')
+
+    def test_employee_expiry_range_values_are_preserved_in_picker_and_form(self):
+        response = self.client.get(
+            reverse("employee_list"),
+            {
+                "work_permit_expiry_range": "2026-10-01 to 2026-10-24",
+                "visa_expiry_range": "2026-09-01 to 2026-09-30",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'name="work_permit_expiry_range"',
+        )
+        self.assertContains(
+            response,
+            'name="visa_expiry_range"',
+        )
+        self.assertContains(response, 'value="2026-10-01 to 2026-10-24"')
+        self.assertContains(response, 'value="2026-09-01 to 2026-09-30"')
+        self.assertEqual(
+            response.context["expiry_dates"]["work_permit_expiry_range"],
+            "2026-10-01 to 2026-10-24",
+        )
+        self.assertEqual(
+            response.context["expiry_dates"]["visa_expiry_range"],
+            "2026-09-01 to 2026-09-30",
+        )

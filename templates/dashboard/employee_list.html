@@ -150,15 +150,29 @@
                     <div class="row g-2 mt-2">
                         <div class="col-md-6">
                             <label class="form-label">Work permit expiry date range</label>
-                            <input type="text" name="work_permit_expiry_range" class="form-control flatpickr-range"
-                                placeholder="YYYY-MM-DD to YYYY-MM-DD"
-                                value="{{ expiry_dates.work_permit_expiry_range }}">
+                            <div class="input-icon-start position-relative">
+                                <span class="icon-addon">
+                                    <i class="ti ti-calendar"></i>
+                                </span>
+                                <input type="text" class="form-control date-range employee-expiry-range"
+                                    data-range-name="work_permit_expiry_range"
+                                    placeholder="dd/mm/yyyy - dd/mm/yyyy" autocomplete="off">
+                                <input type="hidden" name="work_permit_expiry_range"
+                                    value="{{ expiry_dates.work_permit_expiry_range }}">
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Visa expiry date range</label>
-                            <input type="text" name="visa_expiry_range" class="form-control flatpickr-range"
-                                placeholder="YYYY-MM-DD to YYYY-MM-DD"
-                                value="{{ expiry_dates.visa_expiry_range }}">
+                            <div class="input-icon-start position-relative">
+                                <span class="icon-addon">
+                                    <i class="ti ti-calendar"></i>
+                                </span>
+                                <input type="text" class="form-control date-range employee-expiry-range"
+                                    data-range-name="visa_expiry_range"
+                                    placeholder="dd/mm/yyyy - dd/mm/yyyy" autocomplete="off">
+                                <input type="hidden" name="visa_expiry_range"
+                                    value="{{ expiry_dates.visa_expiry_range }}">
+                            </div>
                         </div>
                     </div>
 
@@ -278,7 +292,9 @@
                         <a href="javascript:void(0);" class="btn btn-sm btn-warning-transparent" title="{% translate 'address' request.session.language %}">
                             <i class="ti ti-map-pin"></i>
                         </a>
-                        <a href="{% url 'employee_export_pdf' %}?search={{ employee.full_name_en }}" class="btn btn-sm btn-info-transparent" title="{% translate 'download' request.session.language %}">
+                        <a href="{% url 'employee_export_pdf' %}?search={{ employee.full_name_en|urlencode }}"
+                            hx-boost="false" hx-disable download
+                            class="btn btn-sm btn-info-transparent" title="{% translate 'download' request.session.language %}">
                             <i class="ti ti-download"></i>
                         </a>
                         <div class="dropdown">

@@ -5,6 +5,13 @@ from models.base_models import BaseModel
 
 class GroupModel(BaseModel):
     name = models.CharField(max_length=255)
+    employer = models.ForeignKey(
+        "core.EmployerModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="groups",
+    )
 
     def __str__(self):
         return self.name

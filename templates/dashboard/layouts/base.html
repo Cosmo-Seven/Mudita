@@ -69,13 +69,82 @@
         }
 
         function initDateRangePickers(root) {
-            if (!window.flatpickr) return;
-            (root || document).querySelectorAll(".flatpickr-range").forEach(function (input) {
-                if (input._flatpickr) return;
-                flatpickr(input, {
-                    mode: "range",
-                    dateFormat: "Y-m-d",
-                    allowInput: true,
+            if (window.flatpickr) {
+                (root || document).querySelectorAll(".flatpickr-range").forEach(function (input) {
+                    if (input._flatpickr) return;
+                    flatpickr(input, {
+                        mode: "range",
+                        dateFormat: "Y-m-d",
+                        allowInput: true,
+                    });
+                });
+            }
+
+            if (!window.jQuery || !jQuery.fn.daterangepicker || !window.moment) return;
+            (root || document).querySelectorAll(".employee-expiry-range").forEach(function (input) {
+                var $input = jQuery(input);
+                if ($input.data("daterangepicker")) return;
+
+                var hiddenInput = input.parentElement.querySelector(
+                    'input[type="hidden"][name="' + input.dataset.rangeName + '"]'
+                );
+                if (!hiddenInput) return;
+
+                var start = moment().startOf("day");
+                var end = moment().startOf("day");
+                var selectedRange = (hiddenInput.value || "").split(" to ");
+                if (selectedRange.length) {
+                    var parsedStart = moment(selectedRange[0], "YYYY-MM-DD", true);
+                    if (parsedStart.isValid()) {
+                        start = parsedStart;
+                        end = parsedStart;
+                    }
+                    if (selectedRange.length > 1) {
+                        var parsedEnd = moment(selectedRange[1], "YYYY-MM-DD", true);
+                        if (parsedEnd.isValid()) end = parsedEnd;
+                    }
+                }
+
+                $input.daterangepicker({
+                    autoUpdateInput: false,
+                    startDate: start,
+                    endDate: end,
+                    opens: "right",
+                    locale: {
+                        format: "DD/MM/YYYY",
+                        separator: " - ",
+                        cancelLabel: "Clear",
+                    },
+                    ranges: {
+                        "Today": [moment(), moment()],
+                        "Yesterday": [moment().subtract(1, "days"), moment().subtract(1, "days")],
+                        "Last 7 Days": [moment().subtract(6, "days"), moment()],
+                        "Last 30 Days": [moment().subtract(29, "days"), moment()],
+                        "This Month": [moment().startOf("month"), moment().endOf("month")],
+                        "Last Month": [
+                            moment().subtract(1, "month").startOf("month"),
+                            moment().subtract(1, "month").endOf("month"),
+                        ],
+                    },
+                });
+
+                if (hiddenInput.value) {
+                    input.value = start.format("DD/MM/YYYY");
+                    if (selectedRange.length > 1) {
+                        input.value += " - " + end.format("DD/MM/YYYY");
+                    }
+                }
+
+                $input.on("apply.daterangepicker", function (_event, picker) {
+                    input.value = picker.startDate.format("DD/MM/YYYY")
+                        + " - " + picker.endDate.format("DD/MM/YYYY");
+                    hiddenInput.value = picker.startDate.format("YYYY-MM-DD")
+                        + " to " + picker.endDate.format("YYYY-MM-DD");
+                });
+
+                $input.on("cancel.daterangepicker", function () {
+                    input.value = "";
+                    hiddenInput.value = "";
                 });
             });
         }

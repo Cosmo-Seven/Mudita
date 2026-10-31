@@ -166,7 +166,9 @@
                                             {% csrf_token %}
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="editTeamModalLabel{{ team.id }}">Edit team</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
                                             </div>
                                             <div class="modal-body">
                                                 <label class="form-label" for="teamName{{ team.id }}">Team name</label>
@@ -275,6 +277,7 @@
                                                     {% endif %}
                                                     {% if request.user|can:'view_employeemodel' %}
                                                     <a href="{% url 'employee_export_pdf' %}?search={{ employee.full_name_en|urlencode }}"
+                                                        hx-boost="false" hx-disable download
                                                         class="btn btn-sm btn-info-transparent" title="Download employee PDF"
                                                         aria-label="Download {{ employee.full_name_en }} PDF">
                                                         <i class="ti ti-download" aria-hidden="true"></i>

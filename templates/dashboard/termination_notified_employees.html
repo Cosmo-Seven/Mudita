@@ -1,0 +1,177 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load permissions %}
+{% load translate %}
+{% block title %}Employees Notified of Termination{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header termination-page-header">
+            <div class="page-title">
+                <h4 class="fw-bold">
+                    All employees who have been notified of their termination
+                    <span class="text-muted fw-normal">(total: {{ total_count }} people).</span>
+                </h4>
+            </div>
+        </div>
+
+        <form method="get" action="{% url 'termination_notified_employees' %}" class="card termination-filter-card">
+            <div class="card-body">
+                <div class="row g-2 align-items-center">
+                    <div class="col-xl-3 col-md-6">
+                        <label class="visually-hidden" for="terminationSearch">Search employees</label>
+                        <input id="terminationSearch" type="search" name="search" class="form-control"
+                            value="{{ request.GET.search }}" placeholder="Search employees, employers, or job...">
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <label class="visually-hidden" for="terminationEmployer">Employers</label>
+                        <select id="terminationEmployer" name="employer" class="select">
+                            <option value="">Select the top employers first to narrow down</option>
+                            {% for employer in employers %}
+                            <option value="{{ employer.id }}" {% if request.GET.employer == employer.id|stringformat:"s" %}selected{% endif %}>
+                                {{ employer.name_en }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <label class="visually-hidden" for="terminationNationality">Nationality</label>
+                        <select id="terminationNationality" name="nationality" class="select">
+                            <option value="">All nationalities</option>
+                            {% for nationality in nationalities %}
+                            <option value="{{ nationality.id }}" {% if request.GET.nationality == nationality.id|stringformat:"s" %}selected{% endif %}>
+                                {{ nationality.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xl-5 col-md-6">
+                        <label class="visually-hidden" for="terminationResolution">Resolution type</label>
+                        <select id="terminationResolution" name="resolution_type" class="select">
+                            <option value="">All types of resolutions</option>
+                            {% for resolution_type in resolution_types %}
+                            <option value="{{ resolution_type }}" {% if request.GET.resolution_type == resolution_type %}selected{% endif %}>
+                                {{ resolution_type }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <label class="visually-hidden" for="terminationPinkCard">Pink card status</label>
+                        <select id="terminationPinkCard" name="pink_card" class="select">
+                            <option value="">Pink card --</option>
+                            <option value="yes" {% if request.GET.pink_card == "yes" %}selected{% endif %}>Has pink card</option>
+                            <option value="no" {% if request.GET.pink_card == "no" %}selected{% endif %}>No pink card</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <label class="visually-hidden" for="terminationPassportType">Passport type</label>
+                        <select id="terminationPassportType" name="passport_type" class="select">
+                            <option value="">Passport types</option>
+                            <option value="myanmar" {% if request.GET.passport_type == "myanmar" %}selected{% endif %}>Myanmar</option>
+                            <option value="cambodia" {% if request.GET.passport_type == "cambodia" %}selected{% endif %}>Cambodia</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-auto col-md-6 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            {% translate 'filter' request.session.language %}
+                        </button>
+                        <a href="{% url 'termination_notified_employees' %}" class="btn btn-secondary">
+                            {% translate 'clear' request.session.language %}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="termination-list-toolbar">
+                    <button type="button" class="btn btn-outline-success btn-sm" disabled
+                        title="Export will be available when termination records are tracked.">
+                        <i class="ti ti-file-spreadsheet me-1" aria-hidden="true"></i>Export CSV
+                    </button>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Employee display mode">
+                        <button type="button" class="btn btn-primary" aria-pressed="true" disabled>Card</button>
+                        <button type="button" class="btn btn-outline-secondary" disabled>Table</button>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Employees per page">
+                        <button type="button" class="btn btn-outline-secondary" disabled>25</button>
+                        <button type="button" class="btn btn-outline-secondary" disabled>50</button>
+                        <button type="button" class="btn btn-primary" aria-pressed="true" disabled>100</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="card termination-empty-state">
+            <div class="card-body text-center">
+                <span class="termination-empty-icon">
+                    <i class="ti ti-user-exclamation" aria-hidden="true"></i>
+                </span>
+                <h5>No termination records yet</h5>
+                <p class="text-muted mb-0">
+                    Employees will appear here after their termination status and notification process are defined.
+                </p>
+            </div>
+        </div>
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+
+<style>
+    .termination-page-header {
+        margin-bottom: 18px;
+    }
+
+    .termination-page-header h4 {
+        line-height: 1.5;
+    }
+
+    .termination-filter-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+    }
+
+    .termination-filter-card .form-control,
+    .termination-filter-card .select {
+        min-height: 42px;
+    }
+
+    .termination-list-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .termination-empty-state {
+        margin-top: 18px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+    }
+
+    .termination-empty-state .card-body {
+        padding: 54px 24px;
+    }
+
+    .termination-empty-icon {
+        display: inline-flex;
+        width: 64px;
+        height: 64px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        border-radius: 50%;
+        background: #fff4eb;
+        color: #fb6b16;
+        font-size: 30px;
+    }
+
+    @media (max-width: 575.98px) {
+        .termination-list-toolbar {
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .termination-list-toolbar .btn-group {
+            flex: 0 0 auto;
+        }
+    }
+</style>
+{% endblock %}
