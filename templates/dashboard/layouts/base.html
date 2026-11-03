@@ -17,8 +17,12 @@
     {% include 'dashboard/components/favicon.html' %}
     {% include 'dashboard/components/css.html' %}
     <style>
-        button.htmx-button-loading {
+        .htmx-control-loading {
             cursor: wait;
+        }
+
+        #sidebar-menu .htmx-control-loading {
+            pointer-events: none;
         }
     </style>
 </head>
@@ -216,9 +220,10 @@
             document.body.classList.remove('htmx-loading');
         });
 
-        var htmxButtonRequests = new WeakMap();
+        var htmxControlRequests = new WeakMap();
+        var loadingControls = new WeakMap();
 
-        function getHtmxRequestButton(event) {
+        function getHtmxRequestControl(event) {
             var detail = event.detail || {};
             var triggeringEvent = detail.triggeringEvent;
             var submitter = triggeringEvent && triggeringEvent.submitter;
@@ -227,6 +232,9 @@
             var requestElement = detail.elt;
             if (!(requestElement instanceof Element)) return null;
             if (requestElement instanceof HTMLButtonElement) return requestElement;
+            if (requestElement instanceof HTMLAnchorElement && requestElement.closest('#sidebar-menu')) {
+                return requestElement;
+            }
 
             var button = requestElement.closest('button');
             if (button) return button;
@@ -240,44 +248,72 @@
             return null;
         }
 
-        document.body.addEventListener('htmx:beforeRequest', function (event) {
-            var detail = event.detail || {};
-            var button = getHtmxRequestButton(event);
-            var requestKey = detail.triggeringEvent || detail.elt;
-            if (!button || !requestKey || htmxButtonRequests.has(requestKey)) return;
+        function startControlLoading(control) {
+            if (loadingControls.has(control)) return;
 
             var spinner = document.createElement('span');
             spinner.className = 'spinner-border spinner-border-sm ms-2';
             spinner.setAttribute('role', 'status');
             spinner.setAttribute('aria-hidden', 'true');
-            button.appendChild(spinner);
+            control.appendChild(spinner);
 
-            htmxButtonRequests.set(requestKey, {
-                button: button,
+            var state = {
                 spinner: spinner,
-                wasDisabled: button.disabled,
-                previousAriaBusy: button.getAttribute('aria-busy')
-            });
-            button.classList.add('htmx-button-loading');
-            button.setAttribute('aria-busy', 'true');
-            button.disabled = true;
+                wasDisabled: control instanceof HTMLButtonElement && control.disabled,
+                previousAriaBusy: control.getAttribute('aria-busy')
+            };
+            loadingControls.set(control, state);
+            control.classList.add('htmx-control-loading');
+            control.setAttribute('aria-busy', 'true');
+            if (control instanceof HTMLButtonElement) control.disabled = true;
+        }
+
+        function stopControlLoading(control) {
+            var state = loadingControls.get(control);
+            if (!state) return;
+
+            state.spinner.remove();
+            control.classList.remove('htmx-control-loading');
+            if (control instanceof HTMLButtonElement) control.disabled = state.wasDisabled;
+            if (state.previousAriaBusy === null) {
+                control.removeAttribute('aria-busy');
+            } else {
+                control.setAttribute('aria-busy', state.previousAriaBusy);
+            }
+            loadingControls.delete(control);
+        }
+
+        document.body.addEventListener('htmx:beforeRequest', function (event) {
+            var detail = event.detail || {};
+            var control = getHtmxRequestControl(event);
+            var requestKey = detail.triggeringEvent || detail.elt;
+            if (!control || !requestKey || htmxControlRequests.has(requestKey)) return;
+
+            startControlLoading(control);
+            htmxControlRequests.set(requestKey, control);
         });
 
         document.body.addEventListener('htmx:afterRequest', function (event) {
             var detail = event.detail || {};
             var requestKey = detail.triggeringEvent || detail.elt;
-            var request = requestKey && htmxButtonRequests.get(requestKey);
-            if (!request) return;
+            var control = requestKey && htmxControlRequests.get(requestKey);
+            if (!control) return;
 
-            request.spinner.remove();
-            request.button.classList.remove('htmx-button-loading');
-            request.button.disabled = request.wasDisabled;
-            if (request.previousAriaBusy === null) {
-                request.button.removeAttribute('aria-busy');
-            } else {
-                request.button.setAttribute('aria-busy', request.previousAriaBusy);
+            stopControlLoading(control);
+            htmxControlRequests.delete(requestKey);
+        });
+
+        document.body.addEventListener('submit', function (event) {
+            var form = event.target;
+            if (!(form instanceof HTMLFormElement) || !form.closest('[hx-boost="false"]')) return;
+
+            var submitter = event.submitter;
+            if (!(submitter instanceof HTMLButtonElement)) {
+                submitter = document.activeElement;
             }
-            htmxButtonRequests.delete(requestKey);
+            if (submitter instanceof HTMLButtonElement && form.contains(submitter)) {
+                startControlLoading(submitter);
+            }
         });
 
         document.body.addEventListener('htmx:beforeSwap', function (event) {
