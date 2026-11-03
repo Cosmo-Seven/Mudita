@@ -244,7 +244,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     {% for language in languages %}
-                    <a href="{% url 'set_language' %}?language={{language.code}}" class="dropdown-item">
+                    <a href="{% url 'set_language' %}?language={{language.code}}" class="dropdown-item" hx-boost="false">
                         <img src="{{language.flag.url}}" alt="{% translate language.translation_key request.session.language %}" height="16">{% translate language.translation_key request.session.language %}
                     </a>
                     {% endfor %}

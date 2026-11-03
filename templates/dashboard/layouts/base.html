@@ -16,6 +16,11 @@
 
     {% include 'dashboard/components/favicon.html' %}
     {% include 'dashboard/components/css.html' %}
+    <style>
+        button.htmx-button-loading {
+            cursor: wait;
+        }
+    </style>
 </head>
 
 <body
@@ -209,6 +214,70 @@
         });
         document.body.addEventListener('htmx:afterRequest', function () {
             document.body.classList.remove('htmx-loading');
+        });
+
+        var htmxButtonRequests = new WeakMap();
+
+        function getHtmxRequestButton(event) {
+            var detail = event.detail || {};
+            var triggeringEvent = detail.triggeringEvent;
+            var submitter = triggeringEvent && triggeringEvent.submitter;
+            if (submitter instanceof HTMLButtonElement) return submitter;
+
+            var requestElement = detail.elt;
+            if (!(requestElement instanceof Element)) return null;
+            if (requestElement instanceof HTMLButtonElement) return requestElement;
+
+            var button = requestElement.closest('button');
+            if (button) return button;
+
+            if (requestElement instanceof HTMLFormElement) {
+                var activeElement = document.activeElement;
+                if (activeElement instanceof HTMLButtonElement && requestElement.contains(activeElement)) {
+                    return activeElement;
+                }
+            }
+            return null;
+        }
+
+        document.body.addEventListener('htmx:beforeRequest', function (event) {
+            var detail = event.detail || {};
+            var button = getHtmxRequestButton(event);
+            var requestKey = detail.triggeringEvent || detail.elt;
+            if (!button || !requestKey || htmxButtonRequests.has(requestKey)) return;
+
+            var spinner = document.createElement('span');
+            spinner.className = 'spinner-border spinner-border-sm ms-2';
+            spinner.setAttribute('role', 'status');
+            spinner.setAttribute('aria-hidden', 'true');
+            button.appendChild(spinner);
+
+            htmxButtonRequests.set(requestKey, {
+                button: button,
+                spinner: spinner,
+                wasDisabled: button.disabled,
+                previousAriaBusy: button.getAttribute('aria-busy')
+            });
+            button.classList.add('htmx-button-loading');
+            button.setAttribute('aria-busy', 'true');
+            button.disabled = true;
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function (event) {
+            var detail = event.detail || {};
+            var requestKey = detail.triggeringEvent || detail.elt;
+            var request = requestKey && htmxButtonRequests.get(requestKey);
+            if (!request) return;
+
+            request.spinner.remove();
+            request.button.classList.remove('htmx-button-loading');
+            request.button.disabled = request.wasDisabled;
+            if (request.previousAriaBusy === null) {
+                request.button.removeAttribute('aria-busy');
+            } else {
+                request.button.setAttribute('aria-busy', request.previousAriaBusy);
+            }
+            htmxButtonRequests.delete(requestKey);
         });
 
         document.body.addEventListener('htmx:beforeSwap', function (event) {
