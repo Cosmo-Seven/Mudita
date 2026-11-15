@@ -55,19 +55,23 @@
         function reinitDashboardWidgets(root) {
             if (!window.jQuery || !jQuery.fn.select2) return;
             var $scope = jQuery(root || document);
-            $scope.find("select.select").each(function () {
+            var $selects = $scope.filter("select.select, select.searchable-select")
+                .add($scope.find("select.select, select.searchable-select"));
+            $selects.each(function () {
                 var $el = jQuery(this);
                 if ($el.hasClass("select2-hidden-accessible")) {
                     $el.select2("destroy");
                 }
-            });
-            $scope.find(".select:not(.searchable-select)").select2({
-                minimumResultsForSearch: -1,
-                width: "100%",
-            });
-            $scope.find(".searchable-select").select2({
-                minimumResultsForSearch: 0,
-                width: "100%",
+                var searchable = $el.hasClass("searchable-select");
+                var options = {
+                    minimumResultsForSearch: searchable ? 0 : -1,
+                    width: "100%",
+                };
+                var $modal = $el.closest(".modal");
+                if ($modal.length) {
+                    options.dropdownParent = $modal;
+                }
+                $el.select2(options);
             });
             if (window.feather) {
                 feather.replace();

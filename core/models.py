@@ -21,4 +21,5 @@ from models.workflow_models import (
     WorkflowJobModel,
     WorkflowStageModel,
     WorkflowTypeModel,
+    EmployeeRequestModel,
 )

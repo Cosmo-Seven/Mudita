@@ -273,7 +273,6 @@ class WorkflowJobCreateTests(TestCase):
             Permission.objects.get(codename="view_employeeworkflowmodel"),
             Permission.objects.get(codename="add_employeeworkflowmodel"),
             Permission.objects.get(codename="add_employeemodel"),
-            Permission.objects.get(codename="add_workflowtypemodel"),
         )
         self.user = User.objects.create_user(
             username="workflow-manager",
@@ -357,6 +356,22 @@ class WorkflowJobCreateTests(TestCase):
         self.assertNotContains(response, "Employees")
         self.assertContains(response, "Project Name / Work Set Name")
         self.assertContains(response, "Job type")
+        self.assertContains(response, 'class="form-select searchable-select', count=2)
+
+    def test_employee_create_employer_select_is_searchable(self):
+        self.role.permissions.add(Permission.objects.get(codename="add_employeemodel"))
+
+        response = self.client.get(reverse("employee_create"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            '<label class="form-label" for="employee-employer">',
+        )
+        self.assertContains(
+            response,
+            '<select id="employee-employer" class="form-select searchable-select" name="employer" required>',
+        )
 
     def test_employee_can_be_added_to_existing_workset(self):
         workset = WorkflowJobModel.objects.create(
@@ -714,11 +729,13 @@ class WorkflowJobCreateTests(TestCase):
         self.assertContains(nested_response, "Employee A")
         self.assertContains(nested_response, "Employee B")
 
-    def test_workflow_card_opens_job_form_with_work_type_selected(self):
+    def test_workflow_cards_have_no_add_button_and_job_form_still_selects_work_type(self):
         response = self.client.get(reverse("workflow_job_list"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(
+        self.assertNotContains(response, "Add Work Type")
+        self.assertContains(response, f'hx-get="{reverse("workflow_job_create")}"')
+        self.assertNotContains(
             response,
             f'hx-get="/dashboard/workflow/jobs/create/?workflow_type_id={self.workflow_type.id}"',
         )
@@ -732,18 +749,45 @@ class WorkflowJobCreateTests(TestCase):
         )
         self.assertContains(form_response, "selected>")
 
-    def test_work_type_creation_remains_available_separately(self):
+    def test_workflow_type_can_be_deleted_without_removing_employee_history(self):
+        response = self.client.get(reverse("workflow_job_list"))
+        delete_url = reverse("workflow_job_delete", args=[self.workflow_type.id])
+        self.assertNotContains(response, f'hx-post="{delete_url}"')
+
+        self.role.permissions.add(
+            Permission.objects.get(codename="delete_workflowtypemodel")
+        )
+        response = self.client.get(reverse("workflow_job_list"))
+        self.assertContains(response, f'hx-post="{delete_url}"')
+
+        workflow = EmployeeWorkflowModel.objects.create(
+            employee=self.employee_a,
+            workflow_type=self.workflow_type,
+            current_stage=self.first_stage,
+        )
+
         response = self.client.post(
-            reverse("workflow_type_create"),
-            {
-                "name": "Renewal MOU",
-                "group": "employer_notification",
-                "code": "renewal_mou",
-            },
+            reverse("workflow_job_delete", args=[self.workflow_type.id]),
+            HTTP_HX_REQUEST="true",
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(WorkflowTypeModel.objects.filter(code="renewal_mou").exists())
+        self.assertEqual(
+            response.context["message"],
+            f"'{self.workflow_type.name}' deleted.",
+        )
+        self.workflow_type.refresh_from_db()
+        workflow.refresh_from_db()
+        self.assertTrue(self.workflow_type.is_deleted)
+        self.assertFalse(workflow.is_deleted)
+        self.assertNotIn(
+            self.workflow_type.id,
+            [job.id for job in response.context["jobs"]],
+        )
+        self.assertNotContains(
+            self.client.get(reverse("workflow_job_list")),
+            self.workflow_type.name,
+        )
 
     def test_renamed_work_type_stays_renamed_after_workflow_job_list_refresh(self):
         self.role.permissions.add(

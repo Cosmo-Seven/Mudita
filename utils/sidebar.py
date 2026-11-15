@@ -34,6 +34,12 @@ def sidebar(request):
                         "permission": "view_employeemodel",
                     },
                     {
+                        "label": "worker_requests",
+                        "url_name": "employee_request_list",
+                        "icon": "ti ti-message-report",
+                        "permission": "view_employeemodel",
+                    },
+                    {
                         "label": "termination_employees",
                         "url_name": "termination_notified_employees",
                         "icon": "ti ti-user-x",

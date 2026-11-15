@@ -192,6 +192,36 @@
                 </div>
             </div>
 
+            <div class="card mb-3 entity-form-card">
+                <div class="card-header">
+                    <h5 class="mb-0">{% translate 'address' request.session.language %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="employee-address-line">{% translate 'address_line' request.session.language %}</label>
+                        <textarea id="employee-address-line" name="address_line" class="form-control" rows="2">{{ home_address.address_line|default:'' }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <label class="form-label" for="employee-province">{% translate 'province' request.session.language %}</label>
+                            <input id="employee-province" name="province" value="{{ home_address.province|default:'' }}" class="form-control">
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <label class="form-label" for="employee-district">{% translate 'district' request.session.language %}</label>
+                            <input id="employee-district" name="district" value="{{ home_address.district|default:'' }}" class="form-control">
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <label class="form-label" for="employee-sub-district">{% translate 'sub_district' request.session.language %}</label>
+                            <input id="employee-sub-district" name="sub_district" value="{{ home_address.sub_district|default:'' }}" class="form-control">
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <label class="form-label" for="employee-postal-code">{% translate 'postal_code' request.session.language %}</label>
+                            <input id="employee-postal-code" name="postal_code" value="{{ home_address.postal_code|default:'' }}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 3. Passport & Visa -->
             <div class="card mb-3 entity-form-card">
                 <div class="card-header"><h5>3. {% translate 'passport_and_visa_information' request.session.language %}</h5></div>
@@ -335,14 +365,18 @@
                 </div>
             </div>
 
-            <!-- 6. Login Information -->
+            <!-- 6. Worker Portal Account -->
             <div class="card mb-3 entity-form-card">
-                <div class="card-header"><h5>6. {% translate 'login_information' request.session.language %}</h5></div>
+                <div class="card-header"><h5>6. အလုပ်သမား website အကောင့်</h5></div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-6"><div class="mb-3">
-                            <label class="form-label">{% translate 'email' request.session.language %}</label>
-                            <input type="email" name="login_email" value="{{ employee.login_email|default:'' }}" class="form-control"></div>
+                            <label class="form-label">Login email</label>
+                            <input type="email" name="login_email" value="{% if employee.user %}{{ employee.user.email }}{% else %}{{ employee.login_email|default:'' }}{% endif %}" autocomplete="off" class="form-control"></div>
+                        </div>
+                        <div class="col-lg-6"><div class="mb-3">
+                            <label class="form-label">Password အသစ် (မပြောင်းလိုပါက ဗလာထားပါ)</label>
+                            <input type="password" name="worker_password" autocomplete="new-password" class="form-control"></div>
                         </div>
                     </div>
                 </div>

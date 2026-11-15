@@ -13693,7 +13693,9 @@ table.table-bordered thead tr th p {
 /******* Vendors ******/
 /****** Utils ******/
 .select2-container {
-  min-width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .select2-container .select2-selection--single {
@@ -56204,6 +56206,41 @@ span.flatpickr-weekday {
 .chat-user-tabs .nav-item .nav-link.active {
   background: #092C4C !important;
   border-color: #092C4C !important;
+}
+
+:not(.btn-group) > .btn + .btn {
+  margin-inline-start: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+  .entity-form-card .select2-container,
+  #jobFormModal .select2-container {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .select2-container--open {
+    max-width: calc(100vw - 1rem);
+  }
+
+  .select2-dropdown {
+    max-width: calc(100vw - 1rem);
+    box-sizing: border-box;
+  }
+
+  .select2-results__option {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .select2-search__field {
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */

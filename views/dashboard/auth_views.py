@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 from core.models import UserModel
+from core.models import EmployeeModel
 from utils.decorators import custom_login_required
 
 
@@ -11,6 +12,10 @@ from utils.decorators import custom_login_required
 # ========================
 def dashboard_login(request):
     if request.user.is_authenticated:
+        if not request.user.is_staff and EmployeeModel.objects.filter(
+            user=request.user, is_deleted=False
+        ).exists():
+            return redirect("worker_profile")
         return redirect("dashboard")
 
     if request.method == "POST":
@@ -19,9 +24,13 @@ def dashboard_login(request):
 
         try:
             user = UserModel.objects.get(email=email)
-            if check_password(password, user.password):
+            if user.is_active and check_password(password, user.password):
                 login(request, user)
                 messages.success(request, f"Welcome {user.username}")
+                if not user.is_staff and EmployeeModel.objects.filter(
+                    user=user, is_deleted=False
+                ).exists():
+                    return redirect("worker_profile")
                 return redirect("dashboard")
             else:
                 messages.error(request, "Email or Password is incorrect!")

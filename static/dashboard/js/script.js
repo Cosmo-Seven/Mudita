@@ -333,9 +333,14 @@ $(document).ready(function () {
   }
 
   if ($(".searchable-select").length > 0) {
-    $(".searchable-select").select2({
+    $(".searchable-select").each(function () {
+      var $select = $(this);
+      var $modal = $select.closest(".modal");
+      $select.select2({
         minimumResultsForSearch: 0,
         width: "100%",
+        dropdownParent: $modal.length ? $modal : $(document.body),
+      });
     });
   }
 

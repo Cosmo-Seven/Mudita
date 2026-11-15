@@ -140,7 +140,7 @@ class GroupTeamManagementPageTests(TestCase):
             full_name_en="Bangkok Employee",
             created_by=self.user,
         )
-        EmployeeModel.objects.create(
+        other_employee = EmployeeModel.objects.create(
             employer=employer,
             full_name_en="Other Employee",
             created_by=self.user,
@@ -153,6 +153,25 @@ class GroupTeamManagementPageTests(TestCase):
             address_line="1 Main Road",
             province="Bangkok",
             district="Pathum Wan",
+            sub_district="Lumphini",
+        )
+        AddressModel.objects.create(
+            content_type=employee_type,
+            object_id=matching_employee.id,
+            address_type="workplace",
+            address_line="2 Office Road",
+            province="Other Province",
+            district="Other District",
+            sub_district="Other Sub-district",
+        )
+        AddressModel.objects.create(
+            content_type=employee_type,
+            object_id=other_employee.id,
+            address_type="home",
+            address_line="3 Another Road",
+            province="Bangkok",
+            district="Bang Rak",
+            sub_district="Silom",
         )
 
         response = self.client.get(
@@ -161,11 +180,113 @@ class GroupTeamManagementPageTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(
+            response.context["available_employees"],
+            [matching_employee, other_employee],
+        )
+        self.assertEqual(list(response.context["provinces"]), ["Bangkok"])
         self.assertEqual(
-            list(response.context["available_employees"]),
-            [matching_employee],
+            list(response.context["districts"]), ["Bang Rak", "Pathum Wan"]
+        )
+        self.assertEqual(
+            list(response.context["sub_districts"]), ["Lumphini", "Silom"]
         )
         self.assertContains(response, "Bangkok")
+        self.assertNotContains(response, "Other Province")
+        self.assertNotContains(response, "Other District")
+
+        response = self.client.get(
+            reverse("employer_group_list", args=[employer.id]),
+            {"province": "Bangkok", "district": "Pathum Wan"},
+        )
+        self.assertEqual(
+            list(response.context["available_employees"]), [matching_employee]
+        )
+        self.assertEqual(
+            list(response.context["sub_districts"]), ["Lumphini"]
+        )
+        self.assertContains(response, 'name="district" class="form-select"')
+        self.assertContains(response, 'name="sub_district" class="form-select"')
+
+        response = self.client.get(
+            reverse("employer_group_list", args=[employer.id]),
+            {"district": "Pathum Wan", "sub_district": "Lumphini"},
+        )
+        self.assertEqual(response.context["filters"]["district"], "")
+        self.assertEqual(response.context["filters"]["sub_district"], "")
+        self.assertRegex(
+            response.content.decode(),
+            r'<select[^>]*id="group-district"[^>]*disabled',
+        )
+        self.assertRegex(
+            response.content.decode(),
+            r'<select[^>]*id="group-sub-district"[^>]*disabled',
+        )
+
+    def test_employee_create_and_update_save_home_address_for_group_filters(self):
+        employer = EmployerModel.objects.create(
+            name_en="Employee Address Employer", name_th="Employee Address Employer"
+        )
+        self.user.role.permissions.add(
+            Permission.objects.get(codename="add_employeemodel")
+        )
+
+        response = self.client.post(
+            reverse("employee_create"),
+            {
+                "employer": str(employer.id),
+                "full_name_en": "Addressable Employee",
+                "phone": "",
+                "address_line": "1 Home Road",
+                "province": "Bangkok",
+                "district": "Pathum Wan",
+                "sub_district": "Lumphini",
+                "postal_code": "10330",
+            },
+        )
+
+        self.assertRedirects(response, reverse("employee_list"))
+        employee = EmployeeModel.objects.get(full_name_en="Addressable Employee")
+        address = employee.addresses.get(address_type="home")
+        self.assertEqual(address.province, "Bangkok")
+        self.assertEqual(address.district, "Pathum Wan")
+        self.assertEqual(address.sub_district, "Lumphini")
+
+        response = self.client.get(
+            reverse("employer_group_list", args=[employer.id])
+        )
+        self.assertEqual(list(response.context["provinces"]), ["Bangkok"])
+        self.assertEqual(list(response.context["districts"]), ["Pathum Wan"])
+        self.assertEqual(list(response.context["sub_districts"]), ["Lumphini"])
+
+        response = self.client.get(reverse("employee_update", args=[employee.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'name="province" value="Bangkok"')
+
+        response = self.client.post(
+            reverse("employee_update", args=[employee.id]),
+            {
+                "full_name_en": employee.full_name_en,
+                "phone": "",
+                "address_line": "2 New Home Road",
+                "province": "Yangon",
+                "district": "Dagon",
+                "sub_district": "West Dagon",
+                "postal_code": "11421",
+            },
+        )
+
+        self.assertRedirects(response, reverse("employee_list"))
+        address.refresh_from_db()
+        self.assertEqual(address.province, "Yangon")
+        self.assertEqual(address.district, "Dagon")
+        self.assertEqual(address.sub_district, "West Dagon")
+        response = self.client.get(
+            reverse("employer_group_list", args=[employer.id])
+        )
+        self.assertEqual(list(response.context["provinces"]), ["Yangon"])
+        self.assertEqual(list(response.context["districts"]), ["Dagon"])
+        self.assertEqual(list(response.context["sub_districts"]), ["West Dagon"])
 
     def test_employer_selection_applies_address_filters_to_one_address(self):
         matching_employer = EmployerModel.objects.create(

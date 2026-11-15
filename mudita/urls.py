@@ -17,6 +17,7 @@ from views.dashboard import (
     group_views,
 )
 from views.dashboard import page_views as dashboard_page_views
+from views import worker_views
 
 handler500 = dashboard_page_views.internal_server_error
 urlpatterns = (
@@ -26,6 +27,18 @@ urlpatterns = (
         # DASHBOARD URL
         # ================================================================================================
         path("", dashboard_page_views.dashboard, name="dashboard"),
+        path("worker/", worker_views.worker_portal, name="worker_portal"),
+        path("worker/profile/", worker_views.worker_profile, name="worker_profile"),
+        path(
+            "worker/requests/submit/",
+            worker_views.submit_employee_request,
+            name="submit_employee_request",
+        ),
+        path(
+            "dashboard/employee-requests/",
+            worker_views.employee_request_list,
+            name="employee_request_list",
+        ),
         path("dashboard/bulk/delete/<str:model_name>/", bulk_views.bulk_delete, name="bulk_delete"),
         path("dashboard/bulk/export/<str:model_name>/<str:file_format>/", bulk_views.bulk_export, name="bulk_export"),
         
@@ -359,7 +372,6 @@ urlpatterns = (
 
         path("dashboard/workflow/jobs/", workflow_job_views.workflow_job_list, name="workflow_job_list"),
         path("dashboard/workflow/jobs/create/", workflow_job_views.workflow_job_create, name="workflow_job_create"),
-        path("dashboard/workflow/jobs/work-types/create/", workflow_job_views.workflow_type_create, name="workflow_type_create"),
         path("dashboard/workflow/jobs/<uuid:pk>/update/", workflow_job_views.workflow_job_update, name="workflow_job_update"),
         path("dashboard/workflow/jobs/<uuid:pk>/delete/", workflow_job_views.workflow_job_delete, name="workflow_job_delete"),
         path(

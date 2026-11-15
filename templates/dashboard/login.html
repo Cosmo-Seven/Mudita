@@ -20,7 +20,7 @@
                             <div class="card-body p-5">
                                 <div class="login-userheading">
                                     <h3>{% translate 'sign_in' request.session.language %}</h3>
-                                    <h4>{% translate 'enter_your_credentials_to_access_the_site_panel' request.session.language %}</h4>
+                                    <h4>Sign in with your account. Workers can get their login details from our staff.</h4>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">{% translate 'email' request.session.language %} <span
@@ -60,6 +60,9 @@
                                 <div class="form-login">
                                     <button type="submit" class="btn btn-primary w-100">{% translate 'sign_in' request.session.language %}</button>
                                 </div>
+                                <p class="text-center text-muted mt-3 mb-0">
+                                    Account registration is not available. Please contact our staff for access.
+                                </p>
                                 <!-- <div class="signinform">
                                     <h4>New on our platform?<a href="register-3.html" class="hover-a"> Create an
                                             account</a></h4>

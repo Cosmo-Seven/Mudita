@@ -30,15 +30,17 @@
                   aria-label="{% translate 'edit_job' request.session.language %}">
             <i class="ti ti-edit me-1"></i>{% translate 'edit' request.session.language %}
           </button>
-          <button type="button" class="workflow-job-action-button workflow-job-delete-btn"
-                  hx-post="{% url 'workflow_job_delete' job.id %}"
-                  hx-target="#jobs-table" hx-swap="outerHTML"
-                  hx-select="unset" hx-push-url="false"
-                  hx-confirm="{% translate 'confirm_delete_job' request.session.language %}"
-                  title="Delete"
-                  aria-label="Delete">
-            <i class="ti ti-trash me-1"></i>Delete
-          </button>
+          {% if can_delete %}
+            <button type="button" class="workflow-job-action-button workflow-job-delete-btn"
+                    hx-post="{% url 'workflow_job_delete' job.id %}"
+                    hx-target="#jobs-table" hx-swap="outerHTML"
+                    hx-select="unset" hx-push-url="false"
+                    hx-confirm="{% translate 'confirm_delete_job' request.session.language %}"
+                    title="Delete"
+                    aria-label="Delete">
+              <i class="ti ti-trash me-1"></i>Delete
+            </button>
+          {% endif %}
         </div>
       </div>
 
@@ -58,17 +60,6 @@
         <span class="workflow-job-meta text-nowrap" title="{% translate 'employees' request.session.language %}">
           <i class="ti ti-users me-1"></i>{{ job.employee_count }} {% translate 'employees' request.session.language %}
         </span>
-        {% if can_add_job %}
-        <button type="button" class="btn btn-sm btn-outline-warning btn-icon"
-                data-bs-toggle="modal" data-bs-target="#jobFormModal"
-                hx-get="{% url 'workflow_job_create' %}?workflow_type_id={{ job.id }}"
-                hx-target="#jobFormModalContent" hx-swap="innerHTML"
-                hx-select="unset" hx-push-url="false"
-                title="Create a job for {{ job.name }}"
-                aria-label="Create a job for {{ job.name }}">
-          <i class="ti ti-plus"></i>
-        </button>
-        {% endif %}
       </div>
     </article>
     {% endfor %}

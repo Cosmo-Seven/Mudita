@@ -179,3 +179,34 @@ class EmployeeWorkflowStageLogModel(BaseModel):
         db_table = "employee_workflow_stage_logs"
         unique_together = ("workflow", "stage")
         verbose_name = "Workflow Stage Log"
+
+
+class EmployeeRequestModel(BaseModel):
+    TYPE_CHOICES = (
+        ("job_change", "Change job"),
+        ("resignation", "Resignation"),
+    )
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
+    )
+
+    employee = models.ForeignKey(
+        EmployeeModel, on_delete=models.CASCADE, related_name="requests"
+    )
+    request_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    reason = models.TextField()
+    desired_job = models.CharField(max_length=255, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    staff_note = models.TextField(blank=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.employee.full_name_en} — {self.get_request_type_display()}"
+
+    class Meta:
+        app_label = "core"
+        db_table = "employee_requests"
+        ordering = ["-created_at"]
+        verbose_name = "Employee Request"

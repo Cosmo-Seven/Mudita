@@ -68,21 +68,26 @@
                 <strong>Screen by address.</strong>
             </div>
             <label class="visually-hidden" for="group-province">Province</label>
-            <select id="group-province" name="province" class="form-select" onchange="this.form.submit()">
+            <select id="group-province" name="province" class="form-select"
+                onchange="this.form.elements.district.value = ''; this.form.elements.sub_district.value = ''; this.form.submit()">
                 <option value="">All provinces</option>
                 {% for item in provinces %}
                 <option value="{{ item }}" {% if filters.province == item %}selected{% endif %}>{{ item }}</option>
                 {% endfor %}
             </select>
             <label class="visually-hidden" for="group-district">District</label>
-            <select id="group-district" name="district" class="form-select" onchange="this.form.submit()">
+            <select id="group-district" name="district" class="form-select"
+                {% if not filters.province %}disabled{% endif %}
+                onchange="this.form.elements.sub_district.value = ''; this.form.submit()">
                 <option value="">All districts</option>
                 {% for item in districts %}
                 <option value="{{ item }}" {% if filters.district == item %}selected{% endif %}>{{ item }}</option>
                 {% endfor %}
             </select>
             <label class="visually-hidden" for="group-sub-district">Sub-district</label>
-            <select id="group-sub-district" name="sub_district" class="form-select" onchange="this.form.submit()">
+            <select id="group-sub-district" name="sub_district" class="form-select"
+                {% if not filters.district %}disabled{% endif %}
+                onchange="this.form.submit()">
                 <option value="">-- Every sub-district --</option>
                 {% for item in sub_districts %}
                 <option value="{{ item }}" {% if filters.sub_district == item %}selected{% endif %}>{{ item }}</option>
@@ -176,7 +181,9 @@
                 {% csrf_token %}
                 <div class="modal-header">
                     <h2 class="modal-title fs-5" id="createEmployerGroupModalLabel">Create a new group</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
                 </div>
                 <div class="modal-body">
                     <label class="form-label" for="newEmployerGroupName">Group name</label>

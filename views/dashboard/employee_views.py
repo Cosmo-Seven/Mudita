@@ -3,16 +3,115 @@ from django.shortcuts import render, redirect, get_object_or_404
 from datetime import date, datetime, timedelta
 from uuid import UUID
 from django.db import models
+from django.db import transaction
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from django.contrib.auth.password_validation import validate_password
 from utils.decorators import custom_login_required
 from decorators.role_decorator import role_permission_required
 from helpers.filters import filter_querysets
 from helpers.exports import export_to_pdf, export_to_excel, filter_queryset_for_export
 from helpers.phone import format_mm_phone
 from constants.message import CREATE, UPDATE, DELETE
-from core.models import EmployeeModel, EmployerModel, NationalityModel, AddressModel, DocumentTypeModel
+from core.models import (
+    EmployeeModel,
+    EmployerModel,
+    NationalityModel,
+    AddressModel,
+    DocumentTypeModel,
+    UserModel,
+)
 from django.core.paginator import Paginator
 from django.core.cache import cache
 from django.utils.dateparse import parse_date
+
+
+def _worker_account_input(request, employee=None):
+    email = request.POST.get("login_email", "").strip()
+    password = request.POST.get("worker_password", "")
+    user = employee.user if employee else None
+    if user and not email:
+        email = user.email
+    if not email:
+        if password:
+            messages.error(request, "Enter a login email to set a worker password.")
+            return None
+        return "", ""
+
+    try:
+        validate_email(email)
+    except ValidationError:
+        messages.error(request, "Enter a valid worker login email.")
+        return None
+
+    duplicate_users = UserModel.objects.filter(email__iexact=email)
+    if user:
+        duplicate_users = duplicate_users.exclude(pk=user.pk)
+    if duplicate_users.exists():
+        messages.error(request, "That email address is already used by another account.")
+        return None
+    if not user and not password:
+        messages.error(request, "Set an initial password to create the worker login.")
+        return None
+    if password:
+        account = UserModel(
+            username=employee.full_name_en if employee else request.POST.get("full_name_en", "")
+        )
+        try:
+            validate_password(password, user=account)
+        except ValidationError as error:
+            messages.error(request, " ".join(error.messages))
+            return None
+    return email, password
+
+
+def _save_worker_account(employee, email, password):
+    if not email:
+        return
+    if employee.user:
+        user = employee.user
+        user.email = email
+        user.username = employee.full_name_en
+        if password:
+            user.set_password(password)
+        user.save()
+    else:
+        user = UserModel.objects.create_user(
+            email=email,
+            username=employee.full_name_en,
+            password=password,
+            is_active=True,
+            is_staff=False,
+            is_superuser=False,
+        )
+        employee.user = user
+    employee.login_email = email
+    employee.save(update_fields=["user", "login_email", "updated_at"])
+
+
+def _save_employee_home_address(request, employee):
+    fields = ("address_line", "province", "district", "sub_district", "postal_code")
+    if not any(field in request.POST for field in fields):
+        return
+
+    address_data = {field: request.POST.get(field, "").strip() for field in fields}
+    address = (
+        employee.addresses.filter(address_type="home")
+        .order_by("created_at")
+        .first()
+    )
+    if address:
+        for field, value in address_data.items():
+            setattr(address, field, value)
+        address.updated_by = request.user
+        address.save()
+    elif any(address_data.values()):
+        employee.addresses.create(
+            address_type="home",
+            created_by=request.user,
+            **address_data,
+        )
+
 
 @custom_login_required("dashboard_login")
 @role_permission_required("view_employeemodel")
@@ -218,8 +317,14 @@ def employee_list(request):
 # ========================
 @custom_login_required("dashboard_login")
 @role_permission_required("add_employeemodel")
+@transaction.atomic
 def employee_create(request):
     if request.method == "POST":
+        account_input = _worker_account_input(request)
+        if account_input is None:
+            return redirect("employee_create")
+        account_email, account_password = account_input
+
         employer_id = request.POST.get("employer")
         if not employer_id:
             messages.error(request, "Please choose an employer.")
@@ -271,10 +376,12 @@ def employee_create(request):
             worker_reference_number=request.POST.get("worker_reference_number"),
             insurance_type=request.POST.get("insurance_type"),
             diagnosed_hospital=request.POST.get("diagnosed_hospital"),
-            login_email=request.POST.get("login_email"),
+            login_email=account_email,
             created_by=request.user,
         )
 
+        _save_employee_home_address(request, employee)
+        _save_worker_account(employee, account_email, account_password)
         if request.FILES.get("photo"):
             employee.photo = request.FILES.get("photo")
             employee.save()
@@ -294,10 +401,16 @@ def employee_create(request):
 # ========================
 @custom_login_required("dashboard_login")
 @role_permission_required("change_employeemodel")
+@transaction.atomic
 def employee_update(request, pk):
     employee = get_object_or_404(EmployeeModel, id=pk)
 
     if request.method == "POST":
+        account_input = _worker_account_input(request, employee)
+        if account_input is None:
+            return redirect("employee_update", pk=employee.id)
+        account_email, account_password = account_input
+
         employee.employer_id = request.POST.get("employer") or employee.employer_id
         employee.title_th = request.POST.get("title_th")
         employee.name_th = request.POST.get("name_th")
@@ -341,7 +454,7 @@ def employee_update(request, pk):
         employee.worker_reference_number = request.POST.get("worker_reference_number")
         employee.insurance_type = request.POST.get("insurance_type")
         employee.diagnosed_hospital = request.POST.get("diagnosed_hospital")
-        employee.login_email = request.POST.get("login_email")
+        employee.login_email = account_email
         employee.status = request.POST.get("status", employee.status)
 
         if request.FILES.get("photo"):
@@ -351,11 +464,16 @@ def employee_update(request, pk):
 
         employee.updated_by = request.user
         employee.save()
+        _save_employee_home_address(request, employee)
+        _save_worker_account(employee, account_email, account_password)
         messages.success(request, UPDATE)
         return redirect("employee_list")
 
     context = {
         "employee": employee,
+        "home_address": employee.addresses.filter(address_type="home")
+        .order_by("created_at")
+        .first(),
         "employers": EmployerModel.objects.filter(is_deleted=False).order_by("name_en"),
         "nationalities": NationalityModel.objects.all().order_by("name"),
     }

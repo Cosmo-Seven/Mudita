@@ -1,0 +1,55 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% block title %}အလုပ်သမား တင်ပြချက်များ{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold">အလုပ်သမား တင်ပြချက်များ</h4>
+                <h6>အလုပ်ပြောင်းရန်နှင့် နုတ်ထွက်ရန် တင်ပြချက်များကို စစ်ဆေးပါ</h6>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                {% for item in employee_requests %}
+                <div class="border-bottom py-3">
+                    <div class="d-flex flex-wrap justify-content-between gap-2">
+                        <div>
+                            <h5 class="mb-1">{{ item.employee.full_name_en }} · {{ item.get_request_type_display }}</h5>
+                            <p class="text-muted mb-1">{{ item.employee.employer.name_en }} · {{ item.created_at|date:"d M Y H:i" }}</p>
+                            {% if item.desired_job %}<p class="mb-1">ပြောင်းလိုသောအလုပ် — {{ item.desired_job }}</p>{% endif %}
+                            <p class="mb-2">{{ item.reason|linebreaksbr }}</p>
+                        </div>
+                        <span class="badge {% if item.status == 'pending' %}bg-warning{% elif item.status == 'approved' %}bg-success{% else %}bg-danger{% endif %} align-self-start">
+                            {{ item.get_status_display }}
+                        </span>
+                    </div>
+                    <form method="post" class="row g-2 align-items-end">
+                        {% csrf_token %}
+                        <input type="hidden" name="request_id" value="{{ item.id }}">
+                        <div class="col-md-3">
+                            <label class="form-label">အခြေအနေ</label>
+                            <select class="form-select" name="status">
+                                {% for value, label in item.STATUS_CHOICES %}
+                                <option value="{{ value }}" {% if item.status == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-7">
+                            <label class="form-label">အလုပ်သမားထံ ပြသမည့် မှတ်ချက်</label>
+                            <input class="form-control" name="staff_note" value="{{ item.staff_note }}" maxlength="5000">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">သိမ်းရန်</button>
+                        </div>
+                    </form>
+                </div>
+                {% empty %}
+                <p class="text-muted mb-0">တင်ပြချက် မရှိသေးပါ။</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+{% endblock %}

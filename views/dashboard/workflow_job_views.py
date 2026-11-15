@@ -4,7 +4,6 @@ from uuid import UUID
 
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
-from django.utils.text import slugify
 from django.views.decorators.http import require_POST
 
 from utils.decorators import custom_login_required
@@ -128,19 +127,11 @@ def _jobs_queryset():
     ensure_default_workflow_types()
     return (
         WorkflowTypeModel.objects
+        .filter(is_deleted=False)
         .annotate(stage_count=Count("stages", distinct=True),
                   employee_count=Count("workflows", distinct=True))
         .order_by("order", "name")
     )
-
-
-def _unique_code(name, exclude_pk=None):
-    base = slugify(name).replace("-", "_") or "job"
-    code, i = base, 2
-    while WorkflowTypeModel.objects.filter(code=code).exclude(pk=exclude_pk).exists():
-        code = f"{base}_{i}"
-        i += 1
-    return code
 
 
 def _render_table(request, message=None, error=None):
@@ -150,6 +141,7 @@ def _render_table(request, message=None, error=None):
                       "message": message,
                       "error": error,
                       "can_add_job": request.user.has_permission("add_employeeworkflowmodel"),
+                      "can_delete": request.user.has_permission("delete_workflowtypemodel"),
                   })
 
 
@@ -226,7 +218,7 @@ def workflow_job_list(request):
     return render(request, "dashboard/workflow_job_list.html", {
         "jobs": _jobs_queryset(),
         "can_add_job": request.user.has_permission("add_employeeworkflowmodel"),
-        "can_add_workflow_type": request.user.has_permission("add_workflowtypemodel"),
+        "can_delete": request.user.has_permission("delete_workflowtypemodel"),
         "calendar_month": calendar_month,
         "calendar_weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         "calendar_days": calendar_days,
@@ -295,39 +287,6 @@ def workflow_job_create(request):
 
 
 @custom_login_required("dashboard_login")
-@role_permission_required("add_workflowtypemodel")
-def workflow_type_create(request):
-    if request.method == "GET":
-        return _render_form(request)
-
-    name = request.POST.get("name", "").strip()
-    values = {k: request.POST.get(k, "").strip() for k in ("name", "code", "group", "icon", "subtitle", "order")}
-    errors = {}
-    if not name:
-        errors["name"] = "Job name is required."
-    code = values["code"] or _unique_code(name)
-    if WorkflowTypeModel.objects.filter(code=code).exists():
-        errors["code"] = "This code is already used."
-    if values["group"] not in dict(GROUP_CHOICES):
-        errors["group"] = "Choose a group."
-    if errors:
-        return _render_form(request, errors=errors, values=values)
-
-    next_order = (WorkflowTypeModel.objects.order_by("-order").values_list("order", flat=True).first() or 0) + 1
-    workflow_type = WorkflowTypeModel.objects.create(
-        code=code, name=name, group=values["group"],
-        icon=values["icon"] or "ti ti-chart-bar", subtitle=values["subtitle"],
-        order=int(values["order"]) if values["order"].isdigit() else next_order,
-        created_by=request.user,
-    )
-    _seed_workflow_type_stages(workflow_type, _build_default_stage_names(name))
-    response = render(request, "dashboard/components/workflow_job_form.html",
-                      {"job": None, "saved": True, "group_choices": GROUP_CHOICES, "errors": {}, "values": {}})
-    response["HX-Refresh"] = "true"
-    return response
-
-
-@custom_login_required("dashboard_login")
 @role_permission_required("change_workflowtypemodel")
 def workflow_job_update(request, pk):
     job = get_object_or_404(WorkflowTypeModel, pk=pk)
@@ -362,8 +321,6 @@ def workflow_job_update(request, pk):
 @require_POST
 def workflow_job_delete(request, pk):
     job = get_object_or_404(WorkflowTypeModel, pk=pk)
-    if EmployeeWorkflowModel.objects.filter(workflow_type=job).exists():
-        return _render_table(request, error=f"'{job.name}' still has employees in it. Remove them first.")
     name = job.name
-    job.delete()   # its steps cascade
+    job.soft_delete(request.user)
     return _render_table(request, message=f"'{name}' deleted.")

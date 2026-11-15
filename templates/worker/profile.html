@@ -1,0 +1,101 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#093d5d">
+    <title>My Profile | Mudita</title>
+    <link rel="stylesheet" href="{% static 'dashboard/css/worker-portal.css' %}?v=3">
+</head>
+<body>
+    <header class="worker-topbar">
+        <a class="worker-brand" href="{% url 'worker_portal' %}" aria-label="Mudita Worker Services">
+            <img src="{% static 'dashboard/images/logo.jpg' %}" alt="">
+            <span class="worker-brand-copy">
+                <strong>Mudita Thailand</strong>
+                <span>Worker Services</span>
+            </span>
+        </a>
+        <nav class="worker-nav" aria-label="Worker navigation">
+            <a class="worker-nav-link" href="{% url 'worker_portal' %}">
+                <span class="worker-nav-icon" aria-hidden="true">⌂</span><span class="worker-nav-text">Services</span>
+            </a>
+            <a class="worker-nav-link is-active" href="{% url 'worker_profile' %}">
+                <span class="worker-nav-icon" aria-hidden="true">◉</span><span class="worker-nav-text">My Profile</span>
+            </a>
+            <a class="worker-nav-link is-logout" href="{% url 'dashboard_logout' %}">
+                <span class="worker-nav-icon" aria-hidden="true">↗</span><span class="worker-nav-text">Log out</span>
+            </a>
+        </nav>
+    </header>
+
+    <main class="worker-main">
+        <div class="worker-page-heading">
+            <div>
+                <p class="worker-eyebrow">YOUR ACCOUNT</p>
+                <h1>My Profile</h1>
+                <p>Your personal and employment information linked to this account</p>
+            </div>
+            <span class="worker-date">Personal details</span>
+        </div>
+
+        <div class="worker-profile-layout">
+            <aside class="worker-profile-aside">
+                <div class="worker-avatar">
+                    {% if employee.photo %}
+                        <img src="{{ employee.photo.url }}" alt="{{ employee.full_name_en }}">
+                    {% else %}
+                        {{ employee.full_name_en|slice:":1"|upper }}
+                    {% endif %}
+                </div>
+                <h2>{{ employee.full_name_en }}</h2>
+                <p>{{ employee.name_th|default:"Worker" }}</p>
+                <span class="worker-hero-chip">Account active</span>
+            </aside>
+
+            <div class="worker-profile-main">
+                <section class="worker-card">
+                    <div class="worker-card-heading">
+                        <span class="worker-card-icon" aria-hidden="true">◉</span>
+                        <div>
+                            <h2>Personal Information</h2>
+                            <p>Your personal and identification details</p>
+                        </div>
+                    </div>
+                    <dl class="worker-facts">
+                        <div class="worker-fact"><dt>Full name</dt><dd>{{ employee.full_name_en|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Thai name</dt><dd>{{ employee.name_th|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Date of birth</dt><dd>{{ employee.date_of_birth|date:"d M Y"|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Phone number</dt><dd>{{ employee.phone|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Nationality</dt><dd>{{ employee.nationality|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Passport number</dt><dd>{{ employee.passport_number|default:"-" }}</dd></div>
+                    </dl>
+                </section>
+
+                <section class="worker-card">
+                    <div class="worker-card-heading">
+                        <span class="worker-card-icon is-amber" aria-hidden="true">▣</span>
+                        <div>
+                            <h2>Employment &amp; Documents</h2>
+                            <p>Your employment and permit details</p>
+                        </div>
+                    </div>
+                    <dl class="worker-facts">
+                        <div class="worker-fact"><dt>Employer</dt><dd>{{ employee.employer.name_en|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Job position</dt><dd>{{ employee.job_position|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Start date</dt><dd>{{ employee.start_date|date:"d M Y"|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Department</dt><dd>{{ employee.work_department|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Work permit number</dt><dd>{{ employee.work_permit_number|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Work permit expiry date</dt><dd>{{ employee.work_permit_expiry_date|date:"d M Y"|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Visa type</dt><dd>{{ employee.visa_type|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Visa expiry date</dt><dd>{{ employee.visa_expiry_date|date:"d M Y"|default:"-" }}</dd></div>
+                        <div class="worker-fact"><dt>Next 90-day report</dt><dd>{{ employee.report_90day_date|date:"d M Y"|default:"-" }}</dd></div>
+                    </dl>
+                </section>
+            </div>
+        </div>
+        <footer class="worker-main-footer">Mudita Thailand · Worker Services</footer>
+    </main>
+</body>
+</html>

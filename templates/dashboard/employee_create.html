@@ -16,16 +16,19 @@
             <div class="card mb-3 entity-form-card">
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label">
+                        <label class="form-label" for="employee-employer">
                             {% translate 'choose_an_employer' request.session.language %}
                             <span class="text-danger ms-1">*</span>
                         </label>
-                        <select class="select searchable-select" name="employer" required>
+                        <select id="employee-employer" class="form-select searchable-select" name="employer" required>
                             <option value="">{% translate 'type_to_search_for_the_employers_name' request.session.language %}</option>
                             {% for e in employers %}
                             <option value="{{ e.id }}">{{ e.name_en }} ({{ e.employer_code|default:"-" }})</option>
                             {% endfor %}
                         </select>
+                        {% if not employers %}
+                        <div class="form-text text-danger mt-2">အလုပ်ရှင်စာရင်း မရှိသေးပါ။ အလုပ်သမားမထည့်မီ အလုပ်ရှင်တစ်ဦးကို အရင်ထည့်ပါ။</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -173,6 +176,36 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3 entity-form-card">
+                <div class="card-header">
+                    <h5 class="mb-0">{% translate 'address' request.session.language %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="employee-address-line">{% translate 'address_line' request.session.language %}</label>
+                        <textarea id="employee-address-line" name="address_line" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <label class="form-label" for="employee-province">{% translate 'province' request.session.language %}</label>
+                            <input id="employee-province" name="province" class="form-control">
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <label class="form-label" for="employee-district">{% translate 'district' request.session.language %}</label>
+                            <input id="employee-district" name="district" class="form-control">
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <label class="form-label" for="employee-sub-district">{% translate 'sub_district' request.session.language %}</label>
+                            <input id="employee-sub-district" name="sub_district" class="form-control">
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <label class="form-label" for="employee-postal-code">{% translate 'postal_code' request.session.language %}</label>
+                            <input id="employee-postal-code" name="postal_code" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -388,17 +421,23 @@
                 </div>
             </div>
 
-            <!-- 6. Login Information -->
+            <!-- 6. Worker Portal Account -->
             <div class="card mb-3 entity-form-card">
                 <div class="card-header">
-                    <h5 class="mb-0">6. {% translate 'login_information' request.session.language %}</h5>
+                    <h5 class="mb-0">6. အလုပ်သမား website အကောင့်</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label class="form-label">{% translate 'email' request.session.language %}</label>
-                                <input type="email" name="login_email" class="form-control">
+                                <label class="form-label">Login email (မဖြည့်ပါက အကောင့်မဖန်တီးပါ)</label>
+                                <input type="email" name="login_email" autocomplete="off" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">ကနဦး password (အကောင့်ဖန်တီးပါက လိုအပ်သည်)</label>
+                                <input type="password" name="worker_password" autocomplete="new-password" class="form-control">
                             </div>
                         </div>
                     </div>

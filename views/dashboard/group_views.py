@@ -67,6 +67,12 @@ def employer_group_list(request, employer_id):
         "district": request.GET.get("district", "").strip(),
         "sub_district": request.GET.get("sub_district", "").strip(),
     }
+    if not filters["province"]:
+        filters["district"] = ""
+        filters["sub_district"] = ""
+    elif not filters["district"]:
+        filters["sub_district"] = ""
+
     if filters["search"]:
         employees = employees.filter(
             Q(full_name_en__icontains=filters["search"])
@@ -108,8 +114,17 @@ def employer_group_list(request, employer_id):
         if filters[field]
     }
     if address_filters:
+        address_filters["addresses__address_type"] = "home"
         employees = employees.filter(**address_filters)
     employees = employees.distinct()
+
+    home_address_filters = {"addresses__address_type": "home"}
+    district_address_filters = dict(home_address_filters)
+    if filters["province"]:
+        district_address_filters["addresses__province"] = filters["province"]
+    sub_district_address_filters = dict(district_address_filters)
+    if filters["district"]:
+        sub_district_address_filters["addresses__district"] = filters["district"]
 
     active_teams = TeamModel.objects.filter(is_deleted=False).prefetch_related(
         Prefetch("employees", queryset=employees.order_by("full_name_en"))
@@ -133,22 +148,24 @@ def employer_group_list(request, employer_id):
         ),
         "filters": filters,
         "provinces": employer_employees
-        .exclude(addresses__province__isnull=True)
-        .exclude(addresses__province="")
+        .filter(
+            **home_address_filters,
+            addresses__province__gt="",
+        )
         .values_list("addresses__province", flat=True)
         .distinct()
         .order_by("addresses__province"),
-        "districts": employer_employees.exclude(
-            addresses__district__isnull=True
+        "districts": employer_employees.filter(
+            **district_address_filters,
+            addresses__district__gt="",
         )
-        .exclude(addresses__district="")
         .values_list("addresses__district", flat=True)
         .distinct()
         .order_by("addresses__district"),
-        "sub_districts": employer_employees.exclude(
-            addresses__sub_district__isnull=True
+        "sub_districts": employer_employees.filter(
+            **sub_district_address_filters,
+            addresses__sub_district__gt="",
         )
-        .exclude(addresses__sub_district="")
         .values_list("addresses__sub_district", flat=True)
         .distinct()
         .order_by("addresses__sub_district"),

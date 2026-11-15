@@ -1,0 +1,161 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#093d5d">
+    <title>Worker Services | Mudita</title>
+    <link rel="stylesheet" href="{% static 'dashboard/css/worker-portal.css' %}?v=3">
+</head>
+<body>
+    <header class="worker-topbar">
+        <a class="worker-brand" href="{% url 'worker_portal' %}" aria-label="Mudita Worker Services">
+            <img src="{% static 'dashboard/images/logo.jpg' %}" alt="">
+            <span class="worker-brand-copy">
+                <strong>Mudita Thailand</strong>
+                <span>Worker Services</span>
+            </span>
+        </a>
+        <nav class="worker-nav" aria-label="Worker navigation">
+            <a class="worker-nav-link is-active" href="{% url 'worker_portal' %}">
+                <span class="worker-nav-icon" aria-hidden="true">⌂</span><span class="worker-nav-text">Services</span>
+            </a>
+            <a class="worker-nav-link" href="{% url 'worker_profile' %}">
+                <span class="worker-nav-icon" aria-hidden="true">◉</span><span class="worker-nav-text">My Profile</span>
+            </a>
+            <a class="worker-nav-link is-logout" href="{% url 'dashboard_logout' %}">
+                <span class="worker-nav-icon" aria-hidden="true">↗</span><span class="worker-nav-text">Log out</span>
+            </a>
+        </nav>
+    </header>
+
+    <main class="worker-main">
+        {% for message in messages %}
+            <div class="worker-alert{% if message.tags == 'error' %} is-error{% endif %}" role="status">{{ message }}</div>
+        {% endfor %}
+
+        <section class="worker-hero">
+            <div class="worker-avatar">
+                {% if employee.photo %}
+                    <img src="{{ employee.photo.url }}" alt="{{ employee.full_name_en }}">
+                {% else %}
+                    {{ employee.full_name_en|slice:":1"|upper }}
+                {% endif %}
+            </div>
+            <div class="worker-hero-copy">
+                <p class="worker-eyebrow">YOUR WORKER PORTAL</p>
+                <h1>Welcome, {{ employee.full_name_en }}</h1>
+                <p>{{ employee.employer.name_en }}{% if employee.job_position %} · {{ employee.job_position }}{% endif %}</p>
+                <span class="worker-hero-chip">Account active</span>
+            </div>
+            <a class="worker-hero-action" href="{% url 'worker_profile' %}">View my profile <span aria-hidden="true">→</span></a>
+        </section>
+
+        <div class="worker-grid">
+            <section class="worker-card worker-card-report">
+                <div class="worker-card-heading">
+                    <span class="worker-card-icon is-amber" aria-hidden="true">◷</span>
+                    <div>
+                        <h2>90-Day Report</h2>
+                        <p>Keep track of your next reporting date</p>
+                    </div>
+                </div>
+                {% if employee.report_90day_date %}
+                    <div class="worker-report-card{% if days_until_report <= 14 %} is-due{% endif %}{% if days_until_report < 0 %} is-overdue{% endif %}">
+                        <span class="worker-report-label">Next reporting deadline</span>
+                        <strong class="worker-report-date">{{ employee.report_90day_date|date:"d M Y" }}</strong>
+                        {% if days_until_report < 0 %}
+                            <span class="worker-report-count is-danger">Your reporting date has passed</span>
+                            <p class="worker-report-footnote">Please contact our team as soon as possible.</p>
+                        {% elif days_until_report == 0 %}
+                            <span class="worker-report-count is-danger">Your report is due today</span>
+                        {% elif days_until_report <= 14 %}
+                            <span class="worker-report-count is-warning">{{ days_until_report }} days left to report</span>
+                            <p class="worker-report-footnote">Please prepare the required documents before the deadline.</p>
+                        {% else %}
+                            <span class="worker-report-count">{{ days_until_report }} days until your report</span>
+                            <p class="worker-report-footnote">We will highlight your report here as the deadline approaches.</p>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="worker-report-card">
+                        <p class="worker-empty-date">Your 90-day report date has not been set. Please contact our team.</p>
+                    </div>
+                {% endif %}
+            </section>
+
+            <section class="worker-card worker-card-form">
+                <div class="worker-card-heading">
+                    <span class="worker-card-icon" aria-hidden="true">✉</span>
+                    <div>
+                        <h2>Submit a Request</h2>
+                        <p>Our team will review your request</p>
+                    </div>
+                </div>
+                <form class="worker-form" method="post" action="{% url 'submit_employee_request' %}">
+                    {% csrf_token %}
+                    <label for="request_type">Request type</label>
+                    <select id="request_type" name="request_type" required>
+                        <option value="">Choose a request type</option>
+                        <option value="job_change">Change my job</option>
+                        <option value="resignation">Resign from my job</option>
+                    </select>
+                    <div id="desired_job_field" hidden>
+                        <label for="desired_job">Preferred job or employer</label>
+                        <input id="desired_job" name="desired_job" maxlength="255" placeholder="Enter the job type or employer name">
+                    </div>
+                    <label for="reason">Reason for your request</label>
+                    <textarea id="reason" name="reason" required maxlength="5000" placeholder="Please describe your situation"></textarea>
+                    <p class="worker-form-help">After submitting, you can track the status of your request below.</p>
+                    <button class="worker-submit" type="submit">Submit request <span aria-hidden="true">→</span></button>
+                </form>
+            </section>
+
+            <section class="worker-card worker-card-wide">
+                <div class="worker-card-heading">
+                    <span class="worker-card-icon" aria-hidden="true">▤</span>
+                    <div>
+                        <h2>My Requests</h2>
+                        <p>Track your requests and read our team's responses</p>
+                    </div>
+                </div>
+                {% for item in requests %}
+                    <article class="worker-request">
+                        <div class="worker-request-main">
+                            <div class="worker-request-title">
+                                {% if item.request_type == "job_change" %}Job change request{% else %}Resignation request{% endif %}
+                            </div>
+                            <div class="worker-request-date">Submitted {{ item.created_at|date:"d M Y · H:i" }}</div>
+                            {% if item.desired_job %}<p class="worker-request-reason"><strong>Preferred job — </strong>{{ item.desired_job }}</p>{% endif %}
+                            <p class="worker-request-reason">{{ item.reason|linebreaksbr }}</p>
+                            {% if item.staff_note %}<p class="worker-request-note"><strong>Team response — </strong>{{ item.staff_note|linebreaksbr }}</p>{% endif %}
+                        </div>
+                        <span class="worker-status{% if item.status == 'approved' %} approved{% elif item.status == 'rejected' %} rejected{% endif %}">
+                            {% if item.status == "pending" %}Under review{% elif item.status == "approved" %}Approved{% else %}Declined{% endif %}
+                        </span>
+                    </article>
+                {% empty %}
+                    <div class="worker-empty-state">You have no requests yet. Use the form above if you need assistance.</div>
+                {% endfor %}
+            </section>
+        </div>
+        <footer class="worker-main-footer">Mudita Thailand · Worker Services</footer>
+    </main>
+
+    <script>
+        const requestType = document.getElementById("request_type");
+        const desiredJobField = document.getElementById("desired_job_field");
+        const desiredJobInput = document.getElementById("desired_job");
+
+        function updateDesiredJobField() {
+            const isJobChange = requestType.value === "job_change";
+            desiredJobField.hidden = !isJobChange;
+            desiredJobInput.required = isJobChange;
+        }
+
+        requestType.addEventListener("change", updateDesiredJobField);
+        updateDesiredJobField();
+    </script>
+</body>
+</html>

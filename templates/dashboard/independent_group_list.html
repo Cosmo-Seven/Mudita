@@ -28,7 +28,9 @@
                         {% csrf_token %}
                         <div class="modal-header">
                             <h5 class="modal-title" id="createGroupModalLabel">Create a group</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
                         </div>
                         <div class="modal-body">
                             <label class="form-label" for="newGroupName">Group name</label>
@@ -80,7 +82,9 @@
                                 {% csrf_token %}
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="editGroupModalLabel{{ group.id }}">Edit group</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
                                 </div>
                                 <div class="modal-body">
                                     <label class="form-label" for="groupName{{ group.id }}">Group name</label>
@@ -332,7 +336,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="independentEmployeePreviewTitle">Employee preview</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
             </div>
             <div class="modal-body" id="independentEmployeePreviewBody" style="max-height: 75vh; overflow-y: auto;">
                 <div class="text-center py-5">

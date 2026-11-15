@@ -1,7 +1,7 @@
 {% load translate %}
 <div class="modal-header">
   <h5 class="modal-title">
-    {% if job %}{% translate 'edit_job' request.session.language %}{% else %}{% translate 'create_job' request.session.language %}{% endif %}
+    {% translate 'edit_job' request.session.language %}
   </h5>
   <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">×</span>
@@ -13,7 +13,7 @@
   <div class="alert alert-success py-2 mb-0">Saved.</div>
 </div>
 {% else %}
-<form {% if job %}hx-post="{% url 'workflow_job_update' job.id %}"{% else %}hx-post="{% url 'workflow_type_create' %}"{% endif %}
+<form hx-post="{% url 'workflow_job_update' job.id %}"
       hx-target="#jobFormModalContent" hx-swap="innerHTML"
       hx-select="unset" hx-push-url="false">
   {% csrf_token %}
@@ -24,14 +24,6 @@
              value="{{ values.name|default:job.name|default:'' }}" placeholder="e.g. Import MOU">
       {% if errors.name %}<div class="invalid-feedback">{{ errors.name }}</div>{% endif %}
     </div>
-
-    {% if not job %}
-    <div class="mb-3">
-      <label class="form-label">Code <small class="text-muted">(optional, auto from name)</small></label>
-      <input type="text" name="code" class="form-control {% if errors.code %}is-invalid{% endif %}" value="{{ values.code|default:'' }}">
-      {% if errors.code %}<div class="invalid-feedback">{{ errors.code }}</div>{% endif %}
-    </div>
-    {% endif %}
 
     <div class="mb-3">
       <label class="form-label">{% translate 'group' request.session.language %}</label>

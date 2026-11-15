@@ -27,6 +27,10 @@ from constants.message import UPDATE
 # ========================
 @custom_login_required("dashboard_login")
 def dashboard(request):
+    if not request.user.is_staff and EmployeeModel.objects.filter(
+        user=request.user, is_deleted=False
+    ).exists():
+        return redirect("worker_profile")
     ensure_default_workflow_types()
     today = date.today()
     soon = today + timedelta(days=90)
