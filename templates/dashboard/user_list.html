@@ -74,7 +74,7 @@
                                             <img src="{% if user.profile %}{{user.profile.url}}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
                                                 alt="{{user.username}}">
                                         </a>
-                                        <a href="javascript:void(0);">{% translate user.translation_key request.session.language %}</a>
+                                        <a href="javascript:void(0);">{{ user.username }}</a>
                                     </div>
                                 </td>
                                 <td>

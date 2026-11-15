@@ -35,7 +35,7 @@
                                 <img src="{% if request.user.profile %}{{request.user.profile.url}}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
                                     class="img-fluid" alt="{{request.user.username}}"
                                     style="width:200px;height: 200px;border-radius: 50%;object-fit: cover;">
-                                <h5>{% translate request.user.translation_key request.session.language %}</h5>
+                                <h5>{{ request.user.username }}</h5>
                             </div>
 
                             <form action="{{unlock_url}}" method="POST">

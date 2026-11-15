@@ -358,7 +358,7 @@
                                 alt="Img">
                         </span>
                         <div>
-                            <h6 class="fw-medium">{% translate request.user.translation_key request.session.language %}</h6>
+                            <h6 class="fw-medium">{{ request.user.username }}</h6>
                             <p>{{ request.user.role.name }}</p>
                         </div>
                     </div>

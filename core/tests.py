@@ -81,6 +81,22 @@ class DashboardLoginTests(TestCase):
         self.assertContains(response, 'hx-history="false"')
         self.assertContains(response, f'<option value="{new_role.id}">{new_role.name}</option>')
 
+    def test_usernames_keep_their_original_case(self):
+        self.role.permissions.add(Permission.objects.get(codename="view_usermodel"))
+        user = User.objects.create_user(
+            username="mIXedCase",
+            email="mixedcase@example.com",
+            password="StrongPass123!",
+            role=self.role,
+        )
+
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("user_list"))
+
+        self.assertContains(response, f">{user.username}</a>")
+        self.assertContains(response, f">{self.user.username}</h6>")
+        self.assertNotContains(response, "Mixedcase")
+
     def test_workflow_steps_modal_uses_delegated_actions_without_inline_script(self):
         self.role.permissions.add(
             Permission.objects.get(codename="view_workflowstagemodel"),
