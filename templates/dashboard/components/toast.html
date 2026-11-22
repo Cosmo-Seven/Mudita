@@ -58,18 +58,27 @@
 
 
 <script>
-    function clearToastNotifications() {
-        document.querySelectorAll('.toast-container').forEach((container) => container.remove());
-    }
+    (function () {
+        if (window.__toastHandlersBound) return;
+        window.__toastHandlersBound = true;
 
-    document.body.addEventListener("htmx:beforeRequest", clearToastNotifications);
-    window.addEventListener("pagehide", clearToastNotifications);
+        function clearToastNotifications() {
+            document.querySelectorAll('.toast-container').forEach((container) => container.remove());
+        }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const toastElList = document.querySelectorAll('.toast');
-        toastElList.forEach((toastEl) => {
-            const toast = new bootstrap.Toast(toastEl);
-            toast.show();
-        });
-    });
+        function showToastNotifications() {
+            document.querySelectorAll('.toast').forEach((toastEl) => {
+                if (toastEl.dataset.toastInitialized) return;
+                toastEl.dataset.toastInitialized = "true";
+                new bootstrap.Toast(toastEl).show();
+            });
+        }
+
+        document.body.addEventListener("htmx:beforeRequest", clearToastNotifications);
+        window.addEventListener("pagehide", clearToastNotifications);
+
+        document.addEventListener("DOMContentLoaded", showToastNotifications);
+        // Toast ကို htmx swap နဲ့ ပြောင်းတဲ့အခါ (DOMContentLoaded ပြီးသွားလို့) ပြန် show ပေးရန်
+        document.body.addEventListener("htmx:afterSwap", showToastNotifications);
+    })();
 </script>

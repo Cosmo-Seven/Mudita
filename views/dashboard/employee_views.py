@@ -136,7 +136,11 @@ def employee_preview(request, pk):
 @custom_login_required("dashboard_login")
 @role_permission_required("view_employeemodel")
 def employee_list(request):
-    employees = EmployeeModel.objects.select_related("employer", "nationality").prefetch_related("addresses")
+    employees = (
+        EmployeeModel.objects.filter(is_deleted=False)
+        .select_related("employer", "nationality")
+        .prefetch_related("addresses")
+    )
 
     search = request.GET.get("search", "")
     nationality_id = request.GET.get("nationality", "")

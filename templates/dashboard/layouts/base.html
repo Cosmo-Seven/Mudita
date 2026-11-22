@@ -33,16 +33,17 @@
     <div class="main-wrapper {% if request.path == pos_url %}pos-five{% endif %}" hx-boost="true"
         hx-target="#main-body-wrapper" hx-select="#main-body-wrapper" hx-swap="innerHTML transition:true"
         hx-push-url="true">
-        {% include 'dashboard/components/toast.html' %}
         {% if request.user.is_authenticated %}
         {% include 'dashboard/layouts/header.html' %}
         {% include 'dashboard/layouts/sidebar.html' %}
 
         <div id="main-body-wrapper">
+            {% include 'dashboard/components/toast.html' %}
             {% block body %}{% endblock %}
         </div>
         {% else %}
         <div hx-boost="false">
+            {% include 'dashboard/components/toast.html' %}
             {% block auth %}{% endblock %}
         </div>
         {% endif %}
