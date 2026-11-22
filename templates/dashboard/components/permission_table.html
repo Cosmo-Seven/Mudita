@@ -43,19 +43,67 @@
                             data-module="{{ module_name }}" data-scope="{{ scope }}">
                     </div>
                 </td>
-                {% for scope_name, p in perms.items %}
                 <td class="text-center">
-                    {% if p %}
+                    {% if perms.view %}
                     <div class="form-check form-check-md justify-content-center d-flex">
                         <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
-                            value="{{ p.id }}" data-module="{{ module_name }}" data-scope="{{ scope }}"
-                            title="{{ scope_name|capfirst }} {{ module_name }}"
-                            {% if role and p in role.permissions.all %}checked{% endif %}>
+                            value="{{ perms.view.id }}" data-module="{{ module_name }}" data-scope="{{ scope }}"
+                            title="View {{ module_name }}"
+                            {% if role and perms.view in role.permissions.all %}checked{% endif %}>
                     </div>
                     {% endif %}
                 </td>
-                {% endfor %}
+                <td class="text-center">
+                    {% if perms.add %}
+                    <div class="form-check form-check-md justify-content-center d-flex">
+                        <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
+                            value="{{ perms.add.id }}" data-module="{{ module_name }}" data-scope="{{ scope }}"
+                            title="Add {{ module_name }}"
+                            {% if role and perms.add in role.permissions.all %}checked{% endif %}>
+                    </div>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if perms.change %}
+                    <div class="form-check form-check-md justify-content-center d-flex">
+                        <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
+                            value="{{ perms.change.id }}" data-module="{{ module_name }}" data-scope="{{ scope }}"
+                            title="Change {{ module_name }}"
+                            {% if role and perms.change in role.permissions.all %}checked{% endif %}>
+                    </div>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if perms.delete %}
+                    <div class="form-check form-check-md justify-content-center d-flex">
+                        <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
+                            value="{{ perms.delete.id }}" data-module="{{ module_name }}" data-scope="{{ scope }}"
+                            title="Delete {{ module_name }}"
+                            {% if role and perms.delete in role.permissions.all %}checked{% endif %}>
+                    </div>
+                    {% endif %}
+                </td>
             </tr>
+            {% if perms.extras %}
+            <tr>
+                <td class="ps-4 text-muted small">
+                    <i class="ti ti-arrow-elbow-down-right me-1"></i>{{ module_name }}
+                </td>
+                <td></td>
+                <td colspan="4">
+                    <div class="d-flex flex-wrap gap-3">
+                        {% for p in perms.extras %}
+                        <div class="form-check form-check-md mb-0">
+                            <input class="form-check-input perm-checkbox" type="checkbox" name="permissions"
+                                value="{{ p.id }}" data-module="{{ module_name }}" data-scope="{{ scope }}"
+                                {% if role and p in role.permissions.all %}checked{% endif %}>
+                            <label class="form-check-label">{{ p.name }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
             {% endfor %}
         </tbody>
     </table>

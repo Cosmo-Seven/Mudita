@@ -1,0 +1,128 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load translate %}
+{% load static %}
+{% block title %}{% translate 'activity_log' request.session.language %}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="add-item d-flex">
+                <div class="page-title">
+                    <h4 class="fw-bold">{% translate 'activity_log' request.session.language %}</h4>
+                    <h6>{% translate 'track_user_routes_and_actions' request.session.language %}</h6>
+                </div>
+            </div>
+            <ul class="table-top-head">
+                <li>
+                    <a data-bs-toggle="tooltip" href="{% url 'activity_log_list' %}" data-bs-placement="top"
+                        title="{% translate 'refresh' request.session.language %}"><i class="ti ti-refresh"></i></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <form method="GET" class="row g-2 align-items-end" hx-boost="false">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label">{% translate 'search' request.session.language %}</label>
+                        <input type="text" name="search" value="{{ search }}" class="form-control"
+                            placeholder="{% translate 'search' request.session.language %}...">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label">{% translate 'action' request.session.language %}</label>
+                        <select name="action" class="select">
+                            <option value="">{% translate 'all' request.session.language %}</option>
+                            {% for value, label in action_choices %}
+                            <option value="{{ value }}" {% if action == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label">{% translate 'method' request.session.language %}</label>
+                        <select name="method" class="select">
+                            <option value="">{% translate 'all' request.session.language %}</option>
+                            {% for value in method_choices %}
+                            <option value="{{ value }}" {% if method == value %}selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <label class="form-label">{% translate 'date_picker' request.session.language %}</label>
+                        <input type="text" name="date" value="{{ date }}" class="form-control flatpickr-date"
+                            placeholder="YYYY-MM-DD">
+                    </div>
+                    <div class="col-12 col-md-2 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            {% translate 'filter' request.session.language %}
+                        </button>
+                        <a href="{% url 'activity_log_list' %}" class="btn btn-secondary w-100">
+                            {% translate 'clear' request.session.language %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>{% translate 'date' request.session.language %}</th>
+                                <th>{% translate 'user' request.session.language %}</th>
+                                <th>{% translate 'action' request.session.language %}</th>
+                                <th>{% translate 'method' request.session.language %}</th>
+                                <th>{% translate 'route' request.session.language %}</th>
+                                <th>{% translate 'path' request.session.language %}</th>
+                                <th class="text-center">{% translate 'status' request.session.language %}</th>
+                                <th>{% translate 'ip_address' request.session.language %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr>
+                                <td class="text-nowrap">{{ log.created_at|date:"d M Y H:i:s" }}</td>
+                                <td>{{ log.user_email|default:"-" }}</td>
+                                <td>
+                                    <span class="badge {% if log.action == 'delete' %}bg-danger{% elif log.action == 'create' %}bg-success{% elif log.action == 'update' %}bg-warning{% elif log.action == 'view' %}bg-info{% else %}bg-secondary{% endif %}">
+                                        {{ log.action|capfirst }}
+                                    </span>
+                                </td>
+                                <td><span class="badge bg-light text-dark">{{ log.method }}</span></td>
+                                <td>{{ log.route_name|default:"-" }}</td>
+                                <td class="text-truncate" style="max-width: 260px;" title="{{ log.path }}">{{ log.path }}</td>
+                                <td class="text-center">
+                                    {% if log.status_code %}
+                                    <span class="badge {% if log.status_code < 400 %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ log.status_code }}
+                                    </span>
+                                    {% else %}-{% endif %}
+                                </td>
+                                <td>{{ log.ip_address|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    {% translate 'no_data_found' request.session.language %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% include 'dashboard/components/pagination.html' %}
+        </div>
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.flatpickr) {
+            flatpickr(".flatpickr-date", { dateFormat: "Y-m-d", allowInput: true });
+        }
+    });
+</script>
+{% endblock %}

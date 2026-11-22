@@ -135,5 +135,26 @@ def sidebar(request):
                     },
                 ],
             },
+            {
+                "title": "system",
+                "permissions": [
+                    "view_activitylogmodel",
+                    "view_trashmodel",
+                ],
+                "items": [
+                    {
+                        "label": "activity_log",
+                        "url_name": "activity_log_list",
+                        "icon": "ti ti-history",
+                        "permission": "view_activitylogmodel",
+                    },
+                    {
+                        "label": "trash",
+                        "url_name": "trash_list",
+                        "icon": "ti ti-trash",
+                        "permission": "view_trashmodel",
+                    },
+                ],
+            },
         ]
     }

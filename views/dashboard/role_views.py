@@ -43,7 +43,7 @@ def role_list(request):
     )
 
     modules = defaultdict(
-        lambda: {"view": None, "add": None, "change": None, "delete": None}
+        lambda: {"view": None, "add": None, "change": None, "delete": None, "extras": []}
     )
     for p in permissions:
         model_class = p.content_type.model_class()
@@ -59,6 +59,9 @@ def role_list(request):
             modules[model_name]["view"] = p
         elif codename.startswith("delete_"):
             modules[model_name]["delete"] = p
+        else:
+            # view/add/change/delete အပြင် custom permission တွေ (ဥပမာ restore_trashmodel)
+            modules[model_name]["extras"].append(p)
 
     grouped_permissions = sorted(modules.items(), key=lambda x: x[0].lower())
 

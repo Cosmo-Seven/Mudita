@@ -15,6 +15,8 @@ from views.dashboard import (
     workflow_views,
     workflow_job_views,
     group_views,
+    trash_views,
+    activity_views,
 )
 from views.dashboard import page_views as dashboard_page_views
 from views import worker_views
@@ -46,6 +48,25 @@ urlpatterns = (
         ),
         path("dashboard/bulk/delete/<str:model_name>/", bulk_views.bulk_delete, name="bulk_delete"),
         path("dashboard/bulk/export/<str:model_name>/<str:file_format>/", bulk_views.bulk_export, name="bulk_export"),
+        # ========================
+        # Trash / Activity Log
+        # ========================
+        path("dashboard/trash/", trash_views.trash_list, name="trash_list"),
+        path(
+            "dashboard/trash/restore/<int:content_type_id>/<str:object_id>/",
+            trash_views.trash_restore,
+            name="trash_restore",
+        ),
+        path(
+            "dashboard/trash/delete/<int:content_type_id>/<str:object_id>/",
+            trash_views.trash_delete,
+            name="trash_delete",
+        ),
+        path(
+            "dashboard/activity-log/",
+            activity_views.activity_log_list,
+            name="activity_log_list",
+        ),
         
         path(
             "under-maintenance/",

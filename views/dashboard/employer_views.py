@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
@@ -51,9 +51,17 @@ def _save_employer_attachments(request, employer):
 @custom_login_required("dashboard_login")
 @role_permission_required("view_employermodel")
 def employer_list(request):
-    employers = EmployerModel.objects.select_related(
-        "business_type", "responsible_person", "parent_employer"
-    ).order_by("-created_at")
+    employers = (
+        EmployerModel.objects.select_related(
+            "business_type", "responsible_person", "parent_employer"
+        )
+        .annotate(
+            employee_count=Count(
+                "employees", filter=Q(employees__is_deleted=False)
+            )
+        )
+        .order_by("-created_at")
+    )
 
     filters = filter_querysets(
         request,
@@ -281,7 +289,9 @@ def employer_detail(request, pk):
         "employer": employer,
         "addresses": employer.addresses.all(),
         "documents": employer.documents.all(),
-        "employees": employer.employees.order_by("-created_at")[:20],
+        "employees": employer.employees.filter(is_deleted=False).order_by(
+            "-created_at"
+        )[:20],
     }
     return render(request, "dashboard/employer_detail.html", context)
 
@@ -294,7 +304,7 @@ def employer_detail(request, pk):
 def employer_delete(request, pk):
     employer = get_object_or_404(EmployerModel, id=pk)
     if request.method == "POST":
-        if employer.employees.exists():
+        if employer.employees.filter(is_deleted=False).exists():
             messages.error(
                 request, "Cannot delete an employer that still has employees attached."
             )

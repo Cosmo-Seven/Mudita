@@ -1,0 +1,119 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load translate %}
+{% load static %}
+{% load permissions %}
+{% block title %}{% translate 'trash' request.session.language %}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="add-item d-flex">
+                <div class="page-title">
+                    <h4 class="fw-bold">
+                        {% translate 'trash' request.session.language %} ({{ total_count }})
+                    </h4>
+                    <h6>{% translate 'deleted_records_can_be_restored_here' request.session.language %}</h6>
+                </div>
+            </div>
+            <ul class="table-top-head">
+                <li>
+                    <a data-bs-toggle="tooltip" href="{% url 'trash_list' %}" data-bs-placement="top"
+                        title="{% translate 'refresh' request.session.language %}"><i class="ti ti-refresh"></i></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <form method="GET" class="row g-2 align-items-end" hx-boost="false">
+                    <div class="col-12 col-md-5">
+                        <label class="form-label">{% translate 'search' request.session.language %}</label>
+                        <input type="text" name="search" value="{{ search }}" class="form-control"
+                            placeholder="{% translate 'search' request.session.language %}...">
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label">{% translate 'module' request.session.language %}</label>
+                        <select name="model" class="select">
+                            <option value="">{% translate 'all' request.session.language %}</option>
+                            {% for option in model_options %}
+                            <option value="{{ option.value }}" {% if model_filter == option.value %}selected{% endif %}>
+                                {{ option.label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            {% translate 'filter' request.session.language %}
+                        </button>
+                        <a href="{% url 'trash_list' %}" class="btn btn-secondary w-100">
+                            {% translate 'clear' request.session.language %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>{% translate 'module' request.session.language %}</th>
+                                <th>{% translate 'item' request.session.language %}</th>
+                                <th>{% translate 'deleted_by' request.session.language %}</th>
+                                <th>{% translate 'deleted_at' request.session.language %}</th>
+                                <th class="text-end">{% translate 'action' request.session.language %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td><span class="badge bg-light text-dark">{{ item.model_label }}</span></td>
+                                <td>{{ item.label }}</td>
+                                <td>{{ item.deleted_by.username|default:"-" }}</td>
+                                <td>{{ item.deleted_at|date:"d M Y H:i"|default:"-" }}</td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-2">
+                                        {% if request.user|can:'restore_trashmodel' %}
+                                        <form method="POST"
+                                            action="{% url 'trash_restore' item.content_type_id item.object_id %}"
+                                            hx-boost="false">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                                <i class="ti ti-arrow-back-up me-1"></i>{% translate 'restore' request.session.language %}
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                        {% if request.user|can:'delete_trashmodel' %}
+                                        <form method="POST"
+                                            action="{% url 'trash_delete' item.content_type_id item.object_id %}"
+                                            hx-boost="false"
+                                            onsubmit="return confirm('{% translate 'delete_forever' request.session.language %}?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="ti ti-trash me-1"></i>{% translate 'delete_forever' request.session.language %}
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    {% translate 'no_data_found' request.session.language %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% include 'dashboard/components/pagination.html' %}
+        </div>
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+{% endblock %}
