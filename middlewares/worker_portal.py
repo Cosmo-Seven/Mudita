@@ -5,7 +5,12 @@ from core.models import EmployeeModel
 
 
 class WorkerPortalMiddleware:
-    allowed_paths = {"/worker/", "/worker/profile/", "/worker/requests/submit/"}
+    allowed_paths = {
+        "/worker/",
+        "/worker/profile/",
+        "/worker/requests/submit/",
+        "/worker/push/subscribe/",
+    }
 
     def __init__(self, get_response):
         self.get_response = get_response

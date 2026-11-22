@@ -1,10 +1,13 @@
 {% load translate %}
 {% load static %}
 {% load dict_extras %}
+{% load permissions %}
 <div class="workflow-employee-card" data-wf-id="{{ wf.id }}">
     <div class="workflow-employee-body">
         <div class="workflow-employee-identity d-flex gap-2">
-            <input type="checkbox" class="form-check-input mt-1">
+            {% if request.user|has_role_permission:'delete_employeeworkflowmodel' %}
+            <input type="checkbox" class="form-check-input mt-1 workflow-record-checkbox" value="{{ wf.id }}" aria-label="Select workflow record for {{ wf.employee.full_name_en }}">
+            {% endif %}
             <img src="{% if wf.employee.photo %}{{ wf.employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
                 class="rounded" style="width:48px;height:48px;object-fit:cover;">
             <div>

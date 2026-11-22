@@ -35,6 +35,11 @@ urlpatterns = (
             name="submit_employee_request",
         ),
         path(
+            "worker/push/subscribe/",
+            worker_views.subscribe_push,
+            name="subscribe_push",
+        ),
+        path(
             "dashboard/employee-requests/",
             worker_views.employee_request_list,
             name="employee_request_list",
@@ -319,6 +324,16 @@ urlpatterns = (
             name="employee_export_pdf",
         ),
         path(
+            "dashboard/employee/import/",
+            employee_views.employee_import,
+            name="employee_import",
+        ),
+        path(
+            "dashboard/employee/import/credentials/",
+            employee_views.employee_import_credentials,
+            name="employee_import_credentials",
+        ),
+        path(
             "dashboard/employee/history/<uuid:pk>/",
             employee_views.employee_employment_history,
             name="employee_employment_history",
@@ -403,6 +418,11 @@ urlpatterns = (
             "dashboard/workflow/<str:workflow_type_code>/employer/<uuid:employer_id>/employees/",
             workflow_views.workflow_employer_employees,
             name="workflow_employer_employees",
+        ),
+        path(
+            "dashboard/workflow/<str:workflow_type_code>/records/delete/",
+            workflow_views.workflow_records_delete,
+            name="workflow_records_delete",
         ),
 
         # literal "employee/add/.../" paths must come before the

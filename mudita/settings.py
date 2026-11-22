@@ -165,6 +165,21 @@ PWA_APP_ICONS = [
     },
 ]
 
+# --- Web Push (VAPID) ---
+VAPID_PUBLIC_KEY = env("VAPID_PUBLIC_KEY", default="")
+VAPID_PRIVATE_KEY = env("VAPID_PRIVATE_KEY", default="")
+VAPID_ADMIN_EMAIL = env("VAPID_ADMIN_EMAIL", default="admin@example.com")
+
+# 90-day report reminder: ရက်ပြည့်ခံ မတိုင်မီ ဘယ်နှရက်အတွင်း notify လုပ်မလဲ /
+# ဘယ်နှရက်ခြား တစ်ကြိမ် ထပ်ပို့မလဲ
+NINETY_DAY_NOTIFY_WINDOW_DAYS = env.int("NINETY_DAY_NOTIFY_WINDOW_DAYS", default=21)
+NINETY_DAY_NOTIFY_INTERVAL_DAYS = env.int("NINETY_DAY_NOTIFY_INTERVAL_DAYS", default=7)
+
+# Excel import: worker login email ဖန်တီးရာမှာ သုံးမယ့် domain
+EMPLOYEE_LOGIN_EMAIL_DOMAIN = env(
+    "EMPLOYEE_LOGIN_EMAIL_DOMAIN", default="worker.mudita.local"
+)
+
 LOGIN_REDIRECT_URL = "/"
 ACCOUNT_LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"

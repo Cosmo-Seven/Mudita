@@ -33,6 +33,50 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+self.addEventListener("push", (event) => {
+  let data = {};
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (err) {
+      data = { body: event.data.text() };
+    }
+  }
+
+  const title = data.title || "Mudita";
+  const options = {
+    body: data.body || "",
+    icon: data.icon || "/static/dashboard/images/logo.jpg",
+    badge: data.badge || "/static/dashboard/images/logo.jpg",
+    tag: data.tag || undefined,
+    renotify: Boolean(data.tag),
+    data: { url: data.url || "/worker/" },
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const targetUrl =
+    (event.notification.data && event.notification.data.url) || "/worker/";
+
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (client.url === targetUrl && "focus" in client) {
+            return client.focus();
+          }
+        }
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(targetUrl);
+        }
+      })
+  );
+});
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
 

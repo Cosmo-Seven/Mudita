@@ -3,6 +3,8 @@ from django.db import models
 from django.db.models import Count, Q
 from django import forms
 from datetime import date
+from uuid import UUID
+
 from django.db import transaction
 from django.utils.text import slugify
 
@@ -16,7 +18,6 @@ from core.models import (
 
 from django.http import HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
-from core.models import WorkflowStageModel
 from views.dashboard.workflow_job_views import ensure_default_workflow_types
 
 
@@ -113,7 +114,8 @@ def _add_employee_modal_context(request, workflow_type, employer_id, search, wor
         employer_id = str(workflow_job.employer_id)
 
     already_enrolled_ids = EmployeeWorkflowModel.objects.filter(
-        workflow_type=workflow_type
+        workflow_type=workflow_type,
+        is_deleted=False,
     ).values_list("employee_id", flat=True)
 
     employees = EmployeeModel.objects.filter(
@@ -268,7 +270,8 @@ def workflow_add_employee(request, workflow_type_code):
         is_deleted=False,
     ).exclude(
         id__in=EmployeeWorkflowModel.objects.filter(
-            workflow_type=workflow_type
+            workflow_type=workflow_type,
+            is_deleted=False,
         ).values_list("employee_id", flat=True)
     )
     if not is_employer_change and employer_id:
@@ -319,7 +322,10 @@ def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
 
     sibling_types = WorkflowTypeModel.objects.filter(is_deleted=False).order_by("order", "name")
 
-    workflows = EmployeeWorkflowModel.objects.filter(workflow_type=workflow_type).select_related(
+    workflows = EmployeeWorkflowModel.objects.filter(
+        workflow_type=workflow_type,
+        is_deleted=False,
+    ).select_related(
         "employee", "employee__employer", "current_stage"
     )
 
@@ -367,10 +373,10 @@ def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
             | Q(workflow_jobs__in=workflow_jobs)
         )
         .annotate(
-            total_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type), distinct=True),
-            pending_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type, employees__workflows__status="in_progress"), distinct=True),
-            done_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type, employees__workflows__status="finished"), distinct=True),
-            cancel_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type, employees__workflows__status="cancelled"), distinct=True),
+            total_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type, employees__workflows__is_deleted=False), distinct=True),
+            pending_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type, employees__workflows__is_deleted=False, employees__workflows__status="in_progress"), distinct=True),
+            done_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type, employees__workflows__is_deleted=False, employees__workflows__status="finished"), distinct=True),
+            cancel_count=Count("employees__workflows", filter=Q(employees__workflows__workflow_type=workflow_type, employees__workflows__is_deleted=False, employees__workflows__status="cancelled"), distinct=True),
         )
         .distinct()
         .order_by("name_en", "id")
@@ -387,12 +393,18 @@ def workflow_dashboard(request, workflow_type_code="employer_entry_change"):
         "employers": employers,
         "search": search,
         "can_add_job": request.user.has_permission("add_employeeworkflowmodel"),
+        "can_delete_workflows": request.user.has_permission("delete_employeeworkflowmodel"),
         "show_create_job_button": (
             workflow_type.code in {"mou_import", "social_security"}
             or slugify(workflow_type.name) == "social-security-submission"
         ),
     }
-    return render(request, "dashboard/workflow_dashboard.html", context)
+    template = (
+        "dashboard/components/workflow_dashboard_content.html"
+        if request.GET.get("_workflow_fragment") == "dashboard"
+        else "dashboard/workflow_dashboard.html"
+    )
+    return render(request, template, context)
 
 
 @custom_login_required("dashboard_login")
@@ -403,13 +415,21 @@ def workflow_employer_employees(request, employer_id, workflow_type_code):
     stages = workflow_type.stages.order_by("order")
 
     workflows = EmployeeWorkflowModel.objects.filter(
-        workflow_type=workflow_type, employee__employer=employer
+        workflow_type=workflow_type,
+        employee__employer=employer,
+        is_deleted=False,
     ).select_related("employee", "employee__nationality", "current_stage").prefetch_related("stage_logs")
     workflow_jobs = WorkflowJobModel.objects.filter(
         workflow_type=workflow_type,
         employer=employer,
         is_deleted=False,
-    ).annotate(employee_count=Count("workflows", distinct=True)).order_by("created_at")
+    ).annotate(
+        employee_count=Count(
+            "workflows",
+            filter=Q(workflows__is_deleted=False),
+            distinct=True,
+        )
+    ).order_by("created_at")
 
     template_name = (
         "dashboard/components/workflow_employee_cards_preparation.html"
@@ -423,8 +443,56 @@ def workflow_employer_employees(request, employer_id, workflow_type_code):
         "stages": stages,
         "employer": employer,
         "workflow_type": workflow_type,
+        "can_delete_workflows": request.user.has_permission("delete_employeeworkflowmodel"),
     }
     return render(request, template_name, context)
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("delete_employeeworkflowmodel")
+@require_POST
+def workflow_records_delete(request, workflow_type_code):
+    workflow_type = get_object_or_404(
+        WorkflowTypeModel, code=workflow_type_code, is_deleted=False
+    )
+    submitted_ids = request.POST.getlist("workflow_ids")
+    if not submitted_ids:
+        return JsonResponse(
+            {"success": False, "error": "Select at least one workflow record."},
+            status=400,
+        )
+
+    try:
+        workflow_ids = list(
+            dict.fromkeys(UUID(workflow_id) for workflow_id in submitted_ids)
+        )
+    except (TypeError, ValueError):
+        return JsonResponse(
+            {"success": False, "error": "Invalid workflow record ID."},
+            status=400,
+        )
+
+    workflows = list(
+        EmployeeWorkflowModel.objects.filter(
+            pk__in=workflow_ids,
+            workflow_type=workflow_type,
+            is_deleted=False,
+        )
+    )
+    if len(workflows) != len(workflow_ids):
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "One or more selected workflow records were not found.",
+            },
+            status=404,
+        )
+
+    with transaction.atomic():
+        for workflow in workflows:
+            workflow.soft_delete(request.user)
+
+    return JsonResponse({"success": True, "deleted_count": len(workflows)})
 
 
 def _employee_workflow_card_context(workflow, workflow_type, stages):
@@ -555,8 +623,12 @@ def workflow_stage_delete(request, pk):
     stage = get_object_or_404(WorkflowStageModel, id=pk)
 
     stage_is_in_use = (
-        EmployeeWorkflowModel.objects.filter(current_stage=stage).exists()
-        or EmployeeWorkflowStageLogModel.objects.filter(stage=stage).exists()
+        EmployeeWorkflowModel.objects.filter(
+            current_stage=stage, is_deleted=False
+        ).exists()
+        or EmployeeWorkflowStageLogModel.objects.filter(
+            stage=stage, workflow__is_deleted=False
+        ).exists()
     )
     if stage_is_in_use:
         if request.headers.get("HX-Request"):

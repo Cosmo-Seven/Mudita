@@ -120,7 +120,7 @@ class EmployeeWorkflowModel(BaseModel):
         """Lazily enrolls an employee into a workflow type the first time any
         of its stages is touched, instead of requiring a separate 'enroll' step."""
         first_stage = workflow_type.stages.order_by("order").first()
-        obj, created = cls.objects.get_or_create(
+        obj, created = cls.objects.filter(is_deleted=False).get_or_create(
             employee=employee,
             workflow_type=workflow_type,
             defaults={

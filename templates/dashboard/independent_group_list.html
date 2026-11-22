@@ -235,7 +235,11 @@
                                                     </div>
                                                     <div class="mt-1">
                                                         Employer:
+                                                        {% if employee.employer %}
                                                         <a href="{% url 'employer_detail' employee.employer.id %}">{{ employee.employer.name_en }}</a>
+                                                        {% else %}
+                                                        <span class="text-muted">-</span>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                                 <div class="employee-card-facts">

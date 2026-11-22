@@ -2,7 +2,7 @@
 from datetime import date, timedelta
 from uuid import UUID
 
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
 
@@ -129,7 +129,11 @@ def _jobs_queryset():
         WorkflowTypeModel.objects
         .filter(is_deleted=False)
         .annotate(stage_count=Count("stages", distinct=True),
-                  employee_count=Count("workflows", distinct=True))
+                  employee_count=Count(
+                      "workflows",
+                      filter=Q(workflows__is_deleted=False),
+                      distinct=True,
+                  ))
         .order_by("order", "name")
     )
 
@@ -184,6 +188,7 @@ def workflow_job_list(request):
     calendar_counts = dict(
         EmployeeWorkflowModel.objects.filter(
             workflow_type__is_deleted=False,
+            is_deleted=False,
             appointment_date__range=(calendar_start, calendar_dates[-1]),
         )
         .exclude(status="cancelled")
@@ -206,6 +211,7 @@ def workflow_job_list(request):
     upcoming_appointments = (
         EmployeeWorkflowModel.objects.filter(
             workflow_type__is_deleted=False,
+            is_deleted=False,
             appointment_date__range=(today, today + timedelta(days=6)),
         )
         .exclude(status="cancelled")

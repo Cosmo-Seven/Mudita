@@ -23,3 +23,6 @@ from models.workflow_models import (
     WorkflowTypeModel,
     EmployeeRequestModel,
 )
+
+# -- Push Notification Models --
+from models.push_models import PushSubscriptionModel

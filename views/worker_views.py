@@ -1,11 +1,14 @@
+import json
 from uuid import UUID
 
+from django.conf import settings
 from django.contrib import messages
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
-from core.models import EmployeeModel, EmployeeRequestModel
+from core.models import EmployeeModel, EmployeeRequestModel, PushSubscriptionModel
 from decorators.role_decorator import role_permission_required
 from utils.decorators import custom_login_required
 
@@ -36,6 +39,10 @@ def worker_portal(request):
                 and days_until_report is not None
                 and days_until_report <= 14
             ),
+            "vapid_public_key": settings.VAPID_PUBLIC_KEY,
+            "push_enabled": bool(
+                settings.VAPID_PUBLIC_KEY and settings.VAPID_PRIVATE_KEY
+            ),
         },
     )
 
@@ -46,6 +53,36 @@ def worker_profile(request):
     if employee is None or request.user.is_staff:
         return redirect("dashboard")
     return render(request, "worker/profile.html", {"employee": employee})
+
+
+@custom_login_required("dashboard_login")
+@require_POST
+def subscribe_push(request):
+    try:
+        payload = json.loads(request.body or "{}")
+    except ValueError:
+        return JsonResponse({"ok": False, "error": "invalid_json"}, status=400)
+
+    endpoint = (payload.get("endpoint") or "").strip()
+    keys = payload.get("keys") or {}
+    p256dh = (keys.get("p256dh") or "").strip()
+    auth = (keys.get("auth") or "").strip()
+
+    if not endpoint or not p256dh or not auth:
+        return JsonResponse({"ok": False, "error": "missing_fields"}, status=400)
+
+    PushSubscriptionModel.objects.update_or_create(
+        endpoint=endpoint,
+        defaults={
+            "user": request.user,
+            "p256dh": p256dh,
+            "auth": auth,
+            "user_agent": (request.META.get("HTTP_USER_AGENT") or "")[:255],
+            "is_deleted": False,
+            "deleted_at": None,
+        },
+    )
+    return JsonResponse({"ok": True})
 
 
 @custom_login_required("dashboard_login")

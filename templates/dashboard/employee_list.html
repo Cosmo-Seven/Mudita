@@ -1,15 +1,20 @@
 {% extends 'dashboard/layouts/base.html' %}
 {% load translate %}
 {% load static %}
+{% load permissions %}
 {% block title %}{% translate 'employees' request.session.language %}{% endblock %}
 {% block body %}
 <div class="page-wrapper">
     <div class="content">
         <div class="page-header">
-            <div class="page-title">
+            <div class="add-item d-flex">
+                <div class="page-title">
                 <h4 class="fw-bold">{% translate 'employee_list' request.session.language %}
-                    (Total: {{ total_count }})</h4>
+                    (Total: {{ total_count }})</h4>     
+                <h6>{% translate 'manage_your_employees' request.session.language %}</h6>
             </div>
+            </div>
+            
             <ul class="table-top-head">
                 <li>
                     <a data-bs-toggle="tooltip" href="{% url 'employer_export_pdf' %}" data-bs-placement="top"
@@ -25,6 +30,12 @@
                 </li>
             </ul>
             <div class="page-btn">
+                {% if request.user|can:'add_employeemodel' %}
+                <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal"
+                    data-bs-target="#employeeImportModal">
+                    <i class="ti ti-upload me-1"></i>{% translate 'import_excel' request.session.language %}
+                </button>
+                {% endif %}
                 <a href="{% url 'employee_create' %}" class="btn btn-primary">
                     <i class="ti ti-circle-plus me-1"></i>{% translate 'add_new_employee' request.session.language %}
                 </a>
@@ -211,100 +222,66 @@
         </form>
 
         <!-- ===== Card view ===== -->
-        <div id="cardView" style="{% if view_mode != 'card' %}display:none;{% endif %}">
+        <div id="cardView" class="emp-cards" style="{% if view_mode != 'card' %}display:none;{% endif %}">
             {% for employee in employees %}
-            <div class="employee-card">
-                <div class="employee-card-meta">
-                    <span>
-                        <i class="ti ti-pencil"></i> {{ employee.updated_by.username|default:employee.created_by.username }}
-                        <span class="ms-1">{{ employee.updated_at|timesince }} {% translate 'ago' request.session.language %}</span>
-                    </span>
-                    <span class="d-inline-flex align-items-center p-1 pe-2 rounded-1 text-white
-                        bg-{% if employee.status == 'active' %}success
-                        {% elif employee.status == 'renewal_pending' %}warning
-                        {% elif employee.status == 'terminated' %}danger
-                        {% else %}info{% endif %} fs-10">
-                        <i class="ti ti-point-filled me-1 fs-11"></i>
-                        {{ employee.get_status_display }}
-                    </span>
+            <div class="emp-card">
+                <div class="form-check emp-card-check">
+                    <input type="checkbox" class="form-check-input bulk-row-checkbox"
+                        data-model="employeemodel" value="{{ employee.id }}">
                 </div>
-                <div class="employee-card-body">
-                    <div class="form-check employee-card-check">
-                        <input type="checkbox" class="form-check-input bulk-row-checkbox"
-                            data-model="employeemodel" value="{{ employee.id }}">
+                <a href="javascript:void(0);" class="emp-card-photo" onclick="openEmployeePreview('{{ employee.id }}')">
+                    <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                        alt="{{ employee.full_name_en }}">
+                </a>
+                <div class="emp-card-main">
+                    <div class="emp-card-title">
+                        <span class="emp-card-idx">{{ forloop.counter0|add:page_obj.start_index }}</span>
+                        <a class="emp-card-name" href="{% url 'employee_update' employee.id %}">{{ employee.prefix_en }} {{ employee.full_name_en }}</a>
+                        {% if employee.nationality %}<span class="emp-tag">{{ employee.nationality.name }}</span>{% endif %}
+                        <span class="emp-badge {% if employee.status == 'active' %}success{% elif employee.status == 'renewal_pending' %}warning{% elif employee.status == 'terminated' %}danger{% else %}info{% endif %}">
+                            {{ employee.get_status_display }}
+                        </span>
                     </div>
-                    <a href="javascript:void(0);" class="employee-card-photo" onclick="openEmployeePreview('{{ employee.id }}')">
-                        <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
-                            alt="{{ employee.full_name_en }}">
-                    </a>
-                    <div class="employee-card-identity">
-                        <div class="d-flex align-items-center flex-wrap gap-1">
-                            <span class="fw-bold fs-14">{{ forloop.counter0|add:page_obj.start_index }}. {{ employee.prefix_en }} {{ employee.full_name_en }}</span>
-                            <a href="javascript:void(0);" onclick="openEmployeePreview('{{ employee.id }}')"><i class="ti ti-search fs-14 text-info"></i></a>
-                            {% if employee.nationality %}
-                            <span class="badge bg-light text-dark">{{ employee.nationality.name }}</span>
-                            {% endif %}
-                        </div>
-                        <div class="text-muted small mt-1">{{ employee.title_th }} {{ employee.name_th }} <span class="fst-italic">({{ employee.job_position|default:"-" }})</span></div>
-                        <div class="mt-1">
-                            {% translate 'employer' request.session.language %}:
-                            <a href="{% url 'employer_detail' employee.employer.id %}">{{ employee.employer.name_en }}</a>
-                            <a href="{% url 'employer_detail' employee.employer.id %}"><i class="ti ti-search fs-12 text-info"></i></a>
-                        </div>
+                    <div class="emp-card-sub">
+                        {{ employee.title_th }} {{ employee.name_th }}{% if employee.job_position %} · {{ employee.job_position }}{% endif %}
                         {% if employee.work_permit_type %}
-                        <div class="mt-2">
-                            <a href="{% url 'workflow_dashboard' 'employer_entry_change' %}?search={{ employee.full_name_en|urlencode }}"
-                                class="processing-badge text-decoration-none" hx-boost="false">
-                                <i class="ti ti-settings me-1"></i>
-                                {% translate 'processing' request.session.language %}: {% translate 'notification_of_employment' request.session.language %}
-                            </a>
-                        </div>
+                        · <a href="{% url 'workflow_dashboard' 'employer_entry_change' %}?search={{ employee.full_name_en|urlencode }}"
+                            class="text-warning text-decoration-none" hx-boost="false">
+                            <i class="ti ti-settings"></i> {% translate 'processing' request.session.language %}
+                        </a>
                         {% endif %}
                     </div>
-                    <div class="employee-card-facts">
-                        <div class="employee-fact">
-                            <span class="employee-fact-label">{% translate 'passport' request.session.language %}</span>
-                            <span class="employee-fact-value">{{ employee.passport_number|default:"-" }}</span>
-                            {% if employee.passport_expiry_date %}
-                            <span class="employee-fact-sub {% if employee.passport_status == 'expired' %}text-danger{% elif employee.passport_status == 'expiring_soon' %}text-warning{% else %}text-success{% endif %}">
-                                {% translate 'expires' request.session.language %}: {{ employee.passport_expiry_date }}
-                            </span>
-                            {% endif %}
-                        </div>
-                        <div class="employee-fact">
-                            <span class="employee-fact-label">{% translate 'visa' request.session.language %}</span>
-                            <span class="employee-fact-value">{{ employee.visa_type|default:"-" }}</span>
-                            {% if employee.visa_expiry_date %}
-                            <span class="employee-fact-sub {% if employee.visa_status == 'expired' %}text-danger{% elif employee.visa_status == 'expiring_soon' %}text-warning{% else %}text-success{% endif %}">
-                                {% translate 'expires' request.session.language %}: {{ employee.visa_expiry_date }}
-                            </span>
-                            {% endif %}
-                        </div>
-                        <div class="employee-fact">
-                            <span class="employee-fact-label">90-Day</span>
-                            <span class="employee-fact-value">{{ employee.report_90day_date|default:"-" }}</span>
-                        </div>
+                    <div class="emp-card-facts">
+                        <span class="emp-fact"><b>{% translate 'employer' request.session.language %}</b>
+                            {% if employee.employer %}<a href="{% url 'employer_detail' employee.employer.id %}">{{ employee.employer.name_en }}</a>{% else %}-{% endif %}
+                        </span>
+                        <span class="emp-fact"><b>{% translate 'passport' request.session.language %}</b>
+                            {{ employee.passport_number|default:"-" }}
+                            {% if employee.passport_expiry_date %}<span class="emp-chip {% if employee.passport_status == 'expired' %}bad{% elif employee.passport_status == 'expiring_soon' %}warn{% else %}ok{% endif %}">{{ employee.passport_expiry_date|date:"d M Y" }}</span>{% endif %}
+                        </span>
+                        <span class="emp-fact"><b>{% translate 'visa' request.session.language %}</b>
+                            {{ employee.visa_type|default:"-" }}
+                            {% if employee.visa_expiry_date %}<span class="emp-chip {% if employee.visa_status == 'expired' %}bad{% elif employee.visa_status == 'expiring_soon' %}warn{% else %}ok{% endif %}">{{ employee.visa_expiry_date|date:"d M Y" }}</span>{% endif %}
+                        </span>
+                        <span class="emp-fact"><b>90-Day</b>
+                            {% if employee.report_90day_date %}
+                            {{ employee.report_90day_date|date:"d M Y" }}
+                            {% with d=employee.days_until_90day_report %}
+                            {% if d < 0 %}<span class="emp-chip bad">{% translate 'overdue' request.session.language %}</span>
+                            {% elif d <= 21 %}<span class="emp-chip warn">{{ d }} {% translate 'days_left' request.session.language %}</span>
+                            {% else %}<span class="emp-chip ok">{{ d }} {% translate 'days' request.session.language %}</span>{% endif %}
+                            {% endwith %}
+                            {% else %}-{% endif %}
+                        </span>
                     </div>
-                    <div class="employee-card-actions">
-                        <a href="javascript:void(0);" onclick="openEmployeePreview('{{ employee.id }}')" class="btn btn-sm btn-success-transparent" title="{% translate 'documents' request.session.language %}">
-                            <i class="ti ti-folder"></i>
-                        </a>
-                        <a href="javascript:void(0);" class="btn btn-sm btn-warning-transparent" title="{% translate 'address' request.session.language %}">
-                            <i class="ti ti-map-pin"></i>
-                        </a>
-                        <a href="{% url 'employee_export_pdf' %}?search={{ employee.full_name_en|urlencode }}"
-                            hx-boost="false" hx-disable download
-                            class="btn btn-sm btn-info-transparent" title="{% translate 'download' request.session.language %}">
-                            <i class="ti ti-download"></i>
-                        </a>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown"><i class="ti ti-dots"></i></button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'employee_update' employee.id %}"><i class="ti ti-edit me-1"></i>{% translate 'edit' request.session.language %}</a></li>
-                                <li><a class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal_{{ employee.id }}" href="javascript:void(0);"><i class="ti ti-trash me-1"></i>{% translate 'delete' request.session.language %}</a></li>
-                            </ul>
-                        </div>
-                    </div>
+                </div>
+                <div class="emp-actions emp-card-actions">
+                    <a href="javascript:void(0);" title="{% translate 'preview_data' request.session.language %}"
+                        onclick="openEmployeePreview('{{ employee.id }}')"><i class="ti ti-eye"></i></a>
+                    <a href="{% url 'employee_update' employee.id %}"
+                        title="{% translate 'edit' request.session.language %}"><i class="ti ti-edit"></i></a>
+                    <a href="javascript:void(0);" class="danger" title="{% translate 'delete' request.session.language %}"
+                        data-bs-toggle="modal" data-bs-target="#deleteModal_{{ employee.id }}"><i class="ti ti-trash"></i></a>
                 </div>
             </div>
             {% empty %}
@@ -317,11 +294,7 @@
             {% include 'dashboard/components/employee_table.html' %}
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <span class="text-muted">
-                {% translate 'showing' request.session.language %} {{ page_obj.start_index }} {% translate 'to' request.session.language %}
-                {{ page_obj.end_index }} {% translate 'of' request.session.language %} {{ total_count }} {% translate 'results' request.session.language %}
-            </span>
+        <div class="mt-3">
             {% include 'dashboard/components/pagination.html' %}
         </div>
     </div>
@@ -340,6 +313,51 @@
                     <div class="spinner-border text-primary" role="status"></div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="employeeImportModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'employee_import' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">{% translate 'import_excel' request.session.language %}</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Excel file (.xlsx)</label>
+                        <input type="file" name="file" class="form-control" accept=".xlsx,.xlsm" required>
+                        <small class="text-muted">Upload the employee list provided by the client.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employer (optional)</label>
+                        <select name="employer" class="select">
+                            <option value="">-- No employer yet --</option>
+                            {% for employer in employers %}
+                            <option value="{{ employer.id }}">{{ employer.name_en }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">You can link an employer later from each employee.</small>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="create_accounts"
+                            id="id_create_accounts" checked>
+                        <label class="form-check-label" for="id_create_accounts">
+                            Create worker login accounts and export credentials
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{% translate 'cancel' request.session.language %}</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ti ti-upload me-1"></i>{% translate 'import_excel' request.session.language %}
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -425,102 +443,54 @@
 
 {% include 'dashboard/components/entity_form_styles.html' %}
 <style>
-    .employee-card {
-        background: #fdfaf0;
-        border: 1px solid #f0e4b8;
-        border-radius: 12px;
-        padding: 14px 16px;
-        margin-bottom: 12px;
-        transition: box-shadow .15s ease, border-color .15s ease, transform .1s ease;
-    }
-    .employee-card:hover {
-        border-color: #f4b942;
-        box-shadow: 0 6px 18px rgba(244, 185, 66, .25);
-        transform: translateY(-1px);
-    }
-    .employee-card-meta {
+    .emp-cards { display: flex; flex-direction: column; gap: 8px; }
+    .emp-card {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        font-size: 11px;
-        color: #a89860;
-        margin-bottom: 10px;
-        gap: 8px;
-    }
-    .employee-card-body {
-        display: grid;
-        grid-template-columns: auto auto minmax(220px, 1.4fr) minmax(280px, 1.6fr) auto;
-        gap: 14px 16px;
-        align-items: start;
-    }
-    .employee-card-check { padding-top: 4px; }
-    .employee-card-photo img {
-        width: 64px;
-        height: 64px;
-        object-fit: cover;
-        border-radius: 10px;
-        border: 1px solid #efe3c0;
-    }
-    .employee-card-facts {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-    }
-    .employee-fact {
+        gap: 12px;
         background: #fff;
-        border: 1px solid #f0e4b8;
-        border-radius: 8px;
-        padding: 8px 10px;
-        min-width: 0;
+        border: 1px solid #eceef2;
+        border-radius: 10px;
+        padding: 10px 14px;
+        transition: border-color .15s ease, box-shadow .15s ease;
     }
-    .employee-fact-label {
-        display: block;
-        font-size: 11px;
-        color: #8a8170;
-        margin-bottom: 2px;
+    .emp-card:hover { border-color: #f4b942; box-shadow: 0 4px 14px rgba(244, 185, 66, .18); }
+    .emp-card-check { margin: 0; }
+    .emp-card-photo img {
+        width: 44px; height: 44px; object-fit: cover;
+        border-radius: 8px; border: 1px solid #eceef2; flex: 0 0 auto; background: #fff;
     }
-    .employee-fact-value {
-        display: block;
-        font-weight: 600;
-        font-size: 13px;
-        color: #2f2a22;
-        word-break: break-word;
+    .emp-card-main { flex: 1 1 auto; min-width: 0; }
+    .emp-card-title { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .emp-card-idx {
+        font-size: 11px; font-weight: 600; color: #98a2b3;
+        min-width: 20px; text-align: right;
     }
-    .employee-fact-sub {
-        display: block;
-        font-size: 11px;
-        margin-top: 2px;
+    .emp-card-name { font-weight: 600; font-size: 14px; color: #1f2937; text-decoration: none; }
+    .emp-card-name:hover { color: #f59e0b; }
+    .emp-card-title .emp-tag {
+        font-size: 10.5px; font-weight: 600; color: #4b5563;
+        background: #f1f3f7; border-radius: 999px; padding: 2px 8px;
     }
-    .employee-card-actions {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 4px;
+    .emp-card-title .emp-badge { font-size: 10.5px; padding: 2px 8px; }
+    .emp-card-sub {
+        font-size: 11.5px; color: #98a2b3; margin-top: 2px;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .processing-badge {
-        display: inline-block;
-        background: #ffb020;
-        color: #3a2a00;
-        font-weight: 600;
-        font-size: 12px;
-        padding: 6px 12px;
-        border-radius: 6px;
+    .emp-card-facts {
+        display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 6px;
+        font-size: 12px; color: #2f2a22;
     }
-    @media (max-width: 1199px) {
-        .employee-card-body {
-            grid-template-columns: auto auto 1fr auto;
-        }
-        .employee-card-facts {
-            grid-column: 1 / -1;
-        }
-    }
+    .emp-fact { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
+    .emp-fact b { font-weight: 600; color: #8a8170; font-size: 10.5px; text-transform: uppercase; letter-spacing: .03em; }
+    .emp-fact a { color: #2563eb; text-decoration: none; }
+    .emp-fact a:hover { text-decoration: underline; }
+    .emp-fact .emp-chip { margin-top: 0; }
+    .emp-card-actions { flex: 0 0 auto; align-self: flex-start; }
     @media (max-width: 767px) {
-        .employee-card-body {
-            grid-template-columns: auto 1fr auto;
-        }
-        .employee-card-photo { grid-column: 1 / 2; }
-        .employee-card-identity { grid-column: 2 / 3; }
-        .employee-card-actions { grid-row: 1 / span 2; }
+        .emp-card { flex-wrap: wrap; }
+        .emp-card-main { flex-basis: calc(100% - 100px); }
+        .emp-card-actions { width: 100%; justify-content: flex-end; }
     }
 </style>
 

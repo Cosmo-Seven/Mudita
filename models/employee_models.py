@@ -30,7 +30,11 @@ class EmployeeModel(BaseModel):
     GENDER_CHOICES = (("male", "Male"), ("female", "Female"))
 
     employer = models.ForeignKey(
-        EmployerModel, on_delete=models.PROTECT, related_name="employees"
+        EmployerModel,
+        on_delete=models.PROTECT,
+        related_name="employees",
+        null=True,
+        blank=True,
     )
     team = models.ForeignKey(
         "core.TeamModel",
@@ -64,12 +68,15 @@ class EmployeeModel(BaseModel):
 
     # --- Passport & Visa ---
     passport_number = models.CharField(max_length=50, null=True, blank=True)
+    new_passport_number = models.CharField(max_length=50, null=True, blank=True)
     passport_issue_place = models.CharField(max_length=255, null=True, blank=True)
     passport_issue_date = models.DateField(null=True, blank=True)
     passport_expiry_date = models.DateField(null=True, blank=True)
+    new_passport_expiry_date = models.DateField(null=True, blank=True)
     pink_card_number = models.CharField(max_length=50, null=True, blank=True)
     visa_type = models.CharField(max_length=100, null=True, blank=True)
     visa_issue_place = models.CharField(max_length=255, null=True, blank=True)
+    visa_issue_date = models.DateField(null=True, blank=True)
     visa_expiry_date = models.DateField(null=True, blank=True)
     visa_stamp_date = models.DateField(null=True, blank=True)
     visa_number = models.CharField(max_length=50, null=True, blank=True)
@@ -78,12 +85,19 @@ class EmployeeModel(BaseModel):
     job_position = models.CharField(max_length=255, null=True, blank=True)
     job_description = models.TextField(null=True, blank=True)
     start_date = models.DateField(null=True, blank=True)
+    employee_number = models.CharField(max_length=50, null=True, blank=True)
     work_permit_number = models.CharField(max_length=50, null=True, blank=True)
     work_permit_issue_date = models.DateField(null=True, blank=True)
     work_permit_expiry_date = models.DateField(null=True, blank=True)
     report_90day_date = models.DateField(null=True, blank=True)
+    report_90day_start_date = models.DateField(null=True, blank=True)
+    report_90day_update_1 = models.DateField(null=True, blank=True)
+    report_90day_update_2 = models.DateField(null=True, blank=True)
+    report_90day_update_3 = models.DateField(null=True, blank=True)
+    report_90day_last_notified_at = models.DateTimeField(null=True, blank=True)
     work_permit_type = models.CharField(max_length=100, null=True, blank=True)
     ra_number = models.CharField(max_length=50, null=True, blank=True)
+    pakan_number = models.CharField(max_length=50, null=True, blank=True)
     application_number = models.CharField(max_length=50, null=True, blank=True)
     identification_number = models.CharField(max_length=50, null=True, blank=True)
     tax_id_number = models.CharField(max_length=50, null=True, blank=True)
@@ -92,6 +106,7 @@ class EmployeeModel(BaseModel):
     bank_name = models.CharField(max_length=255, null=True, blank=True)
     bank_account_number = models.CharField(max_length=50, null=True, blank=True)
     worker_reference_number = models.CharField(max_length=50, null=True, blank=True)
+    internal_note = models.TextField(null=True, blank=True)
 
     # --- Health Insurance ---
     insurance_type = models.CharField(max_length=100, null=True, blank=True)

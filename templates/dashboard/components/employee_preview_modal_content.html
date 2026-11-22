@@ -9,7 +9,11 @@
             <h6 class="preview-header">{% translate 'personal_information' request.session.language %}</h6>
             <div class="text-muted small">{% translate 'affiliated_with_an_employer' request.session.language %}</div>
             <div class="fw-bold">
+                {% if employee.employer %}
                 <a href="{% url 'employer_detail' employee.employer.id %}">{{ employee.employer.name_en }}</a>
+                {% else %}
+                <span class="text-muted">-</span>
+                {% endif %}
             </div>
         </div>
     </div>

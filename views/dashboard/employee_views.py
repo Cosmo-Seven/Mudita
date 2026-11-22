@@ -11,6 +11,7 @@ from utils.decorators import custom_login_required
 from decorators.role_decorator import role_permission_required
 from helpers.filters import filter_querysets
 from helpers.exports import export_to_pdf, export_to_excel, filter_queryset_for_export
+from helpers.employee_import import import_employees, read_employee_rows
 from helpers.phone import format_mm_phone
 from constants.message import CREATE, UPDATE, DELETE
 from core.models import (
@@ -180,7 +181,7 @@ def employee_list(request):
         value = parsed_dates if lookup == "range" else parsed_dates[0]
         employees = employees.filter(**{f"{field}__{lookup}": value})
 
-    view_mode = request.GET.get("view", "card")
+    view_mode = request.GET.get("view", "table")
     per_page = int(request.GET.get("per_page", 25))
 
     if search:
@@ -261,9 +262,26 @@ def employee_list(request):
     paginator = Paginator(employees, per_page)
     page_obj = paginator.get_page(request.GET.get("page", 1))
 
+    current = page_obj.number
+    total_pages = paginator.num_pages
+    if total_pages <= 5:
+        page_range = range(1, total_pages + 1)
+    elif current <= 3:
+        page_range = [1, 2, 3, 4, "...", total_pages]
+    elif current >= total_pages - 2:
+        page_range = [1, "...", total_pages - 3, total_pages - 2, total_pages - 1, total_pages]
+    else:
+        page_range = [1, "...", current - 1, current, current + 1, "...", total_pages]
+
+    query_params = request.GET.copy()
+    query_params.pop("page", None)
+
     context = {
         "employees": page_obj,
         "page_obj": page_obj,
+        "paginator": paginator,
+        "page_range": page_range,
+        "page_query": query_params.urlencode(),
         "total_count": paginator.count,
         "nationalities": cache.get_or_set(
             "filter_opts:nationalities",
@@ -325,12 +343,10 @@ def employee_create(request):
             return redirect("employee_create")
         account_email, account_password = account_input
 
-        employer_id = request.POST.get("employer")
-        if not employer_id:
-            messages.error(request, "Please choose an employer.")
-            return redirect("employee_create")
-
-        employer = get_object_or_404(EmployerModel, id=employer_id)
+        employer = None
+        employer_id = (request.POST.get("employer") or "").strip()
+        if employer_id:
+            employer = get_object_or_404(EmployerModel, id=employer_id)
 
         employee = EmployeeModel.objects.create(
             employer=employer,
@@ -348,24 +364,33 @@ def employee_create(request):
             phone=format_mm_phone(request.POST.get("phone")),
             nationality_id=request.POST.get("nationality") or None,
             passport_number=request.POST.get("passport_number"),
+            new_passport_number=request.POST.get("new_passport_number"),
             passport_issue_place=request.POST.get("passport_issue_place"),
             passport_issue_date=request.POST.get("passport_issue_date") or None,
             passport_expiry_date=request.POST.get("passport_expiry_date") or None,
+            new_passport_expiry_date=request.POST.get("new_passport_expiry_date") or None,
             pink_card_number=request.POST.get("pink_card_number"),
             visa_type=request.POST.get("visa_type"),
             visa_issue_place=request.POST.get("visa_issue_place"),
+            visa_issue_date=request.POST.get("visa_issue_date") or None,
             visa_expiry_date=request.POST.get("visa_expiry_date") or None,
             visa_stamp_date=request.POST.get("visa_stamp_date") or None,
             visa_number=request.POST.get("visa_number"),
             job_position=request.POST.get("job_position"),
             job_description=request.POST.get("job_description"),
             start_date=request.POST.get("start_date") or None,
+            employee_number=request.POST.get("employee_number"),
             work_permit_number=request.POST.get("work_permit_number"),
             work_permit_issue_date=request.POST.get("work_permit_issue_date") or None,
             work_permit_expiry_date=request.POST.get("work_permit_expiry_date") or None,
             report_90day_date=request.POST.get("report_90day_date") or None,
+            report_90day_start_date=request.POST.get("report_90day_start_date") or None,
+            report_90day_update_1=request.POST.get("report_90day_update_1") or None,
+            report_90day_update_2=request.POST.get("report_90day_update_2") or None,
+            report_90day_update_3=request.POST.get("report_90day_update_3") or None,
             work_permit_type=request.POST.get("work_permit_type"),
             ra_number=request.POST.get("ra_number"),
+            pakan_number=request.POST.get("pakan_number"),
             application_number=request.POST.get("application_number"),
             identification_number=request.POST.get("identification_number"),
             tax_id_number=request.POST.get("tax_id_number"),
@@ -376,6 +401,7 @@ def employee_create(request):
             worker_reference_number=request.POST.get("worker_reference_number"),
             insurance_type=request.POST.get("insurance_type"),
             diagnosed_hospital=request.POST.get("diagnosed_hospital"),
+            internal_note=request.POST.get("internal_note"),
             login_email=account_email,
             created_by=request.user,
         )
@@ -411,7 +437,8 @@ def employee_update(request, pk):
             return redirect("employee_update", pk=employee.id)
         account_email, account_password = account_input
 
-        employee.employer_id = request.POST.get("employer") or employee.employer_id
+        if "employer" in request.POST:
+            employee.employer_id = request.POST.get("employer") or None
         employee.title_th = request.POST.get("title_th")
         employee.name_th = request.POST.get("name_th")
         employee.prefix_en = request.POST.get("prefix_en")
@@ -426,24 +453,33 @@ def employee_update(request, pk):
         employee.phone = format_mm_phone(request.POST.get("phone"))
         employee.nationality_id = request.POST.get("nationality") or None
         employee.passport_number = request.POST.get("passport_number")
+        employee.new_passport_number = request.POST.get("new_passport_number")
         employee.passport_issue_place = request.POST.get("passport_issue_place")
         employee.passport_issue_date = request.POST.get("passport_issue_date") or None
         employee.passport_expiry_date = request.POST.get("passport_expiry_date") or None
+        employee.new_passport_expiry_date = request.POST.get("new_passport_expiry_date") or None
         employee.pink_card_number = request.POST.get("pink_card_number")
         employee.visa_type = request.POST.get("visa_type")
         employee.visa_issue_place = request.POST.get("visa_issue_place")
+        employee.visa_issue_date = request.POST.get("visa_issue_date") or None
         employee.visa_expiry_date = request.POST.get("visa_expiry_date") or None
         employee.visa_stamp_date = request.POST.get("visa_stamp_date") or None
         employee.visa_number = request.POST.get("visa_number")
         employee.job_position = request.POST.get("job_position")
         employee.job_description = request.POST.get("job_description")
         employee.start_date = request.POST.get("start_date") or None
+        employee.employee_number = request.POST.get("employee_number")
         employee.work_permit_number = request.POST.get("work_permit_number")
         employee.work_permit_issue_date = request.POST.get("work_permit_issue_date") or None
         employee.work_permit_expiry_date = request.POST.get("work_permit_expiry_date") or None
         employee.report_90day_date = request.POST.get("report_90day_date") or None
+        employee.report_90day_start_date = request.POST.get("report_90day_start_date") or None
+        employee.report_90day_update_1 = request.POST.get("report_90day_update_1") or None
+        employee.report_90day_update_2 = request.POST.get("report_90day_update_2") or None
+        employee.report_90day_update_3 = request.POST.get("report_90day_update_3") or None
         employee.work_permit_type = request.POST.get("work_permit_type")
         employee.ra_number = request.POST.get("ra_number")
+        employee.pakan_number = request.POST.get("pakan_number")
         employee.application_number = request.POST.get("application_number")
         employee.identification_number = request.POST.get("identification_number")
         employee.tax_id_number = request.POST.get("tax_id_number")
@@ -454,6 +490,7 @@ def employee_update(request, pk):
         employee.worker_reference_number = request.POST.get("worker_reference_number")
         employee.insurance_type = request.POST.get("insurance_type")
         employee.diagnosed_hospital = request.POST.get("diagnosed_hospital")
+        employee.internal_note = request.POST.get("internal_note")
         employee.login_email = account_email
         employee.status = request.POST.get("status", employee.status)
 
@@ -597,5 +634,86 @@ def employee_export_excel(request):
     return export_to_excel(
         filename,
         ["No", "Name", "Employer", "Passport No.", "Work Permit No.", "Status"],
+        rows,
+    )
+
+
+# ========================
+# Employee Import (Excel)
+# ========================
+@custom_login_required("dashboard_login")
+@role_permission_required("add_employeemodel")
+def employee_import(request):
+    if request.method != "POST":
+        return redirect("employee_list")
+
+    upload = request.FILES.get("file")
+    if not upload:
+        messages.error(request, "Excel ဖိုင် ရွေးပေးပါ။")
+        return redirect("employee_list")
+    if not upload.name.lower().endswith((".xlsx", ".xlsm")):
+        messages.error(request, "Excel ဖိုင် (.xlsx) ပဲ တင်လို့ရပါတယ်။")
+        return redirect("employee_list")
+
+    employer = None
+    employer_id = request.POST.get("employer", "").strip()
+    if employer_id:
+        employer = EmployerModel.objects.filter(
+            id=employer_id, is_deleted=False
+        ).first()
+        if employer is None:
+            messages.error(request, "ရွေးထားတဲ့ အလုပ်ရှင် မတွေ့ပါ။")
+            return redirect("employee_list")
+
+    with_accounts = request.POST.get("create_accounts") == "on"
+
+    try:
+        rows, meta = read_employee_rows(upload)
+    except Exception as error:  # noqa: BLE001 - ဖိုင်ဖတ်လို့မရရင် အသိပေးရန်
+        messages.error(request, f"Excel ဖိုင် ဖတ်လို့မရပါ: {error}")
+        return redirect("employee_list")
+
+    if meta.get("error"):
+        messages.error(request, meta["error"])
+        return redirect("employee_list")
+    if not rows:
+        messages.error(request, "Excel ထဲမှာ အလုပ်သမား data မတွေ့ပါ။")
+        return redirect("employee_list")
+
+    created, skipped, errors = import_employees(
+        rows, employer=employer, created_by=request.user, with_accounts=with_accounts
+    )
+
+    request.session["employee_import_created"] = created
+    context = {
+        "created": created,
+        "skipped": skipped,
+        "errors": errors,
+        "total_rows": len(rows),
+        "employer": employer,
+        "with_accounts": with_accounts,
+        "header_row": meta.get("header_row"),
+    }
+    return render(request, "dashboard/employee_import_result.html", context)
+
+
+@custom_login_required("dashboard_login")
+@role_permission_required("view_employeemodel")
+def employee_import_credentials(request):
+    created = request.session.get("employee_import_created") or []
+    rows = [
+        (
+            item["employee_number"],
+            item["name"],
+            item["passport_number"],
+            item["login_email"],
+            item["password"],
+        )
+        for item in created
+    ]
+    filename = f"employee_logins_{datetime.now().strftime('%b-%d-%Y-%H%M')}.xlsx"
+    return export_to_excel(
+        filename,
+        ["Emp. No.", "Name", "Passport No.", "Login email", "Password"],
         rows,
     )

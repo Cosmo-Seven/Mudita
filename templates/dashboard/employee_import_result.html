@@ -1,0 +1,162 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load translate %}
+{% load static %}
+{% block title %}{% translate 'import_excel' request.session.language %}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold">{% translate 'import_excel' request.session.language %}</h4>
+            </div>
+            <div class="page-btn">
+                {% if created %}
+                <a href="{% url 'employee_import_credentials' %}" class="btn btn-outline-primary me-2">
+                    <i class="ti ti-download me-1"></i>Download credentials
+                </a>
+                {% endif %}
+                <a href="{% url 'employee_list' %}" class="btn btn-primary">
+                    <i class="ti ti-arrow-left me-1"></i>{% translate 'employee_list' request.session.language %}
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3 class="mb-0">{{ total_rows }}</h3>
+                        <p class="mb-0 text-muted">Rows in file</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3 class="mb-0 text-success">{{ created|length }}</h3>
+                        <p class="mb-0 text-muted">Imported</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3 class="mb-0 text-warning">{{ skipped|length }}</h3>
+                        <p class="mb-0 text-muted">Skipped</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3 class="mb-0 text-danger">{{ errors|length }}</h3>
+                        <p class="mb-0 text-muted">Errors</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if employer %}
+        <div class="alert alert-info">
+            Linked employer: <strong>{{ employer.name_en }}</strong>
+        </div>
+        {% endif %}
+
+        {% if with_accounts %}
+        <div class="alert alert-warning">
+            Login accounts were created. Download the credentials file and share the login details
+            with each worker.
+        </div>
+        {% endif %}
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Imported employees</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Row</th>
+                            <th>Emp. No.</th>
+                            <th>Name</th>
+                            <th>Passport No.</th>
+                            <th>Login email</th>
+                            <th>Password</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in created %}
+                        <tr>
+                            <td>{{ item.row_number }}</td>
+                            <td>{{ item.employee_number|default:"-" }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.passport_number|default:"-" }}</td>
+                            <td>{{ item.login_email|default:"-" }}</td>
+                            <td>{{ item.password|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No employees were imported.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% if skipped %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Skipped rows</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Row</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in skipped %}
+                        <tr>
+                            <td>{{ item.row_number }}</td>
+                            <td>{{ item.reason }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if errors %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0 text-danger">Errors</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Row</th>
+                            <th>Error</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in errors %}
+                        <tr>
+                            <td>{{ item.row_number }}</td>
+                            <td>{{ item.reason }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+{% endblock %}

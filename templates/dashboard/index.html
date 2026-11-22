@@ -230,7 +230,7 @@
                                     <tr>
                                         <td>
                                             <a href="{% url 'employee_update' row.employee.id %}">{{ row.employee.full_name_en }}</a>
-                                            <span class="table-sub d-block">{{ row.employee.employer.name_en }}</span>
+                                            <span class="table-sub d-block">{{ row.employee.employer.name_en|default:"-" }}</span>
                                         </td>
                                         <td>{% translate row.label request.session.language %}</td>
                                         <td>
@@ -316,7 +316,7 @@
                                     {% for employee in recent_employees %}
                                     <tr>
                                         <td><a href="{% url 'employee_update' employee.id %}">{{ employee.full_name_en }}</a></td>
-                                        <td>{{ employee.employer.name_en }}</td>
+                                        <td>{{ employee.employer.name_en|default:"-" }}</td>
                                         <td>{% translate employee.status request.session.language %}</td>
                                     </tr>
                                     {% empty %}

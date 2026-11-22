@@ -1,4 +1,5 @@
 {% load static %}
+{% load pwa %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#093d5d">
     <title>Worker Services | Mudita</title>
+    {% progressive_web_app_meta %}
     <link rel="stylesheet" href="{% static 'dashboard/css/worker-portal.css' %}?v=3">
 </head>
 <body>
@@ -83,6 +85,14 @@
                         <p class="worker-empty-date">Your 90-day report date has not been set. Please contact our team.</p>
                     </div>
                 {% endif %}
+                {% if push_enabled %}
+                    <div class="worker-push" id="push-block"
+                         data-vapid="{{ vapid_public_key }}"
+                         data-subscribe-url="{% url 'subscribe_push' %}">
+                        <button type="button" class="worker-submit" id="push-enable" hidden>Enable report reminders <span aria-hidden="true">→</span></button>
+                        <p class="worker-form-help" id="push-status">Get a reminder once a week as your 90-day report deadline approaches.</p>
+                    </div>
+                {% endif %}
             </section>
 
             <section class="worker-card worker-card-form">
@@ -156,6 +166,90 @@
 
         requestType.addEventListener("change", updateDesiredJobField);
         updateDesiredJobField();
+
+        (function () {
+            const block = document.getElementById("push-block");
+            if (!block || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+                return;
+            }
+
+            const enableBtn = document.getElementById("push-enable");
+            const statusEl = document.getElementById("push-status");
+            const vapidKey = block.dataset.vapid;
+            const subscribeUrl = block.dataset.subscribeUrl;
+            const csrfToken = "{{ csrf_token }}";
+
+            function urlBase64ToUint8Array(base64String) {
+                const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+                const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+                const raw = atob(base64);
+                const output = new Uint8Array(raw.length);
+                for (let i = 0; i < raw.length; i++) {
+                    output[i] = raw.charCodeAt(i);
+                }
+                return output;
+            }
+
+            function saveSubscription(subscription) {
+                return fetch(subscribeUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: JSON.stringify(subscription),
+                });
+            }
+
+            async function getSubscription(registration) {
+                let subscription = await registration.pushManager.getSubscription();
+                if (!subscription) {
+                    subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(vapidKey),
+                    });
+                }
+                return subscription;
+            }
+
+            async function init() {
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    const existing = await registration.pushManager.getSubscription();
+                    if (existing) {
+                        enableBtn.hidden = true;
+                        statusEl.textContent = "Report reminders are on.";
+                        await saveSubscription(existing);
+                        return;
+                    }
+                    enableBtn.hidden = false;
+                } catch (err) {
+                    enableBtn.hidden = false;
+                }
+            }
+
+            enableBtn.addEventListener("click", async () => {
+                enableBtn.disabled = true;
+                try {
+                    const permission = await Notification.requestPermission();
+                    if (permission !== "granted") {
+                        statusEl.textContent = "Notifications are blocked. Please allow them in your browser settings.";
+                        enableBtn.disabled = false;
+                        return;
+                    }
+                    const registration = await navigator.serviceWorker.ready;
+                    const subscription = await getSubscription(registration);
+                    await saveSubscription(subscription);
+                    enableBtn.hidden = true;
+                    statusEl.textContent = "Report reminders are on.";
+                } catch (err) {
+                    statusEl.textContent = "Could not enable reminders. Please try again.";
+                    enableBtn.disabled = false;
+                }
+            });
+
+            init();
+        })();
     </script>
 </body>
 </html>

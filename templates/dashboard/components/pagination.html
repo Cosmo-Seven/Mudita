@@ -12,7 +12,7 @@
                 {% if page_obj.has_previous %}
                 <li class="page-item">
                     <a class="page-link fw-bold"
-                        href="?search={{ search }}&page={{ page_obj.previous_page_number }}&entries={{ entries }}&date={{date}}&date_range={{date_range}}">&lt;</a>
+                        href="?{% if page_query %}{{ page_query }}&{% else %}search={{ search }}&entries={{ entries }}&date={{ date }}&date_range={{ date_range }}&{% endif %}page={{ page_obj.previous_page_number }}">&lt;</a>
                 </li>
                 {% else %}
                 <li class="page-item disabled"><a class="page-link fw-bold">&lt;</a></li>
@@ -32,7 +32,7 @@
                 {% else %}
                 <li class="page-item">
                     <a class="page-link"
-                        href="?search={{ search }}&page={{ num }}&entries={{ entries }}&date={{date}}&date_range={{date_range}}">
+                        href="?{% if page_query %}{{ page_query }}&{% else %}search={{ search }}&entries={{ entries }}&date={{ date }}&date_range={{ date_range }}&{% endif %}page={{ num }}">
                         {% if request.session.language == 'my' %}
                         {{ num|mm_number }}
                         {% else %}
@@ -46,7 +46,7 @@
                 {% if page_obj.has_next %}
                 <li class="page-item">
                     <a class="page-link fw-bold"
-                        href="?search={{ search }}&page={{ page_obj.next_page_number }}&entries={{ entries }}&date={{date}}&date_range={{date_range}}">&gt;</a>
+                        href="?{% if page_query %}{{ page_query }}&{% else %}search={{ search }}&entries={{ entries }}&date={{ date }}&date_range={{ date_range }}&{% endif %}page={{ page_obj.next_page_number }}">&gt;</a>
                 </li>
                 {% else %}
                 <li class="page-item disabled"><a class="page-link fw-bold">&gt;</a></li>
