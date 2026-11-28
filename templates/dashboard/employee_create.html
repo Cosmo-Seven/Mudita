@@ -5,279 +5,248 @@
 {% block body %}
 <div class="page-wrapper">
     <div class="content">
-        <div class="page-header">
+        <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-2">
             <div class="page-title">
-                <h4 class="fw-bold">{% translate 'add_new_employees' request.session.language %}</h4>
+                <h4 class="fw-bold mb-1">{% translate 'add_new_employees' request.session.language %}</h4>
+                <p class="text-muted small mb-0">
+                    {% translate 'fill_in_the_employee_information_below_the_fields_marked' request.session.language %}
+                    <span class="entity-required">*</span>
+                    {% translate 'are_mandatory' request.session.language %}
+                </p>
             </div>
+            <a href="{% url 'employee_list' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="ti ti-arrow-left me-1"></i>{% translate 'back' request.session.language %}
+            </a>
         </div>
 
         <form action="{% url 'employee_create' %}" method="POST" enctype="multipart/form-data" hx-boost="false">
             {% csrf_token %}
-            <div class="card mb-3 entity-form-card">
+
+            <!-- Section navigation -->
+            <div class="entity-form-nav" hx-boost="false">
+                <a href="#section-employer">{% translate 'choose_an_employer' request.session.language %}</a>
+                <a href="#section-employee">1. {% translate 'employee_information' request.session.language %}</a>
+                <a href="#section-personal">2. {% translate 'personal_information' request.session.language %}</a>
+                <a href="#section-contact">3. {% translate 'contact_information' request.session.language %}</a>
+                <a href="#section-address">4. {% translate 'address' request.session.language %}</a>
+                <a href="#section-other">5. {% translate 'other_information' request.session.language %}</a>
+                <a href="#section-health">6. {% translate 'health_insurance_information' request.session.language %}</a>
+                <a href="#section-account">7. {% translate 'worker_portal_account' request.session.language %}</a>
+            </div>
+
+            <!-- 0. Employer -->
+            <div class="card mb-3 entity-form-card" id="section-employer">
+                <div class="card-header">
+                    <span class="entity-form-badge"><i class="ti ti-building"></i></span>
+                    <h5 class="mb-0">{% translate 'choose_an_employer' request.session.language %}</h5>
+                </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label" for="employee-employer">
-                            {% translate 'choose_an_employer' request.session.language %}
-                        </label>
-                        <select id="employee-employer" class="form-select searchable-select" name="employer">
-                            <option value="">-- {% translate 'no_employer_yet' request.session.language %} --</option>
-                            {% for e in employers %}
-                            <option value="{{ e.id }}">{{ e.name_en }} ({{ e.employer_code|default:"-" }})</option>
-                            {% endfor %}
-                        </select>
-                        <div class="form-text">အလုပ်ရှင် မရွေးထားပါက အလုပ်သမားကို အလုပ်ရှင်မရှိဘဲ သိမ်းနိုင်ပြီး နောက်မှ ပြန်ချိတ်နိုင်ပါသည်။</div>
-                    </div>
+                    <label class="form-label" for="employee-employer">
+                        {% translate 'choose_an_employer' request.session.language %}
+                    </label>
+                    <select id="employee-employer" class="form-select searchable-select" name="employer">
+                        <option value="">-- {% translate 'no_employer_yet' request.session.language %} --</option>
+                        {% for e in employers %}
+                        <option value="{{ e.id }}">{{ e.name_en }} ({{ e.employer_code|default:"-" }})</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text">{% translate 'employer_optional_hint' request.session.language %}</div>
                 </div>
             </div>
 
-            <!-- 1. Employee Information (Excel အစီအစဉ်အတိုင်း) -->
-            <div class="card mb-3 entity-form-card">
+            <!-- 1. Employee Information -->
+            <div class="card mb-3 entity-form-card" id="section-employee">
                 <div class="card-header">
-                    <h5 class="mb-0">1. {% translate 'employee_information' request.session.language %} (Excel)</h5>
+                    <span class="entity-form-badge">1</span>
+                    <h5 class="mb-0">{% translate 'employee_information' request.session.language %}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="entity-form-section-title">
+                        <i class="ti ti-briefcase"></i>{% translate 'employment_details' request.session.language %}
+                    </div>
+                    <div class="row g-3 mb-4">
                         <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'work_department' request.session.language %}</label>
-                                <input type="text" name="work_department" class="form-control">
-                            </div>
+                            <label class="form-label">{% translate 'work_department' request.session.language %}</label>
+                            <input type="text" name="work_department" class="form-control">
                         </div>
                         <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'start_date' request.session.language %}</label>
-                                <input type="date" name="start_date" class="form-control">
-                            </div>
+                            <label class="form-label">{% translate 'employee_number' request.session.language %}</label>
+                            <input type="text" name="employee_number" class="form-control">
                         </div>
                         <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'employee_number' request.session.language %}</label>
-                                <input type="text" name="employee_number" class="form-control">
-                            </div>
+                            <label class="form-label">{% translate 'start_date' request.session.language %}</label>
+                            <input type="date" name="start_date" class="form-control">
                         </div>
+                    </div>
 
+                    <div class="entity-form-section-title">
+                        <i class="ti ti-user"></i>{% translate 'name_information' request.session.language %}
+                    </div>
+                    <div class="row g-3 mb-4">
                         <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'title_th' request.session.language %}</label>
-                                <select class="select" name="title_th">
-                                    <option value="Mr.">Mr.</option>
-                                    <option value="Mrs.">Mrs.</option>
-                                    <option value="Ms.">Ms.</option>
-                                </select>
-                            </div>
+                            <label class="form-label">{% translate 'title_th' request.session.language %}</label>
+                            <select class="select" name="title_th">
+                                <option value="Mr.">Mr.</option>
+                                <option value="Mrs.">Mrs.</option>
+                                <option value="Ms.">Ms.</option>
+                            </select>
                         </div>
                         <div class="col-lg-9">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'name_surname_th' request.session.language %}</label>
-                                <input type="text" name="name_th" class="form-control">
-                            </div>
+                            <label class="form-label">{% translate 'name_surname_th' request.session.language %}</label>
+                            <input type="text" name="name_th" class="form-control">
                         </div>
                         <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'prefix_en' request.session.language %}</label>
-                                <select class="select" name="prefix_en">
-                                    <option value="Mr.">Mr.</option>
-                                    <option value="Mrs.">Mrs.</option>
-                                    <option value="Ms.">Ms.</option>
-                                </select>
-                            </div>
+                            <label class="form-label">{% translate 'prefix_en' request.session.language %}</label>
+                            <select class="select" name="prefix_en">
+                                <option value="Mr.">Mr.</option>
+                                <option value="Mrs.">Mrs.</option>
+                                <option value="Ms.">Ms.</option>
+                            </select>
                         </div>
                         <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">
-                                    {% translate 'full_name_en' request.session.language %}
-                                    <span class="text-danger ms-1">*</span>
-                                </label>
-                                <input type="text" name="full_name_en" required class="form-control">
-                            </div>
+                            <label class="form-label">
+                                {% translate 'full_name_en' request.session.language %}<span class="entity-required">*</span>
+                            </label>
+                            <input type="text" name="full_name_en" required class="form-control">
                         </div>
                         <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'add_to_the_name_en' request.session.language %}</label>
-                                <input type="text" name="name_suffix_en" class="form-control">
-                            </div>
+                            <label class="form-label">{% translate 'add_to_the_name_en' request.session.language %}</label>
+                            <input type="text" name="name_suffix_en" class="form-control">
                         </div>
+                    </div>
 
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'passport_number' request.session.language %}</label>
-                                <input type="text" name="passport_number" class="form-control">
-                            </div>
+                    <div class="entity-form-section-title">
+                        <i class="ti ti-id-badge-2"></i>{% translate 'passport_and_visa' request.session.language %}
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'passport_number' request.session.language %}</label>
+                            <input type="text" name="passport_number" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'new_passport_number' request.session.language %}</label>
-                                <input type="text" name="new_passport_number" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'new_passport_number' request.session.language %}</label>
+                            <input type="text" name="new_passport_number" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label text-danger">{% translate 'passport_expiry_date' request.session.language %}</label>
-                                <input type="date" name="passport_expiry_date" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-danger">{% translate 'passport_expiry_date' request.session.language %}</label>
+                            <input type="date" name="passport_expiry_date" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label text-danger">{% translate 'new_passport_expiry_date' request.session.language %}</label>
-                                <input type="date" name="new_passport_expiry_date" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-danger">{% translate 'new_passport_expiry_date' request.session.language %}</label>
+                            <input type="date" name="new_passport_expiry_date" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label text-primary">{% translate 'visa_issuance_date' request.session.language %}</label>
-                                <input type="date" name="visa_issue_date" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-primary">{% translate 'visa_issuance_date' request.session.language %}</label>
+                            <input type="date" name="visa_issue_date" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label text-danger">{% translate 'visa_expiry_date' request.session.language %}</label>
-                                <input type="date" name="visa_expiry_date" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-danger">{% translate 'visa_expiry_date' request.session.language %}</label>
+                            <input type="date" name="visa_expiry_date" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'taxpayer_identification_number' request.session.language %}</label>
-                                <input type="text" name="tax_id_number" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'taxpayer_identification_number' request.session.language %}</label>
+                            <input type="text" name="tax_id_number" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'pakan_number' request.session.language %}</label>
-                                <input type="text" name="pakan_number" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'pakan_number' request.session.language %}</label>
+                            <input type="text" name="pakan_number" class="form-control">
                         </div>
+                    </div>
 
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'work_permit_number' request.session.language %}</label>
-                                <input type="text" name="work_permit_number" class="form-control">
-                            </div>
+                    <div class="entity-form-section-title">
+                        <i class="ti ti-file-certificate"></i>{% translate 'work_permit_and_report' request.session.language %}
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label">{% translate 'work_permit_number' request.session.language %}</label>
+                            <input type="text" name="work_permit_number" class="form-control">
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'identification_number' request.session.language %}</label>
-                                <input type="text" name="identification_number" class="form-control">
-                            </div>
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label">{% translate 'identification_number' request.session.language %}</label>
+                            <input type="text" name="identification_number" class="form-control">
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label text-primary">{% translate 'date_the_work_permit_was_issued' request.session.language %}</label>
-                                <input type="date" name="work_permit_issue_date" class="form-control">
-                            </div>
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label text-primary">{% translate 'date_the_work_permit_was_issued' request.session.language %}</label>
+                            <input type="date" name="work_permit_issue_date" class="form-control">
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label text-danger">{% translate 'work_permit_expiration_date' request.session.language %}</label>
-                                <input type="date" name="work_permit_expiry_date" class="form-control">
-                            </div>
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label text-danger">{% translate 'work_permit_expiration_date' request.session.language %}</label>
+                            <input type="date" name="work_permit_expiry_date" class="form-control">
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'pink_card_number' request.session.language %}</label>
-                                <input type="text" name="pink_card_number" class="form-control">
-                            </div>
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label">{% translate 'pink_card' request.session.language %}</label>
+                            <select class="select" name="pink_card_number">
+                                <option value="">--</option>
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label text-danger">{% translate '90_day_report_start_date' request.session.language %}</label>
-                                <input type="date" name="report_90day_start_date" class="form-control">
-                            </div>
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label text-danger">{% translate '90_day_report_start_date' request.session.language %}</label>
+                            <input type="date" name="report_90day_start_date" class="form-control">
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate '90_day_report_update_1' request.session.language %}</label>
-                                <input type="date" name="report_90day_update_1" class="form-control">
-                            </div>
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label">{% translate 'types_of_work_permits' request.session.language %}</label>
+                            <input type="text" name="work_permit_type" class="form-control"
+                                placeholder="{% translate 'please_select_one' request.session.language %}">
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate '90_day_report_update_2' request.session.language %}</label>
-                                <input type="date" name="report_90day_update_2" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate '90_day_report_update_3' request.session.language %}</label>
-                                <input type="date" name="report_90day_update_3" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'types_of_work_permits' request.session.language %}</label>
-                                <input type="text" name="work_permit_type" class="form-control"
-                                    placeholder="{% translate 'please_select_one' request.session.language %}">
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'update' request.session.language %} / {% translate 'internal_note' request.session.language %}</label>
-                                <textarea name="internal_note" class="form-control" rows="2"
-                                    placeholder="{% translate 'notes_for_the_internal_team' request.session.language %}"></textarea>
-                            </div>
+                        <div class="col-12">
+                            <label class="form-label">{% translate 'update' request.session.language %} / {% translate 'internal_note' request.session.language %}</label>
+                            <textarea name="internal_note" class="form-control" rows="2"
+                                placeholder="{% translate 'notes_for_the_internal_team' request.session.language %}"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 2. Personal Information -->
-            <div class="card mb-3 entity-form-card">
+            <div class="card mb-3 entity-form-card" id="section-personal">
                 <div class="card-header">
-                    <h5 class="mb-0">2. {% translate 'personal_information' request.session.language %}</h5>
+                    <span class="entity-form-badge">2</span>
+                    <h5 class="mb-0">{% translate 'personal_information' request.session.language %}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row g-3">
                         <div class="col-lg-4">
-                            <div class="mb-3 text-center photo-upload-box">
+                            <div class="photo-upload-box h-100 d-flex flex-column justify-content-center">
                                 <label class="form-label d-block text-center">{% translate 'employee_photos' request.session.language %}</label>
-                                <div class="position-relative d-inline-block mb-3" style="width: 150px; height: 150px;">
-                                    <img id="imagePreview" src="https://via.placeholder.com/150?text=No+Image"
+                                <div class="position-relative d-inline-block mx-auto mb-3" style="width: 150px; height: 150px;">
+                                    <img id="imagePreview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='150' height='150' fill='%23f6f2e7'/%3E%3Ccircle cx='75' cy='58' r='26' fill='%23cdc4ae'/%3E%3Cpath d='M28 150c0-26 21-46 47-46s47 20 47 46z' fill='%23cdc4ae'/%3E%3C/svg%3E"
                                         alt="Profile Preview"
                                         class="img-thumbnail rounded object-fit-cover w-100 h-100 shadow-sm">
                                 </div>
                                 <input type="file" name="photo" id="photoInput" accept=".jpg,.jpeg,.png"
-                                    class="form-control">
+                                    class="form-control form-control-sm">
                             </div>
                         </div>
                         <div class="col-lg-8">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">{% translate 'height_cm' request.session.language %}</label>
-                                        <input type="number" step="0.1" name="height_cm" class="form-control">
-                                    </div>
+                            <div class="row g-3">
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label">{% translate 'height_cm' request.session.language %}</label>
+                                    <input type="number" step="0.1" name="height_cm" class="form-control">
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">{% translate 'weight_kg' request.session.language %}</label>
-                                        <input type="number" step="0.1" name="weight_kg" class="form-control">
-                                    </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label">{% translate 'weight_kg' request.session.language %}</label>
+                                    <input type="number" step="0.1" name="weight_kg" class="form-control">
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">{% translate 'sex' request.session.language %}</label>
-                                        <select class="select" name="gender">
-                                            <option value="male">{% translate 'male' request.session.language %}</option>
-                                            <option value="female">{% translate 'female' request.session.language %}</option>
-                                        </select>
-                                    </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label">{% translate 'sex' request.session.language %}</label>
+                                    <select class="select" name="gender">
+                                        <option value="male">{% translate 'male' request.session.language %}</option>
+                                        <option value="female">{% translate 'female' request.session.language %}</option>
+                                    </select>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">{% translate 'date_of_birth' request.session.language %}</label>
-                                        <input type="date" name="date_of_birth" class="form-control">
-                                    </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label">{% translate 'date_of_birth' request.session.language %}</label>
+                                    <input type="date" name="date_of_birth" class="form-control">
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">{% translate 'fathers_name' request.session.language %}</label>
-                                        <input type="text" name="father_name" class="form-control">
-                                    </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label">{% translate 'fathers_name' request.session.language %}</label>
+                                    <input type="text" name="father_name" class="form-control">
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">{% translate 'mothers_name' request.session.language %}</label>
-                                        <input type="text" name="mother_name" class="form-control">
-                                    </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label">{% translate 'mothers_name' request.session.language %}</label>
+                                    <input type="text" name="mother_name" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -286,57 +255,55 @@
             </div>
 
             <!-- 3. Contact & Nationality -->
-            <div class="card mb-3 entity-form-card">
+            <div class="card mb-3 entity-form-card" id="section-contact">
                 <div class="card-header">
-                    <h5 class="mb-0">3. {% translate 'contact_information_and_nationality' request.session.language %}</h5>
+                    <span class="entity-form-badge">3</span>
+                    <h5 class="mb-0">{% translate 'contact_information_and_nationality' request.session.language %}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row g-3">
                         <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'telephone_number' request.session.language %}</label>
-                                <input type="tel" name="phone" class="form-control">
-                            </div>
+                            <label class="form-label">{% translate 'telephone_number' request.session.language %}</label>
+                            <input type="tel" name="phone" class="form-control">
                         </div>
                         <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'nationality' request.session.language %}</label>
-                                <select class="select" name="nationality">
-                                    <option value="">-- {% translate 'select_nationality' request.session.language %} --</option>
-                                    {% for n in nationalities %}
-                                    <option value="{{ n.id }}">{{ n.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                            <label class="form-label">{% translate 'nationality' request.session.language %}</label>
+                            <select class="select" name="nationality">
+                                <option value="">-- {% translate 'select_nationality' request.session.language %} --</option>
+                                {% for n in nationalities %}
+                                <option value="{{ n.id }}">{{ n.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 4. Address -->
-            <div class="card mb-3 entity-form-card">
+            <div class="card mb-3 entity-form-card" id="section-address">
                 <div class="card-header">
-                    <h5 class="mb-0">4. {% translate 'address' request.session.language %}</h5>
+                    <span class="entity-form-badge">4</span>
+                    <h5 class="mb-0">{% translate 'address' request.session.language %}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label" for="employee-address-line">{% translate 'address_line' request.session.language %}</label>
-                        <textarea id="employee-address-line" name="address_line" class="form-control" rows="2"></textarea>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="employee-address-line">{% translate 'address_line' request.session.language %}</label>
+                            <textarea id="employee-address-line" name="address_line" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
                             <label class="form-label" for="employee-province">{% translate 'province' request.session.language %}</label>
                             <input id="employee-province" name="province" class="form-control">
                         </div>
-                        <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="col-lg-3 col-md-6">
                             <label class="form-label" for="employee-district">{% translate 'district' request.session.language %}</label>
                             <input id="employee-district" name="district" class="form-control">
                         </div>
-                        <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="col-lg-3 col-md-6">
                             <label class="form-label" for="employee-sub-district">{% translate 'sub_district' request.session.language %}</label>
                             <input id="employee-sub-district" name="sub_district" class="form-control">
                         </div>
-                        <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="col-lg-3 col-md-6">
                             <label class="form-label" for="employee-postal-code">{% translate 'postal_code' request.session.language %}</label>
                             <input id="employee-postal-code" name="postal_code" class="form-control">
                         </div>
@@ -344,163 +311,142 @@
                 </div>
             </div>
 
-            <!-- 5. Other Documents & Records -->
-            <div class="card mb-3 entity-form-card">
+            <!-- 5. Other Information -->
+            <div class="card mb-3 entity-form-card" id="section-other">
                 <div class="card-header">
-                    <h5 class="mb-0">5. {% translate 'other_information' request.session.language %}</h5>
+                    <span class="entity-form-badge">5</span>
+                    <h5 class="mb-0">{% translate 'other_information' request.session.language %}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'passport_issuance_location' request.session.language %}</label>
-                                <input type="text" name="passport_issue_place" class="form-control">
-                            </div>
+                    <div class="entity-form-section-title">
+                        <i class="ti ti-passport"></i>{% translate 'passport_and_visa' request.session.language %}
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'passport_issuance_location' request.session.language %}</label>
+                            <input type="text" name="passport_issue_place" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label text-primary">{% translate 'passport_issuance_date' request.session.language %}</label>
-                                <input type="date" name="passport_issue_date" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-primary">{% translate 'passport_issuance_date' request.session.language %}</label>
+                            <input type="date" name="passport_issue_date" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'visa_types' request.session.language %}</label>
-                                <input type="text" name="visa_type" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'visa_types' request.session.language %}</label>
+                            <input type="text" name="visa_type" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'visa_issuance_location' request.session.language %}</label>
-                                <input type="text" name="visa_issue_place" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'visa_issuance_location' request.session.language %}</label>
+                            <input type="text" name="visa_issue_place" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label text-primary">{% translate 'visa_stamp_date' request.session.language %}</label>
-                                <input type="date" name="visa_stamp_date" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-primary">{% translate 'visa_stamp_date' request.session.language %}</label>
+                            <input type="date" name="visa_stamp_date" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label text-primary">{% translate 'visa_number' request.session.language %}</label>
-                                <input type="text" name="visa_number" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-primary">{% translate 'visa_number' request.session.language %}</label>
+                            <input type="text" name="visa_number" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'job_position' request.session.language %}</label>
-                                <input type="text" name="job_position" class="form-control">
-                            </div>
+                    </div>
+
+                    <div class="entity-form-section-title mt-4">
+                        <i class="ti ti-user-check"></i>{% translate 'employment_details' request.session.language %}
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'job_position' request.session.language %}</label>
+                            <input type="text" name="job_position" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'job_description' request.session.language %}</label>
-                                <input type="text" name="job_description" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'job_description' request.session.language %}</label>
+                            <input type="text" name="job_description" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label text-danger">{% translate '90_day_reporting_day' request.session.language %}</label>
-                                <input type="date" name="report_90day_date" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-danger">{% translate '90_day_reporting_day' request.session.language %}</label>
+                            <input type="date" name="report_90day_date" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'ra_number_from_the_outsource_system' request.session.language %}</label>
-                                <input type="text" name="ra_number" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'application_number' request.session.language %}</label>
+                            <input type="text" name="application_number" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'application_number' request.session.language %}</label>
-                                <input type="text" name="application_number" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'ra_number_from_the_outsource_system' request.session.language %}</label>
+                            <input type="text" name="ra_number" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'worker_code_employers_code' request.session.language %}</label>
-                                <input type="text" name="worker_employer_code" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'worker_code_employers_code' request.session.language %}</label>
+                            <input type="text" name="worker_employer_code" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'worker_reference_number' request.session.language %}</label>
-                                <input type="text" name="worker_reference_number" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'worker_reference_number' request.session.language %}</label>
+                            <input type="text" name="worker_reference_number" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'bank_name' request.session.language %}</label>
-                                <input type="text" name="bank_name" class="form-control">
-                            </div>
+                    </div>
+
+                    <div class="entity-form-section-title mt-4">
+                        <i class="ti ti-building-bank"></i>{% translate 'bank_information' request.session.language %}
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'bank_name' request.session.language %}</label>
+                            <input type="text" name="bank_name" class="form-control">
                         </div>
-                        <div class="col-lg-3">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'bank_account_number' request.session.language %}</label>
-                                <input type="text" name="bank_account_number" class="form-control">
-                            </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">{% translate 'bank_account_number' request.session.language %}</label>
+                            <input type="text" name="bank_account_number" class="form-control">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 6. Health Insurance -->
-            <div class="card mb-3 entity-form-card">
+            <div class="card mb-3 entity-form-card" id="section-health">
                 <div class="card-header">
-                    <h5 class="mb-0">6. {% translate 'health_insurance_information' request.session.language %}</h5>
+                    <span class="entity-form-badge">6</span>
+                    <h5 class="mb-0">{% translate 'health_insurance_information' request.session.language %}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row g-3">
                         <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'types_of_insurance' request.session.language %}</label>
-                                <input type="text" name="insurance_type" class="form-control"
-                                    placeholder="{% translate 'select_a_type' request.session.language %}">
-                            </div>
+                            <label class="form-label">{% translate 'types_of_insurance' request.session.language %}</label>
+                            <input type="text" name="insurance_type" class="form-control"
+                                placeholder="{% translate 'select_a_type' request.session.language %}">
                         </div>
                         <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">{% translate 'hospital_where_the_disease_was_diagnosed' request.session.language %}</label>
-                                <input type="text" name="diagnosed_hospital" class="form-control">
-                            </div>
+                            <label class="form-label">{% translate 'hospital_where_the_disease_was_diagnosed' request.session.language %}</label>
+                            <input type="text" name="diagnosed_hospital" class="form-control">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 7. Worker Portal Account -->
-            <div class="card mb-3 entity-form-card">
+            <div class="card mb-3 entity-form-card" id="section-account">
                 <div class="card-header">
-                    <h5 class="mb-0">7. {% translate 'worker_portal_account' request.session.language %}</h5>
+                    <span class="entity-form-badge">7</span>
+                    <h5 class="mb-0">{% translate 'worker_portal_account' request.session.language %}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row g-3">
                         <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">Login email (မဖြည့်ပါက အကောင့်မဖန်တီးပါ)</label>
-                                <input type="email" name="login_email" autocomplete="off" class="form-control">
-                            </div>
+                            <label class="form-label">Login email ({% translate 'login_email_hint' request.session.language %})</label>
+                            <input type="email" name="login_email" autocomplete="off" class="form-control">
                         </div>
                         <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">ကနဦး password (အကောင့်ဖန်တီးပါက လိုအပ်သည်)</label>
-                                <input type="password" name="worker_password" autocomplete="new-password" class="form-control">
-                            </div>
+                            <label class="form-label">{% translate 'initial_password' request.session.language %} ({% translate 'initial_password_hint' request.session.language %})</label>
+                            <input type="password" name="worker_password" autocomplete="new-password" class="form-control">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card mb-3 entity-form-card">
-                <div class="card-body d-flex justify-content-end">
-                    <a href="{% url 'employee_list' %}" class="btn btn-secondary me-2">
-                        {% translate 'cancel' request.session.language %}
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        {% translate 'employee_data_record' request.session.language %}
-                    </button>
-                </div>
+            <!-- Actions -->
+            <div class="entity-form-actions">
+                <a href="{% url 'employee_list' %}" class="btn btn-secondary">
+                    {% translate 'cancel' request.session.language %}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="ti ti-device-floppy me-1"></i>{% translate 'employee_data_record' request.session.language %}
+                </button>
             </div>
         </form>
     </div>
@@ -509,21 +455,24 @@
 {% include 'dashboard/components/entity_form_styles.html' %}
 
 <script>
-    document.getElementById('photoInput').addEventListener('change', function (event) {
-        const file = event.target.files[0];
+    (function () {
+        const PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='150' height='150' fill='%23f6f2e7'/%3E%3Ccircle cx='75' cy='58' r='26' fill='%23cdc4ae'/%3E%3Cpath d='M28 150c0-26 21-46 47-46s47 20 47 46z' fill='%23cdc4ae'/%3E%3C/svg%3E";
+        const photoInput = document.getElementById('photoInput');
         const preview = document.getElementById('imagePreview');
+        if (!photoInput || !preview) return;
 
-        if (file) {
+        photoInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                preview.src = PLACEHOLDER;
+                return;
+            }
             const reader = new FileReader();
-
             reader.onload = function (e) {
                 preview.src = e.target.result;
-            }
-
+            };
             reader.readAsDataURL(file);
-        } else {
-            preview.src = "https://via.placeholder.com/150?text=No+Image";
-        }
-    });
+        });
+    })();
 </script>
 {% endblock %}

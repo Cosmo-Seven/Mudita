@@ -133,7 +133,7 @@
 
 <!-- Create Modal -->
 <div class="modal fade" id="createModal">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 640px;">
         <div class="modal-content">
             <div class="page-wrapper-new p-0">
                 <div class="content">
@@ -149,22 +149,15 @@
                         {% csrf_token %}
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="new-employee-field">
-                                        <div class="profile-pic-upload image-field">
-                                            <div class="profile-pic p-2">
-                                                <img src="{% static 'dashboard/images/no-profile.png' %}"
-                                                    class="object-fit-cover h-100 rounded-1" alt="user">
-                                            </div>
-                                            <div class="mb-3">
-                                                <div class="image-upload mb-0">
-                                                    <input type="file" accept=".jpg, .jpeg, .png" name="profile">
-                                                    <div class="image-uploads">
-                                                        <h4>{% translate 'change_image' request.session.language %}</h4>
-                                                    </div>
-                                                </div>
-                                                <p class="mt-2">JPEG, PNG up to 2 MB</p>
-                                            </div>
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center gap-3 pb-2 mb-1 border-bottom">
+                                        <img src="{% static 'dashboard/images/no-profile.png' %}"
+                                            class="rounded-circle object-fit-cover border" width="56" height="56"
+                                            alt="user">
+                                        <div class="flex-grow-1">
+                                            <input type="file" accept=".jpg, .jpeg, .png" name="profile"
+                                                class="form-control form-control-sm">
+                                            <div class="form-text">JPEG, PNG up to 2 MB</div>
                                         </div>
                                     </div>
                                 </div>
@@ -220,30 +213,19 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="mb-3">
-                                        <div
-                                            class="status-toggle modal-status d-flex justify-content-start align-items-center gap-2">
-                                            <span class="status-label">{% translate 'active' request.session.language  %}</span>
+                                <div class="col-12">
+                                    <div class="d-flex flex-wrap align-items-center gap-4 pt-1">
+                                        <div class="status-toggle modal-status d-flex align-items-center gap-2">
+                                            <span class="status-label">{% translate 'active' request.session.language %}</span>
                                             <input type="checkbox" id="is_active" name="is_active" class="check">
                                             <label for="is_active" class="checktoggle"></label>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="mb-3">
-                                        <div
-                                            class="status-toggle modal-status d-flex justify-content-start align-items-center gap-2">
+                                        <div class="status-toggle modal-status d-flex align-items-center gap-2">
                                             <span class="status-label">{% translate 'staff' request.session.language %}</span>
                                             <input type="checkbox" id="is_staff" name="is_staff" class="check">
                                             <label for="is_staff" class="checktoggle"></label>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="mb-3">
-                                        <div
-                                            class="status-toggle modal-status d-flex justify-content-start align-items-center gap-2">
+                                        <div class="status-toggle modal-status d-flex align-items-center gap-2">
                                             <span class="status-label">{% translate 'superuser' request.session.language %}</span>
                                             <input type="checkbox" id="is_superuser" name="is_superuser" class="check">
                                             <label for="is_superuser" class="checktoggle"></label>
@@ -266,7 +248,7 @@
 <!-- Update Modal -->
 {% for user in users %}
 <div class="modal fade" id="updateModal_{{user.id}}">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 640px;">
         <div class="modal-content">
             <div class="page-wrapper-new p-0">
                 <div class="content">
@@ -282,22 +264,15 @@
                         {% csrf_token %}
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="new-employee-field">
-                                        <div class="profile-pic-upload image-field">
-                                            <div class="profile-pic p-2">
-                                                <img src="{% if user.profile %}{{user.profile.url}}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
-                                                    class="object-fit-cover h-100 rounded-1" alt="user">
-                                            </div>
-                                            <div class="mb-3">
-                                                <div class="image-upload mb-0">
-                                                    <input type="file" accept=".jpg, .jpeg, .png" name="profile">
-                                                    <div class="image-uploads">
-                                                        <h4>{% translate 'change_image' request.session.language %}</h4>
-                                                    </div>
-                                                </div>
-                                                <p class="mt-2">JPEG, PNG up to 2 MB</p>
-                                            </div>
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center gap-3 pb-2 mb-1 border-bottom">
+                                        <img src="{% if user.profile %}{{user.profile.url}}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                                            class="rounded-circle object-fit-cover border" width="56" height="56"
+                                            alt="user">
+                                        <div class="flex-grow-1">
+                                            <input type="file" accept=".jpg, .jpeg, .png" name="profile"
+                                                class="form-control form-control-sm">
+                                            <div class="form-text">JPEG, PNG up to 2 MB</div>
                                         </div>
                                     </div>
                                 </div>
@@ -355,30 +330,19 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="mb-3">
-                                        <div
-                                            class="status-toggle modal-status d-flex justify-content-start align-items-center gap-2">
+                                <div class="col-12">
+                                    <div class="d-flex flex-wrap align-items-center gap-4 pt-1">
+                                        <div class="status-toggle modal-status d-flex align-items-center gap-2">
                                             <span class="status-label">{% translate 'active' request.session.language %}</span>
                                             <input type="checkbox" id="is_active_{{user.id}}" name="is_active" {% if user.is_active %}checked{% endif %} class="check">
                                             <label for="is_active_{{user.id}}" class="checktoggle"></label>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="mb-3">
-                                        <div
-                                            class="status-toggle modal-status d-flex justify-content-start align-items-center gap-2">
+                                        <div class="status-toggle modal-status d-flex align-items-center gap-2">
                                             <span class="status-label">{% translate 'staff' request.session.language %}</span>
                                             <input type="checkbox" id="is_staff_{{user.id}}" name="is_staff" {% if user.is_staff %}checked{% endif %} class="check">
                                             <label for="is_staff_{{user.id}}" class="checktoggle"></label>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="mb-3">
-                                        <div
-                                            class="status-toggle modal-status d-flex justify-content-start align-items-center gap-2">
+                                        <div class="status-toggle modal-status d-flex align-items-center gap-2">
                                             <span class="status-label">{% translate 'superuser' request.session.language %}</span>
                                             <input type="checkbox" id="is_superuser_{{user.id}}" name="is_superuser" {% if user.is_superuser %}checked{% endif %} class="check">
                                             <label for="is_superuser_{{user.id}}" class="checktoggle"></label>

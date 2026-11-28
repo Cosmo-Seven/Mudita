@@ -82,6 +82,42 @@
 <hr>
 
 <div class="preview-section">
+    <h6 class="preview-header">{% translate '90_day_report' request.session.language %} {% translate 'history' request.session.language %}</h6>
+    <div class="preview-grid mt-2">
+        <div><label>{% translate '90_day_report_start_date' request.session.language %}</label><span class="fw-bold">{{ employee.report_90day_start_date|date:'d M Y'|default:"-" }}</span></div>
+        <div><label>{% translate '90_day_reporting_day' request.session.language %}</label><span class="fw-bold">{{ employee.report_90day_date|date:'d M Y'|default:"-" }}</span></div>
+    </div>
+    {% if report_90day_records %}
+    <div class="table-responsive mt-3">
+        <table class="table table-sm align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width:60px;">#</th>
+                    <th>{% translate 'report_date' request.session.language %}</th>
+                    <th>{% translate 'recorded_by' request.session.language %}</th>
+                    <th>{% translate 'recorded_at' request.session.language %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in report_90day_records %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td class="fw-medium">{{ record.report_date|date:'d M Y' }}</td>
+                    <td>{{ record.created_by.username|default:'-' }}</td>
+                    <td>{{ record.created_at|date:'d M Y H:i' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted mb-0 mt-3">{% translate 'no_90_day_report_record_yet' request.session.language %}</p>
+    {% endif %}
+</div>
+
+<hr>
+
+<div class="preview-section">
     <h6 class="preview-header">{% translate 'employment_and_contact' request.session.language %}</h6>
     <div class="preview-grid preview-grid-3">
         <div><label>{% translate 'position' request.session.language %}</label><span class="fw-bold">{{ employee.job_position|default:"-" }}</span></div>

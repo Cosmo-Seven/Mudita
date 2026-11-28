@@ -12,7 +12,11 @@ from models.attachment_models import DocumentTypeModel, AddressModel, DocumentMo
 
 # -- Employer Models --
 from models.employer_models import BusinessTypeModel, EmployerModel
-from models.employee_models import NationalityModel, EmployeeModel
+from models.employee_models import (
+    NationalityModel,
+    EmployeeModel,
+    Employee90DayReportModel,
+)
 from models.group_models import GroupModel, TeamModel
 
 from models.workflow_models import (

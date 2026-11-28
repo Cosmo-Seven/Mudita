@@ -88,12 +88,16 @@ def employer_group_list(request, employer_id):
         else:
             employees = employees.filter(nationality_id=filters["nationality"])
     if filters["pink_card"] == "yes":
-        employees = employees.exclude(pink_card_number__isnull=True).exclude(
-            pink_card_number=""
+        employees = (
+            employees.exclude(pink_card_number__isnull=True)
+            .exclude(pink_card_number="")
+            .exclude(pink_card_number__iexact="false")
         )
     elif filters["pink_card"] == "no":
         employees = employees.filter(
-            Q(pink_card_number__isnull=True) | Q(pink_card_number="")
+            Q(pink_card_number__isnull=True)
+            | Q(pink_card_number="")
+            | Q(pink_card_number__iexact="false")
         )
     if filters["passport_country"] == "myanmar":
         employees = employees.filter(

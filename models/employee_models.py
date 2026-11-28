@@ -91,9 +91,6 @@ class EmployeeModel(BaseModel):
     work_permit_expiry_date = models.DateField(null=True, blank=True)
     report_90day_date = models.DateField(null=True, blank=True)
     report_90day_start_date = models.DateField(null=True, blank=True)
-    report_90day_update_1 = models.DateField(null=True, blank=True)
-    report_90day_update_2 = models.DateField(null=True, blank=True)
-    report_90day_update_3 = models.DateField(null=True, blank=True)
     report_90day_last_notified_at = models.DateTimeField(null=True, blank=True)
     work_permit_type = models.CharField(max_length=100, null=True, blank=True)
     ra_number = models.CharField(max_length=50, null=True, blank=True)
@@ -172,10 +169,33 @@ class EmployeeModel(BaseModel):
 
     @property
     def has_pink_card(self):
-        return bool(self.pink_card_number)
+        # True / False (select) သိမ်းထားသည်။ legacy နံပါတ် တန်ဖိုးများကို True အဖြစ် ဆက်ယူဆ
+        value = str(self.pink_card_number or "").strip().lower()
+        return bool(value) and value != "false"
 
     @property
     def days_until_90day_report(self):
         if not self.report_90day_date:
             return None
         return (self.report_90day_date - date.today()).days
+
+
+class Employee90DayReportModel(BaseModel):
+    """အလုပ်သမား တစ်ဦးချင်း၏ 90-day report တင်ခဲ့သည့် ရက်စွဲမှတ်တမ်း (အကန့်အသတ်မရှိ)."""
+
+    employee = models.ForeignKey(
+        EmployeeModel,
+        on_delete=models.CASCADE,
+        related_name="report_90day_records",
+    )
+    report_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.employee.full_name_en} - {self.report_date}"
+
+    class Meta:
+        app_label = "core"
+        db_table = "employee_90day_reports"
+        ordering = ["-report_date"]
+        verbose_name = "90-Day Report"
+        verbose_name_plural = "90-Day Reports"

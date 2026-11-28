@@ -1,0 +1,85 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load translate %}
+{% block title %}{% translate 'resignation_submissions' request.session.language %}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold">{% translate 'resignation_submissions' request.session.language %} (Total: {{ total_count }})</h4>
+                <h6>{% translate 'review_resignations_hint' request.session.language %}</h6>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="btn-group btn-group-sm" role="group">
+                    <a href="{% url 'resignation_list' %}"
+                        class="btn {% if not status_filter %}btn-primary{% else %}btn-outline-secondary{% endif %}">{% translate 'all' request.session.language %}</a>
+                    {% for value, label in status_choices %}
+                    <a href="{% url 'resignation_list' %}?status={{ value }}"
+                        class="btn {% if status_filter == value %}btn-primary{% else %}btn-outline-secondary{% endif %}">{{ label }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% for item in resignations %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+                    <div>
+                        <h5 class="mb-1">
+                            <a href="{% url 'employee_update' item.employee.id %}" class="text-decoration-none">
+                                {{ item.employee.prefix_en }} {{ item.employee.full_name_en }}
+                            </a>
+                        </h5>
+                        <p class="text-muted mb-1">
+                            {% if item.employee.employer %}{{ item.employee.employer.name_en }} · {% endif %}
+                            {{ item.employee.job_position|default:"-" }} · {{ item.created_at|date:"d M Y H:i" }}
+                        </p>
+                        <p class="mb-2">{{ item.reason|linebreaksbr }}</p>
+                        {% if item.staff_note %}
+                        <p class="mb-1 text-muted">{% translate 'note' request.session.language %} — {{ item.staff_note }}</p>
+                        {% endif %}
+                        {% if item.reviewed_at %}
+                        <small class="text-muted">{% translate 'reviewed_at' request.session.language %} {{ item.reviewed_at|date:"d M Y H:i" }}</small>
+                        {% endif %}
+                    </div>
+                    <span class="badge {% if item.status == 'pending' %}bg-warning{% elif item.status == 'approved' %}bg-success{% else %}bg-danger{% endif %} align-self-start">
+                        {{ item.get_status_display }}
+                    </span>
+                </div>
+
+                {% if item.employee.status == 'terminated' %}
+                <p class="text-danger mb-0 mt-2"><i class="ti ti-user-x me-1"></i>{% translate 'employee_already_terminated' request.session.language %}</p>
+                {% else %}
+                <form method="post" class="row g-2 align-items-end mt-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="request_id" value="{{ item.id }}">
+                    <div class="col-md-7">
+                        <label class="form-label">{% translate 'note_shown_to_worker' request.session.language %}</label>
+                        <input class="form-control" name="staff_note" value="{{ item.staff_note }}" maxlength="5000">
+                    </div>
+                    <div class="col-md-5 d-flex gap-2">
+                        <button type="submit" name="action" value="terminate" class="btn btn-danger"
+                            onclick="return confirm('{% translate 'confirm_terminate_worker' request.session.language %}');">
+                            <i class="ti ti-user-x me-1"></i>{% translate 'terminate' request.session.language %}
+                        </button>
+                        <button type="submit" name="action" value="reject" class="btn btn-outline-secondary">
+                            {% translate 'reject' request.session.language %}
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="card">
+            <div class="card-body text-center py-4 text-muted">{% translate 'no_resignation_yet' request.session.language %}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+{% endblock %}

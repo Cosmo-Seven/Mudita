@@ -40,8 +40,14 @@ def sidebar(request):
                         "permission": "view_employeemodel",
                     },
                     {
+                        "label": "resignations",
+                        "url_name": "resignation_list",
+                        "icon": "ti ti-user-minus",
+                        "permission": "view_employeemodel",
+                    },
+                    {
                         "label": "termination_employees",
-                        "url_name": "termination_notified_employees",
+                        "url_name": "termination_list",
                         "icon": "ti ti-user-x",
                         "permission": "view_employeemodel",
                     },

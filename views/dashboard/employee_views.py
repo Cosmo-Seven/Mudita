@@ -4,9 +4,12 @@ from datetime import date, datetime, timedelta
 from uuid import UUID
 from django.db import models
 from django.db import transaction
+from django.db.models import Prefetch
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.contrib.auth.password_validation import validate_password
+from django.http import Http404
+from django.utils import timezone
 from utils.decorators import custom_login_required
 from decorators.role_decorator import role_permission_required
 from helpers.filters import filter_querysets
@@ -20,6 +23,8 @@ from core.models import (
     NationalityModel,
     AddressModel,
     DocumentTypeModel,
+    EmployeeRequestModel,
+    Employee90DayReportModel,
     UserModel,
 )
 from django.core.paginator import Paginator
@@ -114,6 +119,31 @@ def _save_employee_home_address(request, employee):
         )
 
 
+NINETY_DAY_INTERVAL = timedelta(days=90)
+
+
+def _record_90day_report(request, employee):
+    """Edit form မှ 90-day report ရက်စွဲ အသစ် ထည့်ပါက record သိမ်းပြီး
+    နောက်တစ်ကြိမ် report ရက် (အသစ်ဆုံးရက်စွဲ + 90 ရက်) ကို အလိုအလျောက် တွက်သည်."""
+    raw_date = (request.POST.get("report_90day_new_date") or "").strip()
+    if raw_date:
+        report_date = parse_date(raw_date)
+        if report_date:
+            Employee90DayReportModel.objects.get_or_create(
+                employee=employee,
+                report_date=report_date,
+                defaults={"created_by": request.user},
+            )
+
+    latest = (
+        employee.report_90day_records.order_by("-report_date")
+        .values_list("report_date", flat=True)
+        .first()
+    )
+    if latest:
+        employee.report_90day_date = latest + NINETY_DAY_INTERVAL
+
+
 @custom_login_required("dashboard_login")
 @role_permission_required("view_employeemodel")
 def employee_preview(request, pk):
@@ -127,6 +157,7 @@ def employee_preview(request, pk):
         "employee": employee,
         "doc_types": doc_types,
         "documents": documents,
+        "report_90day_records": employee.report_90day_records.order_by("-report_date"),
     }
     return render(request, "dashboard/components/employee_preview_modal_content.html", context)
 
@@ -221,9 +252,17 @@ def employee_list(request):
         employees = employees.filter(insurance_type=insurance_type)
 
     if pink_card == "yes":
-        employees = employees.exclude(pink_card_number__isnull=True).exclude(pink_card_number="")
+        employees = (
+            employees.exclude(pink_card_number__isnull=True)
+            .exclude(pink_card_number="")
+            .exclude(pink_card_number__iexact="false")
+        )
     elif pink_card == "no":
-        employees = employees.filter(models.Q(pink_card_number__isnull=True) | models.Q(pink_card_number=""))
+        employees = employees.filter(
+            models.Q(pink_card_number__isnull=True)
+            | models.Q(pink_card_number="")
+            | models.Q(pink_card_number__iexact="false")
+        )
 
     if bank_status == "yes":
         employees = employees.exclude(bank_account_number__isnull=True).exclude(bank_account_number="")
@@ -334,6 +373,144 @@ def employee_list(request):
 
     return render(request, "dashboard/employee_list.html", context)
 
+
+# ========================
+# Resignation Requests (admin review → terminate)
+# ========================
+@custom_login_required("dashboard_login")
+@role_permission_required("view_employeemodel")
+def resignation_list(request):
+    resignations = (
+        EmployeeRequestModel.objects.filter(
+            is_deleted=False,
+            request_type="resignation",
+            employee__is_deleted=False,
+        )
+        .select_related("employee", "employee__employer")
+    )
+
+    if request.method == "POST":
+        try:
+            request_id = UUID(request.POST.get("request_id", ""))
+        except (TypeError, ValueError):
+            raise Http404("Resignation request not found.")
+
+        resignation = get_object_or_404(resignations, id=request_id)
+        action = request.POST.get("action", "")
+        if action not in ("terminate", "reject"):
+            messages.error(request, "Choose a valid action.")
+            return redirect("resignation_list")
+
+        resignation.staff_note = request.POST.get("staff_note", "").strip()
+        resignation.reviewed_at = timezone.now()
+        resignation.updated_by = request.user
+        resignation.status = "approved" if action == "terminate" else "rejected"
+        resignation.save(
+            update_fields=[
+                "status",
+                "staff_note",
+                "reviewed_at",
+                "updated_by",
+                "updated_at",
+            ]
+        )
+
+        if action == "terminate":
+            employee = resignation.employee
+            employee.status = "terminated"
+            employee.updated_by = request.user
+            employee.save(update_fields=["status", "updated_by", "updated_at"])
+            messages.success(request, f"{employee.full_name_en} has been terminated.")
+        else:
+            messages.success(request, "The resignation request has been rejected.")
+
+        return redirect("resignation_list")
+
+    status = request.GET.get("status", "")
+    if status in dict(EmployeeRequestModel.STATUS_CHOICES):
+        resignations = resignations.filter(status=status)
+
+    context = {
+        "resignations": resignations.order_by("-created_at"),
+        "total_count": resignations.count(),
+        "status_filter": status,
+        "status_choices": EmployeeRequestModel.STATUS_CHOICES,
+    }
+    return render(request, "dashboard/resignation_list.html", context)
+
+
+# ========================
+# Terminated Employees
+# ========================
+@custom_login_required("dashboard_login")
+@role_permission_required("view_employeemodel")
+def termination_list(request):
+    employees = (
+        EmployeeModel.objects.filter(is_deleted=False, status="terminated")
+        .select_related("employer", "nationality")
+        .prefetch_related(
+            Prefetch(
+                "requests",
+                queryset=EmployeeRequestModel.objects.filter(
+                    request_type="resignation", status="approved"
+                ).order_by("-reviewed_at"),
+                to_attr="approved_resignations",
+            )
+        )
+    )
+
+    search = request.GET.get("search", "")
+    employer_id = request.GET.get("employer", "")
+    if employer_id:
+        try:
+            employer_id = UUID(employer_id)
+        except ValueError:
+            messages.error(request, "Select a valid employer.")
+            employer_id = ""
+
+    if search:
+        employees = employees.filter(
+            models.Q(full_name_en__icontains=search)
+            | models.Q(name_th__icontains=search)
+            | models.Q(passport_number__icontains=search)
+            | models.Q(employer__name_en__icontains=search)
+        )
+    if employer_id:
+        employees = employees.filter(employer_id=employer_id)
+
+    employees = employees.order_by("-updated_at")
+
+    per_page = 25
+    paginator = Paginator(employees, per_page)
+    page_obj = paginator.get_page(request.GET.get("page", 1))
+
+    current = page_obj.number
+    total_pages = paginator.num_pages
+    if total_pages <= 5:
+        page_range = range(1, total_pages + 1)
+    elif current <= 3:
+        page_range = [1, 2, 3, 4, "...", total_pages]
+    elif current >= total_pages - 2:
+        page_range = [1, "...", total_pages - 3, total_pages - 2, total_pages - 1, total_pages]
+    else:
+        page_range = [1, "...", current - 1, current, current + 1, "...", total_pages]
+
+    query_params = request.GET.copy()
+    query_params.pop("page", None)
+
+    context = {
+        "employees": page_obj,
+        "page_obj": page_obj,
+        "paginator": paginator,
+        "page_range": page_range,
+        "page_query": query_params.urlencode(),
+        "total_count": paginator.count,
+        "search": search,
+        "employers": EmployerModel.objects.filter(is_deleted=False).order_by("name_en"),
+    }
+    return render(request, "dashboard/termination_list.html", context)
+
+
 # ========================
 # Employee Create
 # ========================
@@ -389,9 +566,6 @@ def employee_create(request):
             work_permit_expiry_date=request.POST.get("work_permit_expiry_date") or None,
             report_90day_date=request.POST.get("report_90day_date") or None,
             report_90day_start_date=request.POST.get("report_90day_start_date") or None,
-            report_90day_update_1=request.POST.get("report_90day_update_1") or None,
-            report_90day_update_2=request.POST.get("report_90day_update_2") or None,
-            report_90day_update_3=request.POST.get("report_90day_update_3") or None,
             work_permit_type=request.POST.get("work_permit_type"),
             ra_number=request.POST.get("ra_number"),
             pakan_number=request.POST.get("pakan_number"),
@@ -476,11 +650,7 @@ def employee_update(request, pk):
         employee.work_permit_number = request.POST.get("work_permit_number")
         employee.work_permit_issue_date = request.POST.get("work_permit_issue_date") or None
         employee.work_permit_expiry_date = request.POST.get("work_permit_expiry_date") or None
-        employee.report_90day_date = request.POST.get("report_90day_date") or None
         employee.report_90day_start_date = request.POST.get("report_90day_start_date") or None
-        employee.report_90day_update_1 = request.POST.get("report_90day_update_1") or None
-        employee.report_90day_update_2 = request.POST.get("report_90day_update_2") or None
-        employee.report_90day_update_3 = request.POST.get("report_90day_update_3") or None
         employee.work_permit_type = request.POST.get("work_permit_type")
         employee.ra_number = request.POST.get("ra_number")
         employee.pakan_number = request.POST.get("pakan_number")
@@ -504,6 +674,7 @@ def employee_update(request, pk):
             employee.photo = request.FILES.get("photo")
 
         employee.updated_by = request.user
+        _record_90day_report(request, employee)
         employee.save()
         _save_employee_home_address(request, employee)
         _save_worker_account(employee, account_email, account_password)
@@ -517,6 +688,7 @@ def employee_update(request, pk):
         .first(),
         "employers": EmployerModel.objects.filter(is_deleted=False).order_by("name_en"),
         "nationalities": NationalityModel.objects.all().order_by("name"),
+        "report_90day_records": employee.report_90day_records.order_by("-report_date"),
     }
     return render(request, "dashboard/employee_update.html", context)
 

@@ -52,7 +52,8 @@ def _save_employer_attachments(request, employer):
 @role_permission_required("view_employermodel")
 def employer_list(request):
     employers = (
-        EmployerModel.objects.select_related(
+        EmployerModel.objects.filter(is_deleted=False)
+        .select_related(
             "business_type", "responsible_person", "parent_employer"
         )
         .annotate(
@@ -348,7 +349,7 @@ def employer_export_pdf(request):
     date_range = request.GET.get("date_range", "")
 
     employers = filter_queryset_for_export(
-        EmployerModel.objects.all(),
+        EmployerModel.objects.filter(is_deleted=False),
         search=search,
         date=date,
         date_range=date_range,
@@ -375,7 +376,7 @@ def employer_export_excel(request):
     date_range = request.GET.get("date_range", "")
 
     employers = filter_queryset_for_export(
-        EmployerModel.objects.all(),
+        EmployerModel.objects.filter(is_deleted=False),
         search=search,
         date=date,
         date_range=date_range,

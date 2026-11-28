@@ -10,27 +10,27 @@
             <div class="add-item d-flex">
                 <div class="page-title">
                 <h4 class="fw-bold">{% translate 'employee_list' request.session.language %}
-                    (Total: {{ total_count }})</h4>     
+                    (Total: {{ total_count }})</h4>
                 <h6>{% translate 'manage_your_employees' request.session.language %}</h6>
             </div>
             </div>
             
             <ul class="table-top-head">
                 <li>
-                    <a data-bs-toggle="tooltip" href="{% url 'employer_export_pdf' %}" data-bs-placement="top"
+                    <a data-bs-toggle="tooltip" href="{% url 'employee_export_pdf' %}" data-bs-placement="top"
                         title="Pdf"><img src="{% static 'dashboard/images/pdf.svg' %}" alt="img"></a>
                 </li>
                 <li>
-                    <a data-bs-toggle="tooltip" href="{% url 'employer_export_excel' %}" data-bs-placement="top"
+                    <a data-bs-toggle="tooltip" href="{% url 'employee_export_excel' %}" data-bs-placement="top"
                         title="Excel"><img src="{% static 'dashboard/images/excel.svg' %}" alt="img"></a>
                 </li>
                 <li>
-                    <a data-bs-toggle="tooltip" href="{% url 'employer_list' %}" data-bs-placement="top"
+                    <a data-bs-toggle="tooltip" href="{% url 'employee_list' %}" data-bs-placement="top"
                         title="{% translate 'refresh' request.session.language %}"><i class="ti ti-refresh"></i></a>
                 </li>
             </ul>
             <div class="page-btn">
-                {% if request.user|can:'add_employeemodel' %}
+                {% if request.user|can:'add_employee' %}
                 <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal"
                     data-bs-target="#employeeImportModal">
                     <i class="ti ti-upload me-1"></i>{% translate 'import_excel' request.session.language %}

@@ -8,6 +8,82 @@
         background: #fff8e8;
         border-bottom: 1px solid #f0e4b8;
         padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .entity-form-badge {
+        flex: 0 0 auto;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #f4c14d;
+        color: #4a3600;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .entity-form-section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 3px 0 14px;
+        padding-bottom: 6px;
+        border-bottom: 1px dashed #eadfc6;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        color: #9a8f7a;
+    }
+    .entity-form-section-title i {
+        font-size: 15px;
+        color: #d9a325;
+    }
+    .entity-required {
+        color: #d9534f;
+        margin-left: 3px;
+    }
+    .entity-form-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 10px 12px;
+        margin-bottom: 16px;
+        background: #fffdf6;
+        border: 1px solid #efe7d2;
+        border-radius: 12px;
+    }
+    .entity-form-nav a {
+        font-size: 12px;
+        font-weight: 600;
+        color: #6b6254;
+        background: #f8f3e6;
+        border: 1px solid #efe7d2;
+        border-radius: 999px;
+        padding: 4px 12px;
+        text-decoration: none;
+    }
+    .entity-form-nav a:hover {
+        background: #fff1cd;
+        color: #8a6a00;
+    }
+    .entity-form-actions {
+        position: sticky;
+        bottom: 0;
+        z-index: 3;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 12px 18px;
+        margin-bottom: 8px;
+        background: rgba(255, 255, 255, .97);
+        backdrop-filter: blur(6px);
+        border: 1px solid #efe7d2;
+        border-radius: 12px;
+        box-shadow: 0 -4px 16px rgba(58, 42, 0, .06);
     }
     .entity-form-card > .card-header h5 {
         font-size: 15px;

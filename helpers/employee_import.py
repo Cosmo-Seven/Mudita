@@ -16,7 +16,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from core.models import EmployeeModel, UserModel
+from core.models import EmployeeModel, Employee90DayReportModel, UserModel
 
 # Excel header (normalize လုပ်ပြီးသား) -> EmployeeModel field
 HEADER_MAP = {
@@ -243,11 +243,11 @@ def read_employee_rows(file_obj, sheet_name=None):
             data["internal_note"] = " | ".join(filter(None, [existing, *extra_notes]))
 
         updates = sorted(set(updates))
-        for index, update_date in enumerate(updates[:3], start=1):
-            data[f"report_90day_update_{index}"] = update_date
         if updates:
-            # အသစ်ဆုံး 90-day update ကို နောက်တစ်ကြိမ် report တင်ရမည့် ရက် အဖြစ် သတ်မှတ်
-            data["report_90day_date"] = updates[-1]
+            # 90-day report ရက်စွဲအားလုံးကို record အဖြစ် သိမ်းရန် ခေတ္တ သယ်ဆောင်
+            data["_90day_reports"] = updates
+            # အသစ်ဆုံး report ရက် + 90 ရက် = နောက်တစ်ကြိမ် report တင်ရမည့် ရက်
+            data["report_90day_date"] = updates[-1] + timedelta(days=90)
 
         rows.append({"row_number": offset, "data": data})
 
@@ -284,6 +284,7 @@ def import_employees(rows, employer=None, created_by=None, with_accounts=True):
     for row in rows:
         data = dict(row["data"])
         row_number = row["row_number"]
+        report_dates = data.pop("_90day_reports", [])
         number = data.get("employee_number")
         passport = data.get("passport_number")
 
@@ -317,6 +318,13 @@ def import_employees(rows, employer=None, created_by=None, with_accounts=True):
                     **data,
                 )
                 employee.save()
+
+                for report_date in report_dates:
+                    Employee90DayReportModel.objects.create(
+                        employee=employee,
+                        report_date=report_date,
+                        created_by=created_by,
+                    )
 
                 if email:
                     password = generate_password()

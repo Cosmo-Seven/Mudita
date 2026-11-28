@@ -310,9 +310,14 @@ urlpatterns = (
             name="employee_list",
         ),
         path(
-            "dashboard/employee/termination-notices/",
-            dashboard_page_views.termination_notified_employees,
-            name="termination_notified_employees",
+            "dashboard/employee/resignations/",
+            employee_views.resignation_list,
+            name="resignation_list",
+        ),
+        path(
+            "dashboard/employee/terminations/",
+            employee_views.termination_list,
+            name="termination_list",
         ),
         path(
             "dashboard/employee/create/",

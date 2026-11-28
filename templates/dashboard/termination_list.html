@@ -1,0 +1,134 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load translate %}
+{% load static %}
+{% block title %}{% translate 'termination_employees' request.session.language %}{% endblock %}
+{% block body %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold">{% translate 'termination_employees' request.session.language %} (Total: {{ total_count }})</h4>
+                <h6>{% translate 'terminated_employees_hint' request.session.language %}</h6>
+            </div>
+        </div>
+
+        <form method="get" action="{% url 'termination_list' %}" class="card mb-3">
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-lg-6">
+                        <input type="text" name="search" value="{{ search }}" class="form-control"
+                            placeholder="{% translate 'search' request.session.language %}...">
+                    </div>
+                    <div class="col-lg-4">
+                        <select class="select" name="employer">
+                            <option value="">{% translate 'all_employers' request.session.language %}</option>
+                            {% for employer in employers %}
+                            <option value="{{ employer.id }}" {% if request.GET.employer == employer.id|stringformat:"s" %}selected{% endif %}>
+                                {{ employer.name_en }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-2 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100">{% translate 'filter' request.session.language %}</button>
+                        <a href="{% url 'termination_list' %}" class="btn btn-secondary">{% translate 'clear' request.session.language %}</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table termination-table">
+                        <thead>
+                            <tr>
+                                <th>{% translate 'employee' request.session.language %}</th>
+                                <th>{% translate 'employer' request.session.language %}</th>
+                                <th>{% translate 'passport' request.session.language %}</th>
+                                <th>Termination date</th>
+                                <th>{% translate 'status' request.session.language %}</th>
+                                <th class="text-end">{% translate 'action' request.session.language %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in employees %}
+                            <tr>
+                                <td>
+                                    <div class="term-user">
+                                        <img src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'dashboard/images/no-profile.png' %}{% endif %}"
+                                            alt="{{ employee.full_name_en }}">
+                                        <div>
+                                            <a class="term-name" href="{% url 'employee_update' employee.id %}">
+                                                {{ employee.prefix_en }} {{ employee.full_name_en }}
+                                            </a>
+                                            <span class="term-sub">{{ employee.title_th }} {{ employee.name_th }}{% if employee.job_position %} · {{ employee.job_position }}{% endif %}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if employee.employer %}
+                                    <a href="{% url 'employer_detail' employee.employer.id %}">{{ employee.employer.name_en }}</a>
+                                    {% else %}<span class="text-muted">-</span>{% endif %}
+                                </td>
+                                <td>{{ employee.passport_number|default:"-" }}</td>
+                                <td>
+                                    {% with resignation=employee.approved_resignations.0 %}
+                                    {% if resignation and resignation.reviewed_at %}
+                                    {{ resignation.reviewed_at|date:"d M Y" }}
+                                    {% else %}
+                                    <span class="text-muted">-</span>
+                                    {% endif %}
+                                    {% endwith %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-danger">{{ employee.get_status_display }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <a href="{% url 'employee_update' employee.id %}"
+                                        title="{% translate 'edit' request.session.language %}"><i class="ti ti-edit"></i></a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
+                                    {% translate 'no_data_found' request.session.language %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            {% include 'dashboard/components/pagination.html' %}
+        </div>
+    </div>
+    {% include 'dashboard/layouts/footer.html' %}
+</div>
+
+<style>
+    .termination-table { font-size: 13px; margin: 0; }
+    .termination-table thead th {
+        background: #f7f8fa; color: #6b7280; font-weight: 600; font-size: 11px;
+        letter-spacing: .04em; text-transform: uppercase; padding: 10px 12px;
+        border-bottom: 1px solid #eceef2; white-space: nowrap;
+    }
+    .termination-table tbody td {
+        padding: 8px 12px; vertical-align: middle;
+        border-bottom: 1px solid #f1f2f5; color: #2f2a22;
+    }
+    .termination-table tbody tr:hover td { background: #fffaf0; }
+    .termination-table tbody tr:last-child td { border-bottom: 0; }
+    .term-user { display: flex; align-items: center; gap: 10px; min-width: 200px; }
+    .term-user img {
+        width: 34px; height: 34px; border-radius: 8px; object-fit: cover;
+        border: 1px solid #eceef2; flex: 0 0 auto; background: #fff;
+    }
+    .term-name { font-weight: 600; color: #1f2937; text-decoration: none; }
+    .term-name:hover { color: #f59e0b; }
+    .term-sub { display: block; font-size: 11px; color: #98a2b3; }
+</style>
+{% endblock %}

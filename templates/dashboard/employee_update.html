@@ -156,24 +156,12 @@
                             <input type="date" name="work_permit_expiry_date" value="{{ employee.work_permit_expiry_date|date:'Y-m-d' }}" class="form-control"></div>
                         </div>
                         <div class="col-lg-4"><div class="mb-3">
-                            <label class="form-label">{% translate 'pink_card_number' request.session.language %}</label>
-                            <input type="text" name="pink_card_number" value="{{ employee.pink_card_number|default:'' }}" class="form-control"></div>
-                        </div>
-                        <div class="col-lg-4"><div class="mb-3">
-                            <label class="form-label text-danger">{% translate '90_day_report_start_date' request.session.language %}</label>
-                            <input type="date" name="report_90day_start_date" value="{{ employee.report_90day_start_date|date:'Y-m-d' }}" class="form-control"></div>
-                        </div>
-                        <div class="col-lg-4"><div class="mb-3">
-                            <label class="form-label">{% translate '90_day_report_update_1' request.session.language %}</label>
-                            <input type="date" name="report_90day_update_1" value="{{ employee.report_90day_update_1|date:'Y-m-d' }}" class="form-control"></div>
-                        </div>
-                        <div class="col-lg-4"><div class="mb-3">
-                            <label class="form-label">{% translate '90_day_report_update_2' request.session.language %}</label>
-                            <input type="date" name="report_90day_update_2" value="{{ employee.report_90day_update_2|date:'Y-m-d' }}" class="form-control"></div>
-                        </div>
-                        <div class="col-lg-4"><div class="mb-3">
-                            <label class="form-label">{% translate '90_day_report_update_3' request.session.language %}</label>
-                            <input type="date" name="report_90day_update_3" value="{{ employee.report_90day_update_3|date:'Y-m-d' }}" class="form-control"></div>
+                            <label class="form-label">{% translate 'pink_card' request.session.language %}</label>
+                            <select class="select" name="pink_card_number">
+                                <option value="">--</option>
+                                <option value="True" {% if employee.has_pink_card %}selected{% endif %}>True</option>
+                                <option value="False" {% if employee.pink_card_number == 'False' %}selected{% endif %}>False</option>
+                            </select></div>
                         </div>
                         <div class="col-lg-4"><div class="mb-3">
                             <label class="form-label">{% translate 'types_of_work_permits' request.session.language %}</label>
@@ -334,10 +322,6 @@
                             <input type="text" name="job_description" value="{{ employee.job_description|default:'' }}" class="form-control"></div>
                         </div>
                         <div class="col-lg-3"><div class="mb-3">
-                            <label class="form-label text-danger">{% translate '90_day_reporting_day' request.session.language %}</label>
-                            <input type="date" name="report_90day_date" value="{{ employee.report_90day_date|date:'Y-m-d' }}" class="form-control"></div>
-                        </div>
-                        <div class="col-lg-3"><div class="mb-3">
                             <label class="form-label">{% translate 'ra_number_from_the_outsource_system' request.session.language %}</label>
                             <input type="text" name="ra_number" value="{{ employee.ra_number|default:'' }}" class="form-control"></div>
                         </div>
@@ -392,7 +376,7 @@
                             <input type="email" name="login_email" value="{% if employee.user %}{{ employee.user.email }}{% else %}{{ employee.login_email|default:'' }}{% endif %}" autocomplete="off" class="form-control"></div>
                         </div>
                         <div class="col-lg-6"><div class="mb-3">
-                            <label class="form-label">Password အသစ် (မပြောင်းလိုပါက ဗလာထားပါ)</label>
+                            <label class="form-label">{% translate 'new_password' request.session.language %} ({% translate 'new_password_hint' request.session.language %})</label>
                             <input type="password" name="worker_password" autocomplete="new-password" class="form-control"></div>
                         </div>
                     </div>
@@ -423,6 +407,56 @@
                     </div>
                     {% else %}
                     <p class="text-muted mb-0">{% translate 'no_document_yet' request.session.language %}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 9. 90-Day Report History -->
+            <div class="card mb-3 entity-form-card">
+                <div class="card-header"><h5>9. {% translate '90_day_report' request.session.language %} {% translate 'history' request.session.language %}</h5></div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-lg-4">
+                            <label class="form-label text-danger">{% translate '90_day_report_start_date' request.session.language %}</label>
+                            <input type="date" name="report_90day_start_date" value="{{ employee.report_90day_start_date|date:'Y-m-d' }}" class="form-control">
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label">{% translate '90_day_reporting_day' request.session.language %}</label>
+                            <input type="text" value="{{ employee.report_90day_date|date:'d M Y'|default:'-' }}" class="form-control" readonly>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label">{% translate 'new_report_date' request.session.language %}</label>
+                            <input type="date" name="report_90day_new_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-text mb-3">
+                        {% translate 'report_90day_history_hint' request.session.language %}
+                    </div>
+                    {% if report_90day_records %}
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:60px;">#</th>
+                                    <th>{% translate 'report_date' request.session.language %}</th>
+                                    <th>{% translate 'recorded_by' request.session.language %}</th>
+                                    <th>{% translate 'recorded_at' request.session.language %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in report_90day_records %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td class="fw-medium">{{ record.report_date|date:'d M Y' }}</td>
+                                    <td>{{ record.created_by.username|default:'-' }}</td>
+                                    <td>{{ record.created_at|date:'d M Y H:i' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">{% translate 'no_90_day_report_record_yet' request.session.language %}</p>
                     {% endif %}
                 </div>
             </div>
