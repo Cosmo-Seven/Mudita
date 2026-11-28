@@ -72,6 +72,7 @@
                                 onclick="bulkToggleAllVisible_employeemodel(this.checked)">
                         </th>
                         <th>{% translate 'employee' request.session.language %}</th>
+                        <th>{% translate 'employee_number' request.session.language %}</th>
                         <th>{% translate 'employer' request.session.language %}</th>
                         <th>{% translate 'passport' request.session.language %}</th>
                         <th>{% translate 'visa' request.session.language %}</th>
@@ -101,6 +102,7 @@
                                 </div>
                             </div>
                         </td>
+                        <td>{{ employee.employee_number|default:"-" }}</td>
                         <td>
                             {% if employee.employer %}
                             <div class="emp-truncate">{{ employee.employer.name_en }}</div>
@@ -159,7 +161,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-muted">
+                        <td colspan="9" class="text-center py-4 text-muted">
                             {% translate 'no_data_found' request.session.language %}
                         </td>
                     </tr>

@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.contrib.auth.password_validation import validate_password
 from django.http import Http404
+from django.urls import reverse
 from django.utils import timezone
 from utils.decorators import custom_login_required
 from decorators.role_decorator import role_permission_required
@@ -223,6 +224,7 @@ def employee_list(request):
         employees = employees.filter(
             models.Q(full_name_en__icontains=search)
             | models.Q(name_th__icontains=search)
+            | models.Q(employee_number__icontains=search)
             | models.Q(passport_number__icontains=search)
             | models.Q(work_permit_number__icontains=search)
             | models.Q(employer__name_en__icontains=search)
@@ -736,6 +738,10 @@ def employee_delete(request, pk):
 
         employee.soft_delete(user=request.user)
         messages.success(request, DELETE)
+
+        next_query = request.POST.get("next", "").lstrip("?")
+        if next_query:
+            return redirect(f"{reverse('employee_list')}?{next_query}")
         return redirect("employee_list")
 
 
@@ -786,32 +792,96 @@ def employee_export_excel(request):
     date_range = request.GET.get("date_range", "")
 
     employees = filter_queryset_for_export(
-        EmployeeModel.objects.select_related("employer"),
+        EmployeeModel.objects.select_related("employer", "nationality", "team__group"),
         search=search,
         date=date,
         date_range=date_range,
-        search_fields=["full_name_en", "passport_number"],
+        search_fields=["full_name_en", "employee_number", "passport_number"],
         date_field="created_at",
     )
+
+    def fmt_date(value):
+        return value.strftime("%d %b %Y") if value else ""
+
+    columns = [
+        "No", "Employee No", "Prefix", "Name (EN)", "Name Suffix", "Name (TH)",
+        "Gender", "Date of Birth", "Age", "Height (cm)", "Weight (kg)",
+        "Father Name", "Mother Name", "Nationality", "Phone", "Employer",
+        "Group", "Team", "Job Position", "Job Description", "Work Department",
+        "Start Date", "Passport No.", "New Passport No.", "Passport Issue Place",
+        "Passport Issue Date", "Passport Expiry Date", "New Passport Expiry Date",
+        "Pink Card", "Visa Type", "Visa No.", "Visa Issue Place", "Visa Issue Date",
+        "Visa Expiry Date", "Visa Stamp Date", "Work Permit No.", "Work Permit Type",
+        "Work Permit Issue Date", "Work Permit Expiry Date", "90-Day Report Date",
+        "90-Day Start Date", "RA No.", "Pakan No.", "Application No.",
+        "Identification No.", "Tax ID No.", "Worker Employer Code",
+        "Worker Reference No.", "Bank Name", "Bank Account No.", "Insurance Type",
+        "Diagnosed Hospital", "Login Email", "Internal Note", "Status",
+    ]
 
     rows = [
         [
             idx,
-            e.full_name_en,
+            e.employee_number or "",
+            e.prefix_en or "",
+            e.full_name_en or "",
+            e.name_suffix_en or "",
+            f"{e.title_th or ''} {e.name_th or ''}".strip(),
+            e.get_gender_display() or "",
+            fmt_date(e.date_of_birth),
+            e.age if e.age is not None else "",
+            float(e.height_cm) if e.height_cm is not None else "",
+            float(e.weight_kg) if e.weight_kg is not None else "",
+            e.father_name or "",
+            e.mother_name or "",
+            e.nationality.name if e.nationality else "",
+            e.phone or "",
             e.employer.name_en if e.employer else "",
+            e.team.group.name if e.team else "",
+            e.team.name if e.team else "",
+            e.job_position or "",
+            e.job_description or "",
+            e.work_department or "",
+            fmt_date(e.start_date),
             e.passport_number or "",
+            e.new_passport_number or "",
+            e.passport_issue_place or "",
+            fmt_date(e.passport_issue_date),
+            fmt_date(e.passport_expiry_date),
+            fmt_date(e.new_passport_expiry_date),
+            e.pink_card_number or "",
+            e.visa_type or "",
+            e.visa_number or "",
+            e.visa_issue_place or "",
+            fmt_date(e.visa_issue_date),
+            fmt_date(e.visa_expiry_date),
+            fmt_date(e.visa_stamp_date),
             e.work_permit_number or "",
-            e.get_status_display(),
+            e.work_permit_type or "",
+            fmt_date(e.work_permit_issue_date),
+            fmt_date(e.work_permit_expiry_date),
+            fmt_date(e.report_90day_date),
+            fmt_date(e.report_90day_start_date),
+            e.ra_number or "",
+            e.pakan_number or "",
+            e.application_number or "",
+            e.identification_number or "",
+            e.tax_id_number or "",
+            e.worker_employer_code or "",
+            e.worker_reference_number or "",
+            e.bank_name or "",
+            e.bank_account_number or "",
+            e.insurance_type or "",
+            e.diagnosed_hospital or "",
+            e.login_email or "",
+            e.internal_note or "",
+            e.get_status_display() or "",
         ]
         for idx, e in enumerate(employees, start=1)
     ]
 
     filename = f"employee_{datetime.now().strftime('%b-%d-%Y')}.xlsx"
-    return export_to_excel(
-        filename,
-        ["No", "Name", "Employer", "Passport No.", "Work Permit No.", "Status"],
-        rows,
-    )
+    return export_to_excel(filename, columns, rows)
 
 
 # ========================
